@@ -1,34 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbf4e5; /* The warm MAI cream */
+  --foreground: #1b1a19; /* Deep, rich black */
+  --accent: #d4cfc1; /* Subtle border/hover color */
+  
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  
+  --max-width: 1400px;
+  --spacing-base: 1rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Axiom style deep dark mode */
+    --background: #0c0c0d;
+    --foreground: #fbf4e5;
+    --accent: #222223;
   }
-}
-
-html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
@@ -37,13 +26,230 @@ body {
   margin: 0;
 }
 
+body {
+  --font-sans: var(--font-dm-sans), system-ui, -apple-system, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 a {
   color: inherit;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* Typography Utility Classes */
+.h1-serif {
+  font-family: var(--font-serif);
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+}
+
+.h2-serif {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 6vw, 5rem);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.body-sans {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+/* Layout Utilities */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+.editorial-section {
+  padding: 15vh 0;
+  position: relative;
+  z-index: 10;
+}
+
+/* Global Canvas Background (Axiom effect) */
+#canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6; /* subtle */
+}
+
+/* ───────────────────────── Wiki ───────────────────────── */
+.wiki-shell {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 6vh 5vw 12vh;
+  position: relative;
+  z-index: 10;
+}
+
+.wiki-kicker {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.5;
+  margin-bottom: 1.25rem;
+}
+
+.wiki-lede {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  opacity: 0.75;
+  max-width: 620px;
+  margin: 1.5rem 0 0;
+}
+
+.wiki-cat-label {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.45;
+  margin: 4rem 0 1.5rem;
+}
+
+.wiki-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  overflow: hidden;
+}
+@media (min-width: 700px) {
+  .wiki-grid { grid-template-columns: 1fr 1fr; }
+}
+/* Each grid cell holds a FadeIn wrapper; make it and the card fill the cell
+   so a shorter card never reveals the grid's accent background behind it. */
+.wiki-grid > * { display: flex; }
+.wiki-grid > * > .wiki-card { flex: 1; }
+
+.wiki-card {
+  display: block;
+  background: var(--background);
+  padding: 1.6rem 1.75rem;
+  /* Interruptible, fast, ease-out. No layout shift on hover. */
+  transition: background-color 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+.wiki-card:hover { background: color-mix(in srgb, var(--foreground) 4%, var(--background)); }
+.wiki-card:focus-visible { outline: 2px solid var(--foreground); outline-offset: -2px; }
+
+.wiki-card h3 {
+  font-family: var(--font-serif);
+  font-size: 1.9rem;
+  line-height: 1.05;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+.wiki-card .wiki-card-arrow {
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 180ms ease-out, transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wiki-card:hover .wiki-card-arrow { opacity: 0.6; transform: translateX(2px); }
+.wiki-card p {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* Entry page */
+.wiki-article h2 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 1.75rem;
+  margin: 2.75rem 0 1rem;
+  line-height: 1.15;
+}
+.wiki-article p {
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
+  line-height: 1.7;
+  opacity: 0.85;
+  margin: 0 0 1.25rem;
+  max-width: 680px;
+}
+.wiki-article ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  max-width: 680px;
+}
+.wiki-article li {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.85;
+  padding-left: 1.4rem;
+  position: relative;
+  margin-bottom: 0.7rem;
+}
+.wiki-article li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--foreground);
+  opacity: 0.4;
+}
+
+.wiki-back {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  opacity: 0.55;
+  display: inline-flex;
+  gap: 0.4rem;
+  transition: opacity 160ms ease-out;
+}
+.wiki-back:hover { opacity: 0.9; }
+
+.wiki-related {
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--accent);
+}
+.wiki-related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+.wiki-related-links a {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  transition: border-color 160ms ease-out, background-color 160ms ease-out;
+}
+.wiki-related-links a:hover {
+  border-color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 5%, var(--background));
 }
