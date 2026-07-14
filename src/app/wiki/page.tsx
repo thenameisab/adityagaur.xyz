@@ -24,23 +24,27 @@ export default function WikiIndex() {
         </p>
       </FadeIn>
 
-      {wikiCategories.map((cat, ci) => (
-        <section key={cat.id}>
-          <p className="wiki-cat-label">{cat.label}</p>
-          <div className="wiki-grid">
-            {entriesByCategory(cat.id).map((entry, i) => (
-              <FadeIn key={entry.slug} delay={0.05 * i + ci * 0.04}>
-                <Link className="wiki-card" href={`/wiki/${entry.slug}/`}>
-                  <h3>
-                    {entry.title} <span className="wiki-card-arrow">→</span>
-                  </h3>
-                  <p>{entry.summary}</p>
-                </Link>
-              </FadeIn>
-            ))}
-          </div>
-        </section>
-      ))}
+      {wikiCategories.map((cat, ci) => {
+        const catEntries = entriesByCategory(cat.id);
+        return (
+          <section key={cat.id}>
+            <p className="wiki-cat-label">{cat.label}</p>
+            <div className="wiki-grid">
+              {catEntries.map((entry, i) => (
+                <FadeIn key={entry.slug} delay={0.05 * i + ci * 0.04}>
+                  <Link className="wiki-card" href={`/wiki/${entry.slug}/`}>
+                    <h3>
+                      {entry.title} <span className="wiki-card-arrow">→</span>
+                    </h3>
+                    <p>{entry.summary}</p>
+                  </Link>
+                </FadeIn>
+              ))}
+              {catEntries.length % 2 === 1 && <div className="wiki-grid-spacer" aria-hidden="true" />}
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
 }

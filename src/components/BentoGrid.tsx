@@ -12,18 +12,11 @@ const projects = [
 export default function BentoGrid() {
   return (
     <section className="editorial-section container">
-      <h2 className="h2-serif" style={{ marginBottom: '4rem' }}>Observed Systems</h2>
-      
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '1rem',
-        gridAutoRows: '300px'
-      }}>
+      <div className="bento-grid">
         {projects.map((project, i) => (
-          <div key={i} style={{
-            gridColumn: project.col,
-            gridRow: project.row,
+          <div key={i} className="bento-cell" style={{
+            '--col-span': project.col,
+            '--row-span': project.row,
             border: '1px solid var(--accent)',
             padding: '2rem',
             display: 'flex',
@@ -32,7 +25,7 @@ export default function BentoGrid() {
             position: 'relative',
             overflow: 'hidden',
             backgroundColor: 'rgba(0,0,0,0.02)'
-          }}>
+          } as React.CSSProperties}>
             <div style={{ position: 'relative', zIndex: 10 }}>
               <div style={{ fontFamily: 'monospace', fontSize: '0.875rem', opacity: 0.5, letterSpacing: '0.1em' }}>
                 {project.id}
