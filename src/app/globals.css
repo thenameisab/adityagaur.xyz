@@ -142,6 +142,30 @@ a {
 /* Each grid cell holds a FadeIn wrapper; make it and the card fill the cell
    so a shorter card never reveals the grid's accent background behind it. */
 .wiki-grid > * { display: flex; }
+/* When a category has an odd number of entries, the orphaned cell in the
+   2-col layout otherwise shows the grid's line-color background as a block. */
+.wiki-grid-spacer { background: var(--background); }
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  grid-auto-rows: 300px;
+}
+.bento-cell {
+  grid-column: var(--col-span, span 1);
+  grid-row: var(--row-span, span 1);
+  min-width: 0;
+}
+.bento-cell h3 { overflow-wrap: break-word; }
+@media (max-width: 900px) {
+  .bento-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 260px; }
+  .bento-cell { grid-column: span 2; grid-row: span 1; }
+}
+@media (max-width: 560px) {
+  .bento-grid { grid-template-columns: minmax(0, 1fr); grid-auto-rows: 220px; }
+  .bento-cell { grid-column: span 1; }
+}
 .wiki-grid > * > .wiki-card { flex: 1; }
 
 .wiki-card {
