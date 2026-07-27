@@ -1,0 +1,100 @@
+.root {
+  padding: var(--space-6);
+}
+
+.card {
+  max-inline-size: 34rem;
+  margin-inline: auto;
+  padding: var(--space-5);
+  background: var(--bg-card);
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-lg);
+}
+
+.ask {
+  margin-block-end: var(--space-5);
+  padding-block-end: var(--space-4);
+  border-block-end: var(--bd-subtle);
+  color: var(--text-muted);
+}
+
+.headline {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.delta {
+  display: inline-block;
+  margin-inline-start: var(--space-3);
+  padding: 2px var(--space-2);
+  border: var(--bdw) solid var(--border-default);
+  border-radius: var(--bdrs-full);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+
+.segments {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: var(--space-5);
+}
+
+.segment {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-block-start: var(--bd-subtle);
+  color: var(--text-secondary);
+}
+
+.segValue,
+.segShare {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.segShare {
+  color: var(--text-muted);
+}
+
+/* The footnote is the whole point: real, present, and easy to miss. It is
+   --text-faint rather than a warning colour, and it does not get an icon. */
+.footnote {
+  margin-block-start: var(--space-5);
+  color: var(--text-faint);
+}
+
+/* Revealing it raises contrast and rules it off, so the reader can see what they
+   skipped over rather than being told they skipped it. */
+.root[data-revealed="true"] .footnote {
+  padding-block-start: var(--space-3);
+  border-block-start: var(--bd-subtle);
+  color: var(--text-primary);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  margin-block-start: var(--space-5);
+}
+
+.button {
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-btn-primary);
+  color: var(--text-btn-primary);
+  border-radius: var(--bdrs-sm);
+  transition: background-color var(--dur-instant) var(--ease-out);
+}
+
+.button:hover {
+  background: var(--bg-btn-primary-hover);
+}
+
+.verdict {
+  max-inline-size: 52ch;
+  color: var(--text-secondary);
+}

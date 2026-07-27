@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Hero from "@/components/Hero";
 import Icon from "@/components/Icon";
-import styles from "../empty.module.css";
+import { writingEntries } from "@/content/writing/registry";
+import { published } from "@/lib/content";
+import styles from "./writing.module.css";
 
 export const metadata: Metadata = {
   title: "Writing",
@@ -11,11 +13,15 @@ export const metadata: Metadata = {
   alternates: { canonical: "/writing/" },
 };
 
-/**
- * TODO(Aditya) — BUILD-BRIEF §5.2 item 5: two essays minimum at launch,
- * 800–2000 words each. The MDX pipeline lands with the first one (Phase 5).
- */
+const DATE = new Intl.DateTimeFormat("en-GB", {
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
 export default function WritingIndex() {
+  const entries = published(writingEntries);
+
   return (
     <>
       <Hero
@@ -25,27 +31,27 @@ export default function WritingIndex() {
         lede="On AI, strategy, and how operating systems inside a company actually get built."
       />
       <div className="container inner-section">
-        <div className={`${styles.root} stack stack--s`}>
-          <p className="type-body-1 text-secondary">
-            No essays here yet — the first one is in progress.
-          </p>
-          <p className="type-body-2 text-muted">
-            Shorter pieces go up on the blog, and the wiki holds the notes most of
-            them start as.
-          </p>
-          <p className="cluster">
-            <a
-              href="https://blog.adityagaur.xyz"
-              rel="noopener noreferrer"
-              target="_blank"
-              className={styles.link}
+        <div className={styles.list} data-reveal-stagger>
+          {entries.map((entry, i) => (
+            <Link
+              key={entry.slug}
+              href={`/writing/${entry.slug}/`}
+              className={styles.row}
+              style={{ ["--i" as string]: i }}
             >
-              Blog <Icon name="arrow-up-right" size="sm" />
-            </a>
-            <Link href="/wiki/" className={styles.link}>
-              Wiki <Icon name="arrow-right" size="sm" />
+              <div>
+                <h2 className={`${styles.rowTitle} type-headline-2`}>
+                  {entry.title}
+                </h2>
+                <p className={`${styles.rowDek} type-body-2`}>{entry.dek}</p>
+              </div>
+              <span className={`${styles.rowAside} type-body-4`}>
+                {DATE.format(new Date(entry.published))} ·{" "}
+                {entry.readingMinutes} min
+                <Icon name="arrow-right" size="sm" className={styles.rowArrow} />
+              </span>
             </Link>
-          </p>
+          ))}
         </div>
       </div>
     </>

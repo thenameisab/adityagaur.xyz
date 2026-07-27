@@ -1,0 +1,234 @@
+/* ═══ Table-of-contents rail ═══
+   Two presentations, one component. Below 80em it is a disclosure above the
+   article; at 80em and up it becomes a sticky rail in the left margin. */
+
+.root {
+  --toc-indent: var(--space-4);
+}
+
+/* ── Header ── */
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  inline-size: 100%;
+  padding-block: var(--space-3);
+  color: var(--text-muted);
+  text-align: start;
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.head:hover {
+  color: var(--text-primary);
+}
+
+.chevron {
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-inline-end: var(--bdw) solid currentColor;
+  border-block-end: var(--bdw) solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.head[aria-expanded="true"] .chevron {
+  transform: rotate(-135deg);
+}
+
+.count {
+  margin-inline-start: auto;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Collapsible wrapper ──
+   `grid-template-rows: 0fr → 1fr` animates to content height without a measured
+   pixel value, so nothing has to be read from layout in JS. */
+.rootCollapse {
+  composes: collapse;
+}
+
+.collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--dur-base) var(--ease-out);
+}
+
+.collapse[data-open="false"] {
+  grid-template-rows: 0fr;
+}
+
+.collapseInner {
+  overflow: hidden;
+  min-block-size: 0;
+}
+
+/* ── Section list ── */
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.section {
+  position: relative;
+  padding-inline-start: 0;
+}
+
+.row {
+  display: flex;
+  align-items: start;
+  gap: var(--space-1);
+}
+
+/* Every entry carries its own marker bar. It scales in from the centre when the
+   entry goes current, which reads as one indicator moving down the rail without
+   any element having to be measured or positioned in JS. */
+.link {
+  /* Block, not inline. As an inline box the start padding applies only to the
+     first line fragment, so a wrapped sub-heading outdented to the rail edge and
+     the marker bar had no box to sit against. */
+  display: block;
+  position: relative;
+  flex: 1;
+  min-inline-size: 0;
+  padding-block: var(--space-2);
+  padding-inline-start: var(--space-4);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.link::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 0.45em;
+  inline-size: 2px;
+  border-radius: var(--bdrs-full);
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: 50% 50%;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+  opacity: 0;
+}
+
+.link:hover {
+  color: var(--text-secondary);
+}
+
+.link[data-current="true"] {
+  color: var(--text-primary);
+}
+
+.link[data-current="true"]::before {
+  transform: scaleY(1);
+  opacity: 1;
+}
+
+/* A section whose child is current: the parent stays legible but unmarked, so
+   only one bar shows at a time. */
+.link[data-within="true"] {
+  color: var(--text-secondary);
+}
+
+/* ── Sub-headings ── */
+
+.toggle {
+  flex: none;
+  align-self: start;
+  margin-block-start: var(--space-2);
+  padding: var(--space-1);
+  color: var(--text-faint);
+  border-radius: var(--bdrs-xs);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.toggle:hover {
+  color: var(--text-primary);
+}
+
+.toggleMark {
+  display: block;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-inline-end: var(--bdw) solid currentColor;
+  border-block-end: var(--bdw) solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.toggle[aria-expanded="true"] .toggleMark {
+  transform: rotate(-135deg);
+}
+
+.children {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  padding-inline-start: var(--toc-indent);
+}
+
+.child {
+  padding-inline-start: 0;
+}
+
+.childLink {
+  composes: link;
+}
+
+/* ── Sticky rail at 80em and up ──
+   80em is the width at which a 12rem rail fits the left margin without the
+   figures having to give up their bleed entirely (see Figure.module.css). */
+@media (min-width: 80em) {
+  .root {
+    position: sticky;
+    inset-block-start: calc(var(--header-h) + var(--space-6));
+    inline-size: var(--rail-w, 12rem);
+    max-block-size: calc(100dvh - var(--header-h) - var(--space-12));
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    /* The rail scrolls independently when a piece has more sections than fit. */
+    scrollbar-width: thin;
+  }
+
+  /* On the rail the header is a label, not a control. */
+  .head {
+    pointer-events: none;
+    padding-block-end: var(--space-2);
+  }
+
+  .chevron,
+  .count {
+    display: none;
+  }
+
+  /* The rail itself is never collapsed on desktop — but this must not reach the
+     nested sub-lists, which are exactly what the collapse is for. Scoped to the
+     outer wrapper only. */
+  .rootCollapse[data-open="false"] {
+    grid-template-rows: 1fr;
+  }
+}
+
+/* ── Disclosure below 80em ── */
+@media (max-width: 79.99em) {
+  .root {
+    margin-block-end: var(--space-8);
+    border-block: var(--bd-subtle);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapse,
+  .chevron,
+  .toggleMark,
+  .link::before {
+    transition: none;
+  }
+}

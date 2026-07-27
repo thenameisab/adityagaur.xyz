@@ -1,0 +1,203 @@
+import DeterminismLab from "./artifacts/DeterminismLab";
+
+export const meta = {
+  slug: "loam",
+  title: "Loam",
+  kicker: "Native macOS app",
+  summary:
+    "A markdown app for the agent era with no AI inside it, built around a press that produces byte-identical HTML on any machine.",
+  role: "Solo — product, design, engineering",
+  timeframe: "2026 — ongoing",
+  stack: ["Swift 6", "SwiftUI", "WebKit", "swift-markdown", "JavaScriptCore"],
+  status: "in development",
+  order: 1,
+};
+
+## The file your agent just wrote
+
+You close a coding session. Somewhere in the repo there is now a `PLAN.md` you didn't write, a handoff note, a research report, three new files under `.claude/skills/`, and a `CLAUDE.md` that has quietly grown to eleven thousand tokens.
+
+You need to read it. Not skim it — read it, because it's the artifact you're about to act on.
+
+So you `cat` it in the terminal and it comes out as a wall of asterisks. You open the VS Code preview, which renders it in a pane the width of a phone. You push it and read it on GitHub, which is nicer, and now the thing you wanted to check is behind a commit you made in order to check it.
+
+Every one of those tools assumes a human wrote the file and a human will read it once. That was true for twenty years. It stopped being true about two years ago.
+
+Markdown became the substrate of the agent era without anyone deciding it should. `CLAUDE.md`, `AGENTS.md`, `SKILL.md`, plan files, changelogs, handoff docs, research reports. Agents read and write it constantly, and the apps built to hold it — Typora, iA Writer, Nota — were all designed for one person writing one document. The newer AI-native editors bolt an assistant on the side, and are web-stack apps with none of the Mac-native craft.
+
+Loam is my answer to that. A reader good enough to be the system default for `.md`, and a press that turns markdown into HTML the same way every single time.
+
+## The app has no AI in it
+
+This is the decision everything else follows from, so it goes first.
+
+Loam makes no model calls. Not a chat pane, not a rewrite command, not a summarise button. There is no network entitlement in the build. You can pull the cable and nothing degrades. No account, no telemetry.
+
+The reasoning is narrower than "AI bad." Loam's job is to be the surface you *check an agent's work with*. A reviewing instrument that also guesses is not a reviewing instrument. If the app can rewrite my document, then every time something reads strangely I have a second suspect, and I have to rule out my own tool before I can trust what I'm reading. That's a bad trade for a feature I can get from the terminal in the next window.
+
+So the agents stay outside and the app stays predictable. Which turns out to be a much harder promise than it sounds, because "predictable" has a precise definition and almost nothing meets it.
+
+## What byte-identical actually means
+
+<Note term="Byte-identical, not equivalent">
+Two HTML files are *equivalent* if a browser draws them the same. They are *identical* if the bytes match. Almost every generator manages the first and quietly fails the second — a timestamp in a comment, attributes in a different order, a locale-sorted list. Equivalent output is useless to `diff` and useless to a build cache. Identical output is a fact you can check with `sha256sum`.
+</Note>
+
+Loam's press makes one promise: the same document bytes, the same `PressVersion`, and the same theme version produce byte-identical HTML on any machine, at any time.
+
+Output is a pure function of exactly three things: the document, the engine's output-format version, and the theme's version. Everything else is forbidden. `LoamEngine` has no code path that reads the clock, the locale, randomness, the environment, the network, or any filesystem state that isn't the input document.
+
+That list is worth operating rather than reading. Below is the contract as a working model: change one of the three permitted inputs and the digest moves, which is correct. Switch on one of the six forbidden reads and watch which gate catches it.
+
+<Figure
+  label="Figure 1"
+  caption="The determinism contract, and the three gates that enforce it. Switch on a forbidden read to break the build."
+  source="Real PressVersion and theme versions. The digest is FNV-1a standing in for SHA-256 — it models “the bytes changed”, not Loam's actual hashing."
+>
+  <DeterminismLab />
+</Figure>
+
+The distinction the lab makes is the one I got wrong when I started. I assumed nondeterminism was one problem. It's two, and they need different gates.
+
+The clock and the RNG move between two renders *on the same machine*, so rendering twice and comparing catches them immediately. The locale, the environment, the filesystem and the network are perfectly stable within one machine and differ across machines. Render twice locally and everything passes, then it breaks on someone else's laptop six weeks later. Only rendering on genuinely different machines catches that class. That's why the CI gate renders every fixture on two macOS runner generations with different Xcode, Swift and JavaScriptCore builds, takes a SHA-256 manifest of every output file from each, and asserts the manifests match.
+
+Different OS, different compiler, different JS engine, same bytes. Or the badge goes red.
+
+## The engine can't cheat because it can't reach
+
+The contract is enforced by architecture before it's enforced by tests.
+
+`LoamEngine` takes bytes and returns bytes. It performs no file I/O at all. Every read and write lives in the CLI layer or the app layer, which pass content in and write results out. The engine cannot consult the disk because the engine has no way to reach the disk. That's a stronger guarantee than a rule in a style guide, and it's the reason the same code can back the CLI, the app, and the Quick Look extension without three renderers drifting apart.
+
+The parser is `swift-markdown`, pinned. The serializer is mine. Walking the AST to HTML myself is more work than using an off-the-shelf renderer, and it's the only way the output bytes are actually under my control. Extensions like callouts and wiki-links need to slot into the same serializer, and a third-party renderer's escaping choices become my escaping choices whether I like them or not.
+
+Two pieces of JavaScript run at press time, and they're held to the same rule as everything else. A vendored KaTeX 0.16.22 turns TeX into MathML, and a vendored highlight.js 11.11.1 marks up code. Both evaluate inside their own `JSContext` on their own `JSVirtualMachine` — no DOM, no clock, no locale, no network in the context — and both emit static markup, never scripts. `hljs.highlight` is a pure function of the code and the language, so pinned source plus pinned input means pinned output.
+
+<Figure
+  label="Figure 2"
+  caption="One document through the press, stage by stage. Every stage is a pure function of what the stage before it handed over."
+>
+<Stepper
+  label="Press stages"
+  steps={[
+    {
+      name: "Frontmatter",
+      title: "Split the document",
+      body: "YAML frontmatter is lifted off the top and parsed into a metadata card. The remaining bytes are what the parser sees. Nothing here consults a schema registry or a file on disk — the document carries its own metadata.",
+      input: { label: "In", code: "---\ntitle: Determinism\n---\n\n# Determinism\n\nSame bytes in." },
+      output: { label: "Out", code: "meta: { title: \"Determinism\" }\nbody: \"# Determinism\\n\\nSame…\"" },
+    },
+    {
+      name: "Parse",
+      title: "swift-markdown, pinned",
+      body: "The body becomes an AST. The dependency is pinned to an exact version because a parser upgrade can change the tree shape, and a changed tree is a changed output — the same class of event as editing the document.",
+      output: { label: "AST", code: "Document\n└─ Heading(level: 1)\n│  └─ Text(\"Determinism\")\n└─ Paragraph\n   └─ Text(\"Same bytes in.\")" },
+    },
+    {
+      name: "Serialize",
+      title: "My own HTML walker",
+      body: "The AST is walked to HTML by a serializer I own rather than one I inherited. Escaping, attribute order, and whitespace are all decisions made here, which is exactly why they are stable. Raw HTML in the source is escaped rather than passed through.",
+      output: { label: "HTML", code: "<h1 id=\"determinism\">Determinism</h1>\n<p>Same bytes in.</p>" },
+    },
+    {
+      name: "Math and code",
+      title: "Two pinned libraries, sealed off",
+      body: "Math fences go to a vendored KaTeX and come back as MathML, which browsers typeset natively. Code fences go to a vendored highlight.js and come back as span-marked escaped text. Each runs in its own JavaScriptCore virtual machine with no DOM, clock, locale, or network reachable from inside it.",
+      input: { label: "Fence", code: "```swift\nlet h = digest(bytes)\n```" },
+      output: { label: "Static markup", code: "<pre><code class=\"language-swift\">\n<span class=\"hljs-keyword\">let</span> h = …\n</code></pre>" },
+    },
+    {
+      name: "Data blocks",
+      title: "csv and chart fences",
+      body: "A fence marked csv becomes a table with its first row as the header and number columns aligned right. A fence marked chart becomes an inline SVG bar or line chart. Both are pure arithmetic over the fence bytes, so a chart is safe to commit to a repository — it will be the same chart tomorrow.",
+      input: { label: "Fence", code: "```chart\ntype: bar\nquarter,revenue\nQ1,412\nQ2,509\n```" },
+      output: { label: "SVG", code: "<svg viewBox=\"0 0 640 240\" role=\"img\">\n  <rect x=\"32\" y=\"96\" … />\n  <rect x=\"96\" y=\"48\" … />\n</svg>" },
+    },
+    {
+      name: "Theme",
+      title: "Inline the CSS, stamp the version",
+      body: "The chosen theme's CSS is inlined so the page is self-contained, and the engine's output-format version is written into the document. That stamp is how a page tells you which contract produced it.",
+      output: { label: "Head", code: "<meta name=\"generator\" content=\"loam-press 0.9.0\">\n<style>/* article@0.8.0 */ …</style>" },
+    },
+    {
+      name: "Bytes",
+      title: "One file, no dependencies",
+      body: "The result is a single self-contained HTML file, or a folder of them with navigation derived from the source tree. On a re-render, pages whose bytes are unchanged are skipped rather than rewritten, which keeps mtimes stable and deploys minimal. That optimisation is only safe because of the contract.",
+    },
+  ]}
+/>
+</Figure>
+
+<Stat
+  items={[
+    { value: "4,650", label: "lines of Swift" },
+    { value: "3", label: "themes, each separately versioned" },
+    { value: "2", label: "macOS generations in the byte-compare gate" },
+    { value: "0", label: "network calls in the engine" },
+  ]}
+/>
+
+## What the promise costs
+
+Determinism is not free, and the bill arrives in small, irritating instalments.
+
+**No timestamps.** Every generator puts "generated at" in a comment. Loam can't, because a timestamp is the clock, and the clock is forbidden. People notice its absence and read it as an oversight.
+
+**Sorting looks wrong.** Ordering has to be fixed binary order, because locale-aware collation is the locale. Binary order puts `Z` before `a`. A human reading that list sees a bug. It is the contract working.
+
+**A dependency bump becomes a product decision.** Upgrading the vendored KaTeX changes output bytes, which means it's an output change like any other: bump the version, regenerate the recorded golden files in the same commit, review the golden diff. There is no such thing as a quiet patch upgrade.
+
+**The gate is loud by design.** Any deliberate CSS tweak fails CI until the goldens are re-recorded. That friction is the point. A golden mismatch with no version bump is always either accidental nondeterminism or an unacknowledged output change, and I want to be stopped in both cases. But it does mean the honest workflow has an extra step, every time, forever.
+
+I'd take that trade again. What it buys is that a rendered-page diff in a pull request contains your content change and nothing else, which makes reviewing generated HTML possible rather than theatre. And when a page renders oddly, it renders identically oddly everywhere, so the bug reproduces on the first try.
+
+## What exists, and what is still a document
+
+I've been describing a product brief and a working program, and it matters which is which.
+
+<Figure
+  label="Figure 3"
+  caption="An honest inventory. The reader and the press run today; the seam and the editor are specified and unbuilt."
+>
+  <Switcher
+    label="Build state"
+    panels={[
+      {
+        label: "Running today",
+        title: "Reader and press, both real",
+        body: "This is what 4,650 lines of Swift currently do. The engine is shared by the app, the CLI, and the Quick Look extension, so there is one renderer and one set of bytes.",
+        items: [
+          { marker: "01", label: "The reader", detail: "a typeset page with an outline rail that unfolds on approach, word count and reading time, and light, dark, and high-contrast sharing one typographic system" },
+          { marker: "02", label: "Live file watching", detail: "when an agent or a git checkout rewrites the open file, the page updates in place and keeps your scroll position" },
+          { marker: "03", label: "The press", detail: "one document to a self-contained HTML file, or a folder to a small static site with generated navigation and incremental rewrites" },
+          { marker: "04", label: "Three themes", detail: "article, docs, and minimal, each versioned independently as part of the contract" },
+          { marker: "05", label: "The determinism suite", detail: "double-render, golden byte-compare, a real-document corpus, and the cross-generation CI gate" },
+          { marker: "06", label: "The CLI", detail: "the same engine, headless, so a build pipeline needs no app installed" },
+        ],
+      },
+      {
+        label: "Specified, not built",
+        title: "The parts that are still just a brief",
+        body: "These are designed in detail and none of them exist in the codebase. I am listing them because a product brief reads exactly like a shipped feature list, and the difference is the entire point of a page like this.",
+        items: [
+          { marker: "—", label: "The hybrid editor", detail: "mark-hiding on caret exit with byte-faithful round-tripping — the highest-risk component, deliberately not started" },
+          { marker: "—", label: "The MCP server", detail: "structured search, read, outline, and backlinks for agents, instead of leaving them to grep" },
+          { marker: "—", label: "The journal and agent inbox", detail: "every write through the seam recorded as a reviewable diff, kept or reverted like a pull request" },
+          { marker: "—", label: "The knowledge base", detail: "library roots, backlinks, frontmatter queries, and a deterministic rules engine" },
+        ],
+      },
+    ]}
+  />
+</Figure>
+
+The reader shipped first on purpose. It's the smallest complete thing that's useful on its own, it's the part you touch every day, and it forced the typography and the engine into existence, both of which everything else needs. The press came second because it's the same engine pointed at a file instead of a window.
+
+The editor is last because it's the one that can fail. Hybrid editing that hides marks as the caret leaves them, while round-tripping the author's original markdown byte-for-byte, is genuinely hard, and it's the component where I could spend eight weeks and end up with something merely acceptable.
+
+## What I'd do differently
+
+**I hedged on the editor instead of deciding.** The brief gives it a four-week spike with an explicit fallback to a web-based editor if the native version misses the quality bar. That looked like risk management when I wrote it. Reading it back, it's a way of not choosing — and it's the reason the editor is still the part I haven't started. A fallback you've already written down is a decision you've already half-made.
+
+**Three themes was one too many.** Each is separately versioned, so each is a separate golden set and a separate thing to keep honest under the gate. Two would have taught me the same things about the theme system for two thirds of the maintenance.
+
+**I should have written the determinism contract down first.** It exists as a document now, and having it in prose is what made the four enforcement layers obvious. They fall straight out of the sentence "output is a pure function of exactly three inputs." I built roughly half of the enforcement before I wrote that sentence, and I built the wrong half first: I had the golden compare, which catches drift, before I had the cross-machine gate, which catches the failures I'd actually have shipped.

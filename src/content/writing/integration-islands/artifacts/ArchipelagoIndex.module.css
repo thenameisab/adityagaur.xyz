@@ -1,0 +1,179 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+/* ── Dimension rows ── */
+
+.dims {
+  display: flex;
+  flex-direction: column;
+}
+
+.dim {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-3) var(--space-6);
+  align-items: center;
+  padding-block: var(--space-4);
+  border-block-start: var(--bd-subtle);
+}
+
+.dim:first-child {
+  border-block-start: none;
+}
+
+@media (max-width: 46em) {
+  .dim {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dimName {
+  color: var(--text-primary);
+}
+
+.dimNum {
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.dimDesc {
+  margin-block-start: 2px;
+  color: var(--text-muted);
+}
+
+/* The two anchors, shown so a score means something specific. The one matching
+   the current answer is raised. */
+.anchors {
+  display: flex;
+  gap: var(--space-4);
+  margin-block-start: var(--space-2);
+}
+
+.anchor {
+  flex: 1;
+  color: var(--text-faint);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.anchor[data-active="true"] {
+  color: var(--text-secondary);
+}
+
+/* ── Scale ── */
+
+.scale {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.notch {
+  inline-size: 2.25rem;
+  padding-block: var(--space-2);
+  border: var(--bdw) solid var(--border-subtle);
+  border-radius: var(--bdrs-xs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out);
+}
+
+.notch:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.notch[aria-checked="true"] {
+  background: var(--bg-btn-primary);
+  border-color: var(--bg-btn-primary);
+  color: var(--text-btn-primary);
+}
+
+/* ── Result ── */
+
+.result {
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-6);
+  border-block-start: var(--bd-strong);
+}
+
+.totalRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.total {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.totalOf {
+  color: var(--text-faint);
+}
+
+.band {
+  color: var(--accent);
+}
+
+.bandDesc {
+  margin-block-start: var(--space-3);
+  max-inline-size: 56ch;
+  color: var(--text-secondary);
+}
+
+/* ── The waterline ──
+   One horizontal band: land on the left, sea rising from the right as the score
+   climbs. It is a mirror, not a measurement, so it stays a single simple bar
+   rather than a gauge with a needle. */
+
+.sea {
+  position: relative;
+  margin-block-start: var(--space-5);
+  block-size: 0.5rem;
+  border-radius: var(--bdrs-full);
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+.water {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  background: var(--accent);
+  transition: inline-size var(--dur-base) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .water {
+    transition: none;
+  }
+}
+
+.ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: var(--space-2);
+  color: var(--text-faint);
+}
+
+.reset {
+  margin-block-start: var(--space-5);
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--border-default);
+  text-underline-offset: 0.2em;
+}
+
+.reset:hover {
+  color: var(--text-primary);
+}
+
+.caveat {
+  margin-block-start: var(--space-4);
+  color: var(--text-faint);
+}

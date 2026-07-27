@@ -1,0 +1,150 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: var(--space-5);
+  padding-block-end: var(--space-5);
+  border-block-end: var(--bd-subtle);
+}
+
+.field {
+  min-inline-size: 0;
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-block-end: var(--space-2);
+  color: var(--text-muted);
+}
+
+.value {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Native range input, restyled. Keyboard and screen-reader support come free,
+   which is the reason not to build a custom slider. */
+.range {
+  inline-size: 100%;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.range::-webkit-slider-runnable-track {
+  block-size: 2px;
+  background: var(--border-default);
+  border-radius: var(--bdrs-full);
+}
+
+.range::-moz-range-track {
+  block-size: 2px;
+  background: var(--border-default);
+  border-radius: var(--bdrs-full);
+}
+
+.range::-webkit-slider-thumb {
+  appearance: none;
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  margin-block-start: -0.375rem;
+  border-radius: var(--bdrs-full);
+  background: var(--accent);
+}
+
+.range::-moz-range-thumb {
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  border: none;
+  border-radius: var(--bdrs-full);
+  background: var(--accent);
+}
+
+.range:focus-visible {
+  outline: var(--focus-w) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* ── Chart ── */
+
+.chartWrap {
+  margin-block-start: var(--space-5);
+}
+
+.chart {
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.grid {
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+}
+
+.axis {
+  stroke: var(--border-default);
+  stroke-width: 1;
+}
+
+.curve {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.marker {
+  fill: var(--accent);
+}
+
+.markerLine {
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.tick {
+  fill: var(--text-faint);
+  font-family: var(--ff-mono);
+  font-size: 10px;
+}
+
+.axisLabel {
+  fill: var(--text-muted);
+  font-family: var(--ff-sans);
+  font-size: 11px;
+}
+
+/* ── Readout ── */
+
+.readout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));
+  gap: var(--space-5);
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--bd-subtle);
+}
+
+.statValue {
+  display: block;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  display: block;
+  margin-block-start: var(--space-1);
+  color: var(--text-muted);
+}
+
+.note {
+  margin-block-start: var(--space-5);
+  max-inline-size: 58ch;
+  color: var(--text-secondary);
+}
