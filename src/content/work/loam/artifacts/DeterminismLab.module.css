@@ -1,0 +1,325 @@
+.root {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+@media (max-width: 56.25em) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Left: the inputs ── */
+
+.inputs {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  border-inline-end: var(--bd-subtle);
+}
+
+@media (max-width: 56.25em) {
+  .inputs {
+    border-inline-end: none;
+    border-block-end: var(--bd-subtle);
+  }
+}
+
+.groupHead {
+  display: block;
+  color: var(--text-muted);
+}
+
+.groupNote {
+  margin-block-start: var(--space-1);
+  color: var(--text-faint);
+}
+
+.group + .group {
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-6);
+  border-block-start: var(--bd-subtle);
+}
+
+.field {
+  margin-block-start: var(--space-3);
+}
+
+.fieldLabel {
+  display: block;
+  margin-block-end: var(--space-2);
+  color: var(--text-faint);
+}
+
+.doc {
+  inline-size: 100%;
+  min-block-size: 6.5rem;
+  resize: vertical;
+  padding: var(--space-3);
+  background: var(--bg-card);
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-sm);
+  color: var(--text-secondary);
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  line-height: var(--lh-medium);
+  tab-size: 2;
+}
+
+.doc:focus-visible {
+  border-color: var(--border-strong);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.pill {
+  padding: var(--space-1) var(--space-3);
+  border: var(--bdw) solid transparent;
+  border-radius: var(--bdrs-full);
+  color: var(--text-muted);
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
+}
+
+.pill:hover {
+  color: var(--text-primary);
+}
+
+.pill[aria-pressed="true"] {
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border-color: var(--border-default);
+}
+
+/* ── Forbidden reads ── */
+
+.forbidden {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-block-start: var(--space-3);
+}
+
+.readRow {
+  display: grid;
+  grid-template-columns: 1.1rem 1fr auto;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-2) var(--space-2) var(--space-2) 0;
+  text-align: start;
+  color: var(--text-muted);
+  border-radius: var(--bdrs-xs);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.readRow:hover {
+  color: var(--text-secondary);
+}
+
+.readRow[aria-pressed="true"] {
+  color: var(--text-primary);
+}
+
+/* An empty square that fills when the forbidden read is switched on. No
+   checkmark glyph — the box filling is the whole signal. */
+.box {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  border: var(--bdw) solid var(--border-strong);
+  border-radius: var(--bdrs-xs);
+  transform: translateY(0.12em);
+  transition:
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
+}
+
+.readRow[aria-pressed="true"] .box {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.readName {
+  font-family: var(--ff-mono);
+}
+
+.readScope {
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* Narrow: the scope drops under the description instead of being wedged into the
+   middle of a wrapped line. */
+@media (max-width: 30em) {
+  .readRow {
+    grid-template-columns: 1.1rem 1fr;
+  }
+
+  .readScope {
+    grid-column: 2;
+  }
+}
+
+/* ── Right: the runs ── */
+
+.output {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  min-inline-size: 0;
+}
+
+.runs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-block-start: var(--space-3);
+}
+
+.run {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-3);
+  background: var(--bg-card);
+  border-radius: var(--bdrs-sm);
+  border-inline-start: 2px solid var(--border-subtle);
+}
+
+.run[data-diverged="true"] {
+  border-inline-start-color: var(--accent);
+}
+
+.runName {
+  color: var(--text-muted);
+}
+
+.runMachine {
+  display: block;
+  margin-block-start: 2px;
+  color: var(--text-faint);
+}
+
+.hash {
+  color: var(--text-primary);
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  white-space: nowrap;
+}
+
+.run[data-diverged="true"] .hash {
+  color: var(--accent);
+}
+
+/* ── Gates ── */
+
+.gates {
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-6);
+  border-block-start: var(--bd-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.gate {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  align-items: start;
+}
+
+/* Pass and fail are distinguished by shape as well as color: pass is a hollow
+   ring, fail is a filled bar. Color alone would fail on a mono display. */
+.mark {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  transform: translateY(0.35em);
+  border-radius: var(--bdrs-full);
+  border: 2px solid var(--border-strong);
+}
+
+.gate[data-pass="false"] .mark {
+  border-radius: var(--bdrs-xs);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.gateName {
+  color: var(--text-primary);
+}
+
+.gateVerdict {
+  display: block;
+  margin-block-start: var(--space-1);
+  color: var(--text-muted);
+}
+
+.gateCmd {
+  color: var(--text-faint);
+  font-family: var(--ff-mono);
+}
+
+/* ── Golden bar ── */
+
+.golden {
+  margin-block-start: var(--space-6);
+  padding: var(--space-4);
+  background: var(--bg-card);
+  border-radius: var(--bdrs-sm);
+}
+
+.goldenRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.goldenHash {
+  color: var(--text-secondary);
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+}
+
+.button {
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-btn-primary);
+  color: var(--text-btn-primary);
+  border-radius: var(--bdrs-sm);
+  white-space: nowrap;
+  transition: background-color var(--dur-instant) var(--ease-out);
+}
+
+.button:hover {
+  background: var(--bg-btn-primary-hover);
+}
+
+.button:disabled {
+  background: none;
+  border: var(--bd-subtle);
+  color: var(--text-faint);
+  cursor: default;
+}
+
+.goldenNote {
+  margin-block-start: var(--space-2);
+  color: var(--text-faint);
+}
+
+.reset {
+  margin-block-start: var(--space-4);
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--border-default);
+  text-underline-offset: 0.2em;
+}
+
+.reset:hover {
+  color: var(--text-primary);
+}

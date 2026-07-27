@@ -1,0 +1,168 @@
+.root {
+  display: grid;
+  grid-template-columns: minmax(13rem, 15rem) 1fr;
+}
+
+@media (max-width: 56.25em) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Rail ── */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  border-inline-end: var(--bd-subtle);
+  padding-block: var(--space-3);
+}
+
+@media (max-width: 56.25em) {
+  .rail {
+    flex-direction: row;
+    overflow-x: auto;
+    border-inline-end: none;
+    border-block-end: var(--bd-subtle);
+    padding-inline: var(--space-3);
+  }
+}
+
+.step {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-3) var(--space-5);
+  text-align: start;
+  color: var(--text-muted);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.step:hover {
+  color: var(--text-secondary);
+}
+
+.step[aria-selected="true"] {
+  color: var(--text-primary);
+}
+
+.ordinal {
+  flex: none;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.step[aria-selected="true"] .ordinal {
+  color: var(--accent);
+}
+
+.stepName {
+  white-space: nowrap;
+}
+
+@media (min-width: 56.3125em) {
+  .stepName {
+    white-space: normal;
+  }
+}
+
+/* The active marker rides the inline edge of the rail. */
+.step {
+  position: relative;
+}
+
+.step[aria-selected="true"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: var(--space-2);
+  inline-size: 2px;
+  background: var(--accent);
+}
+
+@media (max-width: 56.25em) {
+  .step[aria-selected="true"]::before {
+    inset-inline: var(--space-3);
+    inset-block: auto var(--space-1);
+    inline-size: auto;
+    block-size: 2px;
+  }
+}
+
+/* ── Panels ── */
+
+.panels {
+  padding: var(--space-6) var(--space-6) var(--space-8);
+  min-inline-size: 0;
+}
+
+.panel > * + * {
+  margin-block-start: var(--space-4);
+}
+
+/* Inactive panels carry the `hidden` attribute, so the UA stylesheet hides them
+   and their text still ships in the server-rendered HTML for crawlers.
+   With scripting genuinely unavailable the tabs can't be operated at all, so
+   every panel is revealed and the artifact reads as a numbered list instead.
+   Doing this in a media query rather than after hydration means JS users never
+   see a flash of all seven panels. */
+@media (scripting: none) {
+  .panel[hidden] {
+    display: block;
+  }
+
+  .panel + .panel {
+    margin-block-start: var(--space-8);
+    padding-block-start: var(--space-8);
+    border-block-start: var(--bd-subtle);
+  }
+}
+
+.panelTitle {
+  color: var(--text-primary);
+}
+
+.panelBody {
+  color: var(--text-secondary);
+  max-inline-size: 54ch;
+}
+
+.io {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+}
+
+.ioBlock {
+  min-inline-size: 0;
+}
+
+.ioLabel {
+  display: block;
+  margin-block-end: var(--space-2);
+  color: var(--text-faint);
+}
+
+.code {
+  margin: 0;
+  padding: var(--space-4);
+  background: var(--bg-card);
+  border-radius: var(--bdrs-sm);
+  color: var(--text-secondary);
+  tab-size: 2;
+  /* These snippets illustrate a stage; they are not code to copy out. Wrapping a
+     long line is better than clipping it behind an overlay scrollbar the reader
+     never discovers. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.forbidden {
+  color: var(--text-muted);
+}
+
+.forbidden strong {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}

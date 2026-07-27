@@ -1,4 +1,7 @@
 import type { MetadataRoute } from "next";
+import { workEntries } from "@/content/work/registry";
+import { writingEntries } from "@/content/writing/registry";
+import { published } from "@/lib/content";
 import { SITE_URL, routes } from "@/lib/site";
 import { wikiEntries } from "@/lib/wiki";
 
@@ -19,5 +22,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
-  return [...top, ...wiki];
+  const work = published(workEntries).map((e) => ({
+    url: `${SITE_URL}/work/${e.slug}/`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+  const writing = published(writingEntries).map((e) => ({
+    url: `${SITE_URL}/writing/${e.slug}/`,
+    lastModified: new Date(e.published),
+    changeFrequency: "yearly" as const,
+    priority: 0.8,
+  }));
+  return [...top, ...work, ...writing, ...wiki];
 }

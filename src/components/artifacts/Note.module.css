@@ -1,0 +1,21 @@
+/* A sidebar for a definition or a caveat the main line shouldn't carry.
+   Ruled, not boxed — a filled callout would read as documentation chrome. */
+.root {
+  margin-block-start: var(--space-8);
+  padding-inline-start: var(--space-5);
+  border-inline-start: var(--bdw) solid var(--border-default);
+}
+
+.term {
+  display: block;
+  margin-block-end: var(--space-2);
+  color: var(--text-muted);
+}
+
+.body {
+  color: var(--text-secondary);
+}
+
+.body > * + * {
+  margin-block-start: var(--space-3);
+}

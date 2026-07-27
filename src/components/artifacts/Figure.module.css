@@ -1,0 +1,52 @@
+/* Artifacts are wider than the 44rem prose measure. `--bleed` is how much they
+   reach past it on each side, clamped so they never exceed the viewport gutter.
+   `--rail-reserve` is set by `.entry` when a table-of-contents rail occupies the
+   left margin; subtracting it keeps the bleed symmetric and stops a figure
+   sliding under the rail. It is 0 anywhere without a rail, so nothing else moves. */
+.root {
+  --bleed: clamp(
+    0px,
+    calc(
+      (100vw - var(--gutter) * 2 - var(--maw-prose)) / 2 -
+        var(--rail-reserve, 0px)
+    ),
+    8rem
+  );
+
+  margin-inline: calc(var(--bleed) * -1);
+  margin-block-start: var(--space-10);
+}
+
+.root + :global(.prose > *) {
+  margin-block-start: var(--space-10);
+}
+
+.frame {
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-md);
+  background: var(--bg-raised);
+  overflow: hidden;
+}
+
+/* Wide artifacts scroll inside their own frame. The page body never scrolls
+   horizontally. */
+.scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-block-start: var(--space-3);
+  padding-inline: var(--space-1);
+}
+
+.label {
+  color: var(--text-muted);
+}
+
+.source {
+  color: var(--text-faint);
+}

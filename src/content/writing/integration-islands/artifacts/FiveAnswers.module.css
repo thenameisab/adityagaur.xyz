@@ -1,0 +1,104 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.question {
+  max-inline-size: 46ch;
+  margin-inline: auto;
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-card);
+  border-radius: var(--bdrs-md);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.asker {
+  display: block;
+  margin-block-end: var(--space-2);
+  color: var(--text-faint);
+}
+
+/* The fan-out. Five columns on wide, a list on narrow — the point is that the
+   numbers disagree, which reads either way. */
+.fan {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-block-start: var(--space-6);
+}
+
+@media (max-width: 52em) {
+  .fan {
+    grid-template-columns: 1fr;
+  }
+}
+
+.island {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-3);
+  border: var(--bdw) solid var(--border-subtle);
+  border-radius: var(--bdrs-md);
+  background: transparent;
+  text-align: start;
+  transition:
+    border-color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out);
+}
+
+.island:hover {
+  border-color: var(--border-strong);
+}
+
+.island[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--bg-card);
+}
+
+.islandName {
+  color: var(--text-muted);
+}
+
+.count {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.basis {
+  color: var(--text-faint);
+}
+
+/* The selected island's own definition of "customer". */
+.detail {
+  margin-block-start: var(--space-5);
+  padding-inline-start: var(--space-5);
+  border-inline-start: 2px solid var(--accent-dim);
+  min-block-size: 4.5rem;
+}
+
+.detailKey {
+  display: block;
+  margin-block-end: var(--space-2);
+  color: var(--text-faint);
+}
+
+.detailBody {
+  max-inline-size: 58ch;
+  color: var(--text-secondary);
+}
+
+.spread {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--bd-subtle);
+  color: var(--text-muted);
+}
+
+.spreadValue {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}

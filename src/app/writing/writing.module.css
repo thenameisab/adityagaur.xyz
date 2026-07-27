@@ -1,0 +1,137 @@
+/* ── Index ── */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  border-block-start: var(--bd-subtle);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-4) var(--space-8);
+  align-items: baseline;
+  padding-block: var(--space-8);
+  border-block-end: var(--bd-subtle);
+}
+
+@media (max-width: 40em) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rowTitle {
+  color: var(--text-primary);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.row:hover .rowTitle {
+  color: var(--accent);
+}
+
+.rowDek {
+  margin-block-start: var(--space-2);
+  max-inline-size: 54ch;
+  color: var(--text-secondary);
+}
+
+.rowAside {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.rowArrow {
+  transform: translateX(var(--arrow-rest));
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.row:hover .rowArrow {
+  transform: translateX(var(--arrow-hover));
+}
+
+/* ── Reading progress ──
+   A scroll-driven CSS animation, so there is no scroll listener and no JS.
+   Where `animation-timeline` is unsupported the bar simply never fills, which is
+   why it starts at zero width and is decorative rather than informative. */
+
+.progress {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: var(--z-header);
+  block-size: 2px;
+  inline-size: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: var(--accent);
+  pointer-events: none;
+}
+
+@keyframes read-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .progress {
+      animation: read-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+/* ── Entry ── */
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.back:hover {
+  color: var(--text-primary);
+}
+
+.backArrow {
+  transform: rotate(180deg);
+}
+
+.dek {
+  max-inline-size: 34ch;
+  font-family: var(--ff-display);
+}
+
+.dateline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-block-start: var(--space-8);
+  padding-block: var(--space-5);
+  border-block: var(--bd-subtle);
+  color: var(--text-muted);
+}
+
+.body {
+  margin-block-start: var(--space-fluid-md);
+}
+
+/* ── Sources ── */
+
+.sources {
+  margin-block-start: var(--space-fluid-lg);
+  padding-block-start: var(--space-8);
+  border-block-start: var(--bd-subtle);
+}
+
+.footer {
+  margin-block-start: var(--space-fluid-md);
+  padding-block-start: var(--space-8);
+  border-block-start: var(--bd-subtle);
+}

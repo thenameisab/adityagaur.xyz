@@ -1,0 +1,24 @@
+.root {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+  gap: var(--space-1);
+  margin-block-start: var(--space-8);
+  border-block-start: var(--bd-subtle);
+}
+
+.item {
+  padding-block: var(--space-5);
+  padding-inline-end: var(--space-5);
+}
+
+.value {
+  display: block;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  display: block;
+  margin-block-start: var(--space-1);
+  color: var(--text-muted);
+}

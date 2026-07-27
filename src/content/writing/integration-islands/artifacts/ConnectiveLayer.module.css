@@ -1,0 +1,85 @@
+/* The diagram has a floor below which its labels stop being legible, so it keeps
+   a minimum width and scrolls inside its own frame on narrow screens rather than
+   squashing — or being silently clipped by the Figure's rounded frame. */
+.root {
+  padding: var(--space-6);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.svg {
+  inline-size: 100%;
+  block-size: auto;
+  min-inline-size: 30rem;
+}
+
+.tierLabel {
+  fill: var(--text-faint);
+  font-family: var(--ff-sans);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.node {
+  fill: var(--bg-card);
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+}
+
+.nodeText {
+  fill: var(--text-secondary);
+  font-family: var(--ff-sans);
+  font-size: 12px;
+}
+
+/* The middle band is the argument, so it is the only filled, accented shape. */
+.band {
+  fill: var(--accent-dim);
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+
+.bandTitle {
+  fill: var(--text-primary);
+  font-family: var(--ff-sans);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.bandSub {
+  fill: var(--text-secondary);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+}
+
+.flow {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  fill: none;
+}
+
+.arrowHead {
+  fill: var(--border-strong);
+}
+
+/* The connection the architecture forbids: engagement tools wiring to each
+   other. Drawn struck through rather than omitted, because its absence is the
+   point of the diagram. */
+.forbidden {
+  stroke: var(--text-faint);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  fill: none;
+}
+
+.forbiddenMark {
+  stroke: var(--text-faint);
+  stroke-width: 1.5;
+}
+
+.forbiddenText {
+  fill: var(--text-faint);
+  font-family: var(--ff-sans);
+  font-size: 10px;
+}

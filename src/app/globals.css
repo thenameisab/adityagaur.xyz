@@ -418,16 +418,56 @@ hr {
 .container--wide  { --container-max: var(--maw-wide); }
 
 .inner-section { padding-block: var(--section-space, var(--space-fluid-lg)); }
-.inner-section--sm { --section-space: var(--space-fluid-md); }
-.inner-section--lg { --section-space: var(--space-fluid-xl); }
 
-.grid {
+/* Long-form entry layout — three children, in reading order: the title block, the
+   table-of-contents rail, then the article body.
+
+   Three rather than two so the rail has a natural place on narrow screens (under
+   the title, above the prose) without being duplicated. Rows are declared
+   explicitly because `grid-row: 1 / -1` only spans the EXPLICIT grid: with
+   implicit rows a spanning rail collapsed to the height of row 1 and its sticky
+   child had nothing to stick inside. */
+.entry {
   display: grid;
-  gap: var(--grid-space, var(--space-6));
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(min(var(--grid-min, 20rem), 100%), 1fr)
-  );
+  grid-template-columns: minmax(0, 1fr) min(var(--maw-prose), 100%) minmax(0, 1fr);
+  padding-inline: var(--gutter);
+}
+
+.entry-head,
+.entry-rail,
+.entry-body {
+  grid-column: 2;
+  min-inline-size: 0;
+}
+
+@media (min-width: 80em) {
+  .entry {
+    --rail-w: 12rem;
+    /* The corridor the figures must leave clear on the left: the rail itself plus
+       a gap. Read by Figure.module.css, which subtracts it from the bleed. */
+    --rail-reserve: calc(var(--rail-w) + var(--space-10));
+
+    grid-template-rows: auto auto;
+  }
+
+  .entry-head {
+    grid-row: 1;
+  }
+
+  .entry-body {
+    grid-row: 2;
+  }
+
+  /* Spans both rows, so the sticky nav inside has the whole article to stick
+     within. Aligned to the page gutter rather than flush against the prose: flush
+     left leaves nowhere for a figure to bleed into, so the rail would always end
+     up underneath one. `--rail-reserve` keeps the corridor. */
+  .entry-rail {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    justify-self: start;
+    inline-size: var(--rail-w);
+  }
 }
 
 /* ──────────────────────────────────────── 6. Type role classes ── */
