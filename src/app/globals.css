@@ -1,279 +1,689 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+/* ═══════════════════════════════════════════════════════════════════════════
+   adityagaur.xyz — token layer
+   ---------------------------------------------------------------------------
+   This file is the ONLY place a raw color, size, radius, or duration is written.
+   Components reference semantic aliases; semantic aliases are defined on theme
+   classes, never on :root. See BUILD-BRIEF.md §3.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-:root {
-  --background: #fbf4e5; /* The warm MAI cream */
-  --foreground: #1b1a19; /* Deep, rich black */
-  --accent: #d4cfc1; /* Subtle border/hover color */
-  
-  --font-serif: 'Instrument Serif', Georgia, serif;
-  
-  --max-width: 1400px;
-  --spacing-base: 1rem;
-}
+/* ───────────────────────────────────────────────────────────── 1. Reset ── */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Axiom style deep dark mode */
-    --background: #0c0c0d;
-    --foreground: #fbf4e5;
-    --accent: #222223;
-  }
-}
-
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  padding: 0;
+}
+
+html {
+  /* `clip` (not `hidden`) — doesn't create a scroll container, so position:sticky
+     keeps working. */
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  /* Anchor targets land below the sticky header. */
+  scroll-padding-block-start: calc(var(--header-h) + var(--space-8));
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Enables the header's scroll-state container queries (Header.module.css).
+   Chromium-only today; the header is complete without it. */
+@supports (container-type: scroll-state) {
+  html { container-type: scroll-state; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 body {
-  --font-sans: var(--font-dm-sans), system-ui, -apple-system, sans-serif;
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  line-height: 1.6;
-  overflow-x: hidden;
+  min-block-size: 100dvh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  text-rendering: optimizeLegibility;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* Typography Utility Classes */
-.h1-serif {
-  font-family: var(--font-serif);
-  font-size: clamp(4rem, 10vw, 8rem);
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-  font-weight: 400;
-}
-
-.h2-serif {
-  font-family: var(--font-serif);
-  font-size: clamp(3rem, 6vw, 5rem);
-  line-height: 1;
-  font-weight: 400;
-}
-
-.body-sans {
-  font-family: var(--font-sans);
-  font-size: 1.125rem;
-  line-height: 1.5;
-  letter-spacing: -0.01em;
-}
-
-/* Layout Utilities */
-.container {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 5vw;
-}
-
-.editorial-section {
-  padding: 15vh 0;
-  position: relative;
-  z-index: 10;
-}
-
-/* Global Canvas Background (Axiom effect) */
-#canvas-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.6; /* subtle */
-}
-
-/* ───────────────────────── Wiki ───────────────────────── */
-.wiki-shell {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 6vh 5vw 12vh;
-  position: relative;
-  z-index: 10;
-}
-
-.wiki-kicker {
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  opacity: 0.5;
-  margin-bottom: 1.25rem;
-}
-
-.wiki-lede {
-  font-family: var(--font-sans);
-  font-size: 1.25rem;
-  line-height: 1.5;
-  opacity: 0.75;
-  max-width: 620px;
-  margin: 1.5rem 0 0;
-}
-
-.wiki-cat-label {
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  opacity: 0.45;
-  margin: 4rem 0 1.5rem;
-}
-
-.wiki-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 14px;
-  overflow: hidden;
-}
-@media (min-width: 700px) {
-  .wiki-grid { grid-template-columns: 1fr 1fr; }
-}
-/* Each grid cell holds a FadeIn wrapper; make it and the card fill the cell
-   so a shorter card never reveals the grid's accent background behind it. */
-.wiki-grid > * { display: flex; }
-/* When a category has an odd number of entries, the orphaned cell in the
-   2-col layout otherwise shows the grid's line-color background as a block. */
-.wiki-grid-spacer { background: var(--background); }
-
-.bento-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-  grid-auto-rows: 300px;
-}
-.bento-cell {
-  grid-column: var(--col-span, span 1);
-  grid-row: var(--row-span, span 1);
-  min-width: 0;
-}
-.bento-cell h3 { overflow-wrap: break-word; }
-@media (max-width: 900px) {
-  .bento-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 260px; }
-  .bento-cell { grid-column: span 2; grid-row: span 1; }
-}
-@media (max-width: 560px) {
-  .bento-grid { grid-template-columns: minmax(0, 1fr); grid-auto-rows: 220px; }
-  .bento-cell { grid-column: span 1; }
-}
-.wiki-grid > * > .wiki-card { flex: 1; }
-
-.wiki-card {
+img,
+svg,
+video,
+canvas {
   display: block;
-  background: var(--background);
-  padding: 1.6rem 1.75rem;
-  /* Interruptible, fast, ease-out. No layout shift on hover. */
-  transition: background-color 180ms cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-}
-.wiki-card:hover { background: color-mix(in srgb, var(--foreground) 4%, var(--background)); }
-.wiki-card:focus-visible { outline: 2px solid var(--foreground); outline-offset: -2px; }
-
-.wiki-card h3 {
-  font-family: var(--font-serif);
-  font-size: 1.9rem;
-  line-height: 1.05;
-  font-weight: 400;
-  margin-bottom: 0.5rem;
-}
-.wiki-card .wiki-card-arrow {
-  display: inline-block;
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: opacity 180ms ease-out, transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.wiki-card:hover .wiki-card-arrow { opacity: 0.6; transform: translateX(2px); }
-.wiki-card p {
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.5;
-  opacity: 0.7;
-  margin: 0;
+  max-inline-size: 100%;
+  block-size: auto;
 }
 
-/* Entry page */
-.wiki-article h2 {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  font-size: 1.75rem;
-  margin: 2.75rem 0 1rem;
-  line-height: 1.15;
-}
-.wiki-article p {
-  font-family: var(--font-sans);
-  font-size: 1.15rem;
-  line-height: 1.7;
-  opacity: 0.85;
-  margin: 0 0 1.25rem;
-  max-width: 680px;
-}
-.wiki-article ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.25rem;
-  max-width: 680px;
-}
-.wiki-article li {
-  font-family: var(--font-sans);
-  font-size: 1.1rem;
-  line-height: 1.6;
-  opacity: 0.85;
-  padding-left: 1.4rem;
-  position: relative;
-  margin-bottom: 0.7rem;
-}
-.wiki-article li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.65em;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--foreground);
-  opacity: 0.4;
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
 }
 
-.wiki-back {
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  opacity: 0.55;
-  display: inline-flex;
-  gap: 0.4rem;
-  transition: opacity 160ms ease-out;
-}
-.wiki-back:hover { opacity: 0.9; }
+button { background: none; border: none; cursor: pointer; }
 
-.wiki-related {
-  margin-top: 4rem;
-  padding-top: 2.5rem;
-  border-top: 1px solid var(--accent);
+ul[class],
+ol[class] { list-style: none; }
+
+:target { scroll-margin-block-start: calc(var(--header-h) + var(--space-8)); }
+
+/* ─────────────────────────────────────────── 2. Non-color primitives ── */
+
+:root {
+  /* ── Warm neutral ramp ─────────────────────────────
+     Higher number = darker. Only theme classes may read these. */
+  --ink-950: #12100e;
+  --ink-900: #191714;
+  --ink-850: #1f1c19;
+  --ink-800: #272320;
+  --ink-700: #3a342f;
+  --ink-600: #4f4841;
+  --ink-500: #6b6259;
+  --ink-400: #8a8076;
+  --ink-300: #aba093;
+  --ink-200: #ccc3b6;
+  --ink-100: #e6dfd2;
+  --ink-050: #fbf4e5;
+
+  /* ── Sand ramp — the light ground. Warm, never neutral grey. ── */
+  --sand-050: #fbf4e5;
+  --sand-100: #f4ecda;
+  --sand-200: #ece2cd;
+  --sand-300: #e2d7bf;
+  --sand-400: #c4b9a2;
+  --sand-500: #a79c85;
+  --sand-600: #8b806a;
+
+  /* ── Accent: terracotta ────────────────────────────
+     Warm-on-warm, deliberately not a tech blue. ~3 uses per page, maximum. */
+  --ember-400: #e89a72;
+  --ember-500: #d97b4f;
+  --ember-600: #b85f36;
+  --ember-700: #a04e28; /* sand-theme accent — 600 reaches only 4.05:1 on sand */
+  --ember-900: #3a1e12; /* ember-theme raised surface */
+  --ember-950: #2e170d; /* ember-theme ground — a lighter ground can't reach 15:1
+                           against the cream, since even pure white is 15.3:1 */
+
+  /* ── Typography ──────────────────────────────────── */
+  --ff-display: var(--font-display), "Iowan Old Style", Georgia, serif;
+  --ff-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --ff-mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Role-based scale. Named by ROLE, not heading level:
+     display / headline / eyebrow / body / ui / caption. */
+  --fz-display-1: clamp(2.75rem, 1.4rem + 6.75vw, 6.5rem);
+  --fz-display-2: clamp(2.25rem, 1.5rem + 3.75vw, 4.25rem);
+  --fz-display-3: clamp(1.875rem, 1.45rem + 2.125vw, 3rem);
+
+  --fz-headline-1: clamp(1.75rem, 1.42rem + 1.65vw, 2.5rem);
+  --fz-headline-2: clamp(1.5rem, 1.32rem + 0.9vw, 1.9375rem);
+  --fz-headline-3: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --fz-headline-4: 1.125rem;
+
+  --fz-eyebrow-1: 1.0625rem;
+  --fz-eyebrow-2: 0.875rem;
+  --fz-eyebrow-3: 0.75rem;
+
+  --fz-body-1: 1.125rem;
+  --fz-body-2: 1rem;
+  --fz-body-3: 0.875rem;
+  --fz-body-4: 0.75rem;
+
+  --fz-ui-1: 1rem;
+  --fz-ui-2: 0.90625rem;
+
+  --fz-caption-1: 0.875rem;
+
+  --lh-compressed: 0.9;
+  --lh-flat: 1;
+  --lh-snug: 1.1;
+  --lh-fine: 1.25;
+  --lh-medium: 1.45;
+  --lh-normal: 1.6;
+  --lh-loose: 1.75;
+
+  --lts-tighter: -0.035em;
+  --lts-tight: -0.02em;
+  --lts-normal: 0;
+  --lts-wide: 0.04em;
+  --lts-wider: 0.12em;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+
+  --measure-prose: 68ch;
+  --measure-lede: 46ch;
+
+  /* ── Space ───────────────────────────────────────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  --space-40: 10rem;
+
+  /* Fluid section rhythm — replaces all vh-based vertical spacing. */
+  --space-fluid-sm: clamp(var(--space-4), 3vw, var(--space-8));
+  --space-fluid-md: clamp(var(--space-8), 6vw, var(--space-16));
+  --space-fluid-lg: clamp(var(--space-12), 9vw, var(--space-24));
+  --space-fluid-xl: clamp(var(--space-16), 12vw, var(--space-40));
+
+  /* ── Radius ──────────────────────────────────────── */
+  --bdrs-none: 0;
+  --bdrs-xs: 2px; /* DEFAULT — near-square reads institutional */
+  --bdrs-sm: 4px;
+  --bdrs-md: 6px;
+  --bdrs-lg: 10px; /* maximum for any card or surface */
+  --bdrs-full: 999px; /* pills and avatars only */
+  --bdrs: var(--bdrs-xs);
+
+  --bdw: 1px;
+
+  /* Focus ring and the card/list arrow travel — both repeated across modules,
+     so both are tokens. */
+  --focus-w: 2px;
+  --focus-offset: 2px;
+  --arrow-rest: -4px;
+  --arrow-hover: 2px;
+
+  /* ── Layout ──────────────────────────────────────── */
+  --maw-prose: 44rem;
+  --maw-content: 72rem;
+  --maw-wide: 90rem;
+  --gutter: clamp(var(--space-5), 5vw, var(--space-16));
+  --header-h: 64px;
+
+  --z-base: 0;
+  --z-raised: 10;
+  --z-header: 600;
+  --z-dropdown: 700;
+  --z-overlay: 800;
+  --z-modal: 900;
+
+  /* ── Motion ──────────────────────────────────────── */
+  --dur-instant: 100ms; /* hover / focus — interactive feedback */
+  --dur-fast: 180ms;    /* small movements (card arrow) */
+  --dur-base: 300ms;
+  --dur-slow: 500ms;    /* entrance reveals */
+  --dur-slower: 700ms;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-soft: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-linear: linear;
+
+  --stagger-step: 60ms;
 }
-.wiki-related-links {
+
+/* Breakpoints are documented here but written literally in @media — custom
+   properties are not valid in media query conditions.
+     --bp-sm: 40em     /  640px
+     --bp-md: 56.25em  /  900px  — nav collapses below this
+     --bp-lg: 76.25em  / 1220px                                              */
+
+/* ────────────────────────────────────────────────────────── 3. Themes ── */
+/* Identical token contract across every theme. A theme class always sets its
+   own background and color, so nesting works and a themed section never
+   depends on its parent. No component may reference a ramp token directly. */
+
+.theme-dark,
+.theme-sand,
+.theme-ember {
+  background-color: var(--bg);
+  color: var(--text-primary);
+
+  --bd: var(--bdw) solid var(--border-default);
+  --bd-subtle: var(--bdw) solid var(--border-subtle);
+  --bd-strong: var(--bdw) solid var(--border-strong);
+}
+
+.theme-dark {
+  --bg: var(--ink-950);
+  --bg-raised: var(--ink-900);
+  --bg-card: var(--ink-850);
+  --bg-hover: var(--ink-800);
+
+  --text-primary: var(--ink-050);
+  --text-secondary: var(--ink-200);
+  --text-muted: var(--ink-300);
+  --text-faint: var(--ink-400);
+
+  /* Named for perceptual strength: subtle = faintest, strong = most visible.
+     Only --border-strong clears 3:1, so state-conveying borders use it. */
+  --border-subtle: var(--ink-700);
+  --border-default: var(--ink-600);
+  --border-strong: var(--ink-500);
+
+  --accent: var(--ember-500);
+  --accent-hover: var(--ember-400);
+  --accent-dim: rgb(217 123 79 / 30%);
+  --focus-ring: var(--ember-500);
+
+  /* Buttons invert with the theme — one component, no variant class. */
+  --bg-btn-primary: var(--ink-050);
+  --text-btn-primary: var(--ink-950);
+  --bg-btn-primary-hover: var(--ink-100);
+
+  color-scheme: dark;
+}
+
+.theme-sand {
+  --bg: var(--sand-050);
+  --bg-raised: var(--sand-100);
+  --bg-card: var(--sand-200);
+  --bg-hover: var(--sand-300);
+
+  --text-primary: var(--ink-950);
+  --text-secondary: var(--ink-800);
+  --text-muted: var(--ink-700);
+  --text-faint: var(--ink-600);
+
+  --border-subtle: var(--sand-400);
+  --border-default: var(--sand-500);
+  --border-strong: var(--sand-600);
+
+  --accent: var(--ember-700);
+  --accent-hover: var(--ember-600);
+  --accent-dim: rgb(160 78 40 / 32%);
+  --focus-ring: var(--ember-700);
+
+  --bg-btn-primary: var(--ink-950);
+  --text-btn-primary: var(--ink-050);
+  --bg-btn-primary-hover: var(--ink-800);
+
+  color-scheme: light;
+}
+
+.theme-ember {
+  --bg: var(--ember-950);
+  --bg-raised: var(--ember-900);
+  --bg-card: #422215;
+  --bg-hover: #4d2a1a;
+
+  --text-primary: var(--ink-050);
+  --text-secondary: var(--ink-100);
+  --text-muted: var(--ink-200);
+  --text-faint: var(--ink-300);
+
+  --border-subtle: #4a2718;
+  --border-default: #5e3423;
+  --border-strong: #96603c;
+
+  --accent: var(--ember-400);
+  --accent-hover: #f2b18f;
+  --accent-dim: rgb(232 154 114 / 34%);
+  --focus-ring: var(--ember-400);
+
+  --bg-btn-primary: var(--ink-050);
+  --text-btn-primary: var(--ember-950);
+  --bg-btn-primary-hover: var(--ink-100);
+
+  color-scheme: dark;
+}
+
+/* prefers-contrast: more — raise text and border tokens one step. */
+@media (prefers-contrast: more) {
+  .theme-dark {
+    --text-secondary: var(--ink-050);
+    --text-muted: var(--ink-100);
+    --text-faint: var(--ink-200);
+    --border-subtle: var(--ink-600);
+    --border-default: var(--ink-500);
+    --border-strong: var(--ink-400);
+  }
+  .theme-sand {
+    --text-secondary: var(--ink-950);
+    --text-muted: var(--ink-900);
+    --text-faint: var(--ink-800);
+    --border-subtle: var(--sand-500);
+    --border-default: var(--sand-600);
+    --border-strong: var(--ink-700);
+  }
+  .theme-ember {
+    --text-secondary: var(--ink-050);
+    --text-muted: var(--ink-100);
+    --text-faint: var(--ink-200);
+  }
+}
+
+/* ────────────────────────────────────────────── 4. Base elements ── */
+
+body {
+  font-family: var(--ff-sans);
+  font-size: var(--fz-body-2);
+  line-height: var(--lh-normal);
+  font-weight: var(--fw-regular);
+}
+
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: var(--focus-w) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--bdrs-xs);
+}
+
+::selection {
+  background: var(--accent-dim);
+  color: var(--text-primary);
+}
+
+hr {
+  border: none;
+  border-block-start: var(--bd-subtle);
+}
+
+/* ──────────────────────────────────────── 5. Layout primitives ── */
+/* .container owns horizontal space. .inner-section owns vertical space.
+   .stack owns space between siblings. Nothing else sets margin. */
+
+.stack { display: flex; flex-direction: column; }
+.stack > * + * { margin-block-start: var(--stack-space, var(--space-6)); }
+.stack--xs { --stack-space: var(--space-2); }
+.stack--s  { --stack-space: var(--space-3); }
+.stack--m  { --stack-space: var(--space-6); }
+.stack--l  { --stack-space: var(--space-10); }
+.stack--xl { --stack-space: var(--space-fluid-lg); }
+
+.cluster {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.25rem;
+  gap: var(--cluster-space, var(--space-4));
+  align-items: var(--cluster-align, center);
 }
-.wiki-related-links a {
-  font-family: var(--font-sans);
-  font-size: 0.95rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-  transition: border-color 160ms ease-out, background-color 160ms ease-out;
+
+.repel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: var(--repel-align, center);
+  gap: var(--space-4);
 }
-.wiki-related-links a:hover {
-  border-color: var(--foreground);
-  background: color-mix(in srgb, var(--foreground) 5%, var(--background));
+
+.container {
+  max-inline-size: var(--container-max, var(--maw-content));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
+.container--prose { --container-max: var(--maw-prose); }
+.container--wide  { --container-max: var(--maw-wide); }
+
+.inner-section { padding-block: var(--section-space, var(--space-fluid-lg)); }
+.inner-section--sm { --section-space: var(--space-fluid-md); }
+.inner-section--lg { --section-space: var(--space-fluid-xl); }
+
+.grid {
+  display: grid;
+  gap: var(--grid-space, var(--space-6));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(var(--grid-min, 20rem), 100%), 1fr)
+  );
+}
+
+/* ──────────────────────────────────────── 6. Type role classes ── */
+/* Components apply one of these. They never set font-size, line-height,
+   letter-spacing, or font-family individually. */
+
+.type-display-1,
+.type-display-2,
+.type-display-3 {
+  font-family: var(--ff-display);
+  font-weight: var(--fw-regular);
+  text-wrap: balance;
+}
+.type-display-1 {
+  font-size: var(--fz-display-1);
+  line-height: var(--lh-compressed);
+  letter-spacing: var(--lts-tighter);
+}
+.type-display-2 {
+  font-size: var(--fz-display-2);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--lts-tight);
+}
+.type-display-3 {
+  font-size: var(--fz-display-3);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--lts-tight);
+}
+
+.type-headline-1,
+.type-headline-2 {
+  font-family: var(--ff-display);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--lts-tight);
+  text-wrap: balance;
+}
+.type-headline-1 { font-size: var(--fz-headline-1); line-height: var(--lh-snug); }
+.type-headline-2 { font-size: var(--fz-headline-2); line-height: var(--lh-fine); }
+
+.type-headline-3,
+.type-headline-4 {
+  font-family: var(--ff-sans);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--lts-tight);
+  text-wrap: balance;
+}
+.type-headline-3 { font-size: var(--fz-headline-3); line-height: var(--lh-fine); }
+.type-headline-4 { font-size: var(--fz-headline-4); line-height: var(--lh-fine); }
+
+.type-eyebrow-1,
+.type-eyebrow-2,
+.type-eyebrow-3 {
+  font-family: var(--ff-sans);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--lts-wider);
+  line-height: var(--lh-fine);
+}
+.type-eyebrow-1 { font-size: var(--fz-eyebrow-1); }
+.type-eyebrow-2 { font-size: var(--fz-eyebrow-2); }
+.type-eyebrow-3 { font-size: var(--fz-eyebrow-3); }
+
+.type-body-1,
+.type-body-2,
+.type-body-3,
+.type-body-4 {
+  font-family: var(--ff-sans);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--lts-normal);
+}
+.type-body-1 { font-size: var(--fz-body-1); line-height: var(--lh-loose); }
+.type-body-2 { font-size: var(--fz-body-2); line-height: var(--lh-normal); }
+.type-body-3 { font-size: var(--fz-body-3); line-height: var(--lh-normal); }
+.type-body-4 { font-size: var(--fz-body-4); line-height: var(--lh-medium); }
+
+.type-ui-1,
+.type-ui-2 {
+  font-family: var(--ff-sans);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-fine);
+  letter-spacing: var(--lts-wide);
+}
+.type-ui-1 { font-size: var(--fz-ui-1); }
+.type-ui-2 { font-size: var(--fz-ui-2); }
+
+.type-caption-1 {
+  font-family: var(--ff-mono);
+  font-size: var(--fz-caption-1);
+  line-height: var(--lh-medium);
+  letter-spacing: var(--lts-normal);
+}
+
+/* ─────────────────────────────────────────── 7. Color utilities ── */
+
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted     { color: var(--text-muted); }
+.text-faint     { color: var(--text-faint); }
+.text-accent    { color: var(--accent); }
+
+/* ─────────────────────────────────────────────── 8. Skip link ── */
+
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-start: var(--space-2);
+  z-index: var(--z-modal);
+  padding: var(--space-3) var(--space-5);
+  background: var(--bg-btn-primary);
+  color: var(--text-btn-primary);
+  border-radius: var(--bdrs-sm);
+  transform: translateY(-300%);
+}
+.skip-link:focus-visible { transform: none; }
+
+/* ─────────────────────────────────────────────── 9. Motion ── */
+/* Elements are visible and correctly positioned by default. Animation only
+   removes an offset. With animation-timeline unsupported, or motion reduced,
+   the page renders complete. */
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Load-triggered reveal — hero only. */
+  [data-reveal-load] {
+    animation: reveal-up var(--dur-slow) var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * var(--stagger-step));
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal] {
+      /* Longhands, and `animation-duration: auto`. Two traps here:
+         a time-based duration on a scroll timeline is a fraction of the
+         TIMELINE rather than the range, so `500ms` snaps the animation to its
+         end state at the first pixel of scroll; and `auto` is not a valid
+         <time>, so writing it in the `animation` shorthand invalidates the
+         whole declaration and no animation runs at all. The range is the
+         duration here. */
+      animation-name: reveal-up;
+      animation-duration: auto;
+      animation-timing-function: var(--ease-out);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 32%;
+    }
+
+    /* Stagger: --i is set inline from the map index. The only legitimate
+       inline style in the codebase. Cap the effective stagger at ~6 items. */
+    [data-reveal-stagger] > * {
+      animation-name: reveal-up;
+      animation-duration: auto;
+      animation-timing-function: var(--ease-out);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      /* The calc() goes INSIDE the percentage slot. `calc(entry 5% + ...)` —
+         wrapping the range name — is not valid CSS: the declaration is dropped
+         and the element never animates. Verified by watching the computed value
+         go from invalid to `entry 11% cover 32%`. */
+      animation-range: entry calc(5% + var(--i, 0) * 2%) cover 32%;
+    }
+  }
+}
+
+/* ──────────────────────────────────────────── 10. Prose ── */
+
+.prose {
+  max-inline-size: var(--measure-prose);
+  font-family: var(--ff-sans);
+  font-size: var(--fz-body-1);
+  line-height: var(--lh-loose);
+  color: var(--text-secondary);
+}
+
+.prose > * + * { margin-block-start: var(--space-5); }
+
+.prose h2 {
+  font-family: var(--ff-display);
+  font-size: var(--fz-display-3);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--lts-tight);
+  color: var(--text-primary);
+  margin-block-start: var(--space-12);
+}
+
+.prose h3 {
+  font-family: var(--ff-sans);
+  font-size: var(--fz-headline-4);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-fine);
+  color: var(--text-primary);
+  margin-block-start: var(--space-8);
+}
+
+.prose a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-dim);
+  text-decoration-thickness: var(--bdw);
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color var(--dur-instant) var(--ease-out);
+}
+.prose a:hover { text-decoration-color: var(--accent); }
+
+.prose ul,
+.prose ol { list-style: none; padding: 0; }
+.prose li { position: relative; padding-inline-start: var(--space-6); }
+.prose li + li { margin-block-start: var(--space-3); }
+.prose ul > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.68em;
+  inline-size: 5px;
+  block-size: 5px;
+  border-radius: var(--bdrs-full);
+  background: var(--text-faint);
+}
+.prose ol { counter-reset: prose-ol; }
+.prose ol > li { counter-increment: prose-ol; }
+.prose ol > li::before {
+  content: counter(prose-ol) ".";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.prose blockquote {
+  border-inline-start: 2px solid var(--accent-dim);
+  padding-inline-start: var(--space-5);
+  font-family: var(--ff-display);
+  font-size: var(--fz-headline-3);
+  line-height: var(--lh-fine);
+  color: var(--text-primary);
+}
+
+.prose code {
+  font-family: var(--ff-mono);
+  font-size: 0.9em;
+  background: var(--bg-card);
+  border-radius: var(--bdrs-xs);
+  padding: 0.15em 0.4em;
+}
+
+.prose pre {
+  background: var(--bg-raised);
+  border-radius: var(--bdrs-sm);
+  padding: var(--space-5);
+  overflow-x: auto;
+}
+.prose pre code { background: none; padding: 0; font-size: var(--fz-body-3); }
+
+.prose strong { font-weight: var(--fw-semibold); color: var(--text-primary); }

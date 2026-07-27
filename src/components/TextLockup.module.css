@@ -1,0 +1,11 @@
+.root { --stack-space: var(--space-4); }
+
+.center {
+  text-align: center;
+  align-items: center;
+}
+
+.lede {
+  max-inline-size: var(--measure-lede);
+}
+.center .lede { margin-inline: auto; }

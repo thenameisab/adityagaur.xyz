@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import FadeIn from "@/components/FadeIn";
+import Card from "@/components/Card";
+import Hero from "@/components/Hero";
 import { wikiCategories, entriesByCategory } from "@/lib/wiki";
 import { person } from "@/lib/site";
+import styles from "./wiki.module.css";
 
 export const metadata: Metadata = {
   title: "Wiki",
@@ -12,39 +13,31 @@ export const metadata: Metadata = {
 
 export default function WikiIndex() {
   return (
-    <div className="wiki-shell wiki-article">
-      <FadeIn>
-        <p className="wiki-kicker">Personal wiki</p>
-        <h1 className="h1-serif" style={{ fontSize: "clamp(3rem, 7vw, 5rem)" }}>
-          A living map of what I do and care about.
-        </h1>
-        <p className="wiki-lede">
-          Part work, part everything else. I keep this as a small, honest reference — written plainly,
-          updated as things change.
-        </p>
-      </FadeIn>
+    <>
+      <Hero
+        variant="page"
+        eyebrow="Personal wiki"
+        headline="A living map of what I do and care about."
+        lede="Part work, part everything else. I keep this as a small, honest reference — written plainly, updated as things change."
+      />
 
-      {wikiCategories.map((cat, ci) => {
-        const catEntries = entriesByCategory(cat.id);
-        return (
-          <section key={cat.id}>
-            <p className="wiki-cat-label">{cat.label}</p>
-            <div className="wiki-grid">
-              {catEntries.map((entry, i) => (
-                <FadeIn key={entry.slug} delay={0.05 * i + ci * 0.04}>
-                  <Link className="wiki-card" href={`/wiki/${entry.slug}/`}>
-                    <h3>
-                      {entry.title} <span className="wiki-card-arrow">→</span>
-                    </h3>
-                    <p>{entry.summary}</p>
-                  </Link>
-                </FadeIn>
-              ))}
-              {catEntries.length % 2 === 1 && <div className="wiki-grid-spacer" aria-hidden="true" />}
-            </div>
-          </section>
-        );
-      })}
-    </div>
+      <div className="container inner-section stack stack--xl">
+        {wikiCategories.map((cat) => {
+          const entries = entriesByCategory(cat.id);
+          return (
+            <section key={cat.id}>
+              <h2 className={`${styles.catLabel} type-eyebrow-3 text-muted`}>{cat.label}</h2>
+              <div className={styles.grid} data-reveal-stagger>
+                {entries.map((entry, i) => (
+                  <div key={entry.slug} style={{ ["--i" as string]: Math.min(i, 5) }}>
+                    <Card href={`/wiki/${entry.slug}/`} title={entry.title} summary={entry.summary} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </>
   );
 }

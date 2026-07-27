@@ -1,0 +1,14 @@
+/* Icons scale with the type they accompany, so sizing is in em and color is
+   always inherited. Stroke width is baked into the sprite at 24×24 and is never
+   rescaled. */
+
+.root {
+  display: inline-block;
+  color: currentcolor;
+  fill: currentcolor;
+  vertical-align: -0.12em;
+  flex: none;
+}
+
+.md { inline-size: 1em; block-size: 1em; }
+.sm { inline-size: 0.85em; block-size: 0.85em; }

@@ -1,0 +1,62 @@
+.root {
+  list-style: none;
+  border-block-start: var(--bd-subtle);
+}
+
+.item { border-block-end: var(--bd-subtle); }
+
+.link {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-content: space-between;
+  align-items: baseline;
+  padding-block: var(--space-6);
+  transition: background-color var(--dur-instant) var(--ease-out);
+}
+.link:hover { background: var(--bg-hover); }
+.link:focus-visible { outline-offset: calc(var(--focus-offset) * -1); }
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-inline-size: var(--measure-prose);
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.arrow {
+  opacity: 0;
+  translate: var(--arrow-rest) 0;
+  color: var(--accent);
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    translate var(--dur-fast) var(--ease-out);
+}
+.link:hover .arrow,
+.link:focus-visible .arrow {
+  opacity: 1;
+  translate: var(--arrow-hover) 0;
+}
+
+.meta {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hover state extends into the gutter so the row reads as one target. */
+@media (min-width: 40em) {
+  .link {
+    padding-inline: var(--space-4);
+    margin-inline: calc(var(--space-4) * -1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow { transition: none; }
+}

@@ -1,0 +1,26 @@
+.root {
+  list-style: none;
+  border-block-start: var(--bd-subtle);
+}
+
+.item {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-6);
+  border-block-end: var(--bd-subtle);
+}
+
+/* Below 640px the year becomes a label above the role. */
+@media (min-width: 40em) {
+  .item {
+    grid-template-columns: 12rem 1fr;
+    gap: var(--space-6);
+  }
+}
+
+.period {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.desc { max-inline-size: var(--measure-prose); }

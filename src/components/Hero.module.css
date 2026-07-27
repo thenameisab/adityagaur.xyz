@@ -1,0 +1,25 @@
+.root {
+  display: flex;
+  /* Bottom-aligned, not centered. */
+  align-items: flex-end;
+}
+
+/* dvh is permitted here — the hero is a genuinely viewport-sized element.
+   Spacing elsewhere never uses viewport units. */
+.home {
+  min-block-size: min(88dvh, 900px);
+  padding-block: calc(var(--header-h) + var(--space-fluid-md)) var(--space-fluid-lg);
+}
+
+.page {
+  padding-block: var(--space-fluid-md) var(--space-fluid-sm);
+}
+
+.content {
+  --stack-space: var(--space-6);
+  inline-size: 100%;
+}
+
+.home .content > h1 { max-inline-size: 16ch; }
+
+.lede { max-inline-size: var(--measure-lede); }

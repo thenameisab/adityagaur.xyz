@@ -1,0 +1,25 @@
+/* Written empty states. Shared by /work/ and /writing/ until their content
+   lands. Not a "coming soon" — a paragraph that says what is actually true and
+   points somewhere useful. */
+
+.root {
+  max-inline-size: var(--measure-prose);
+  padding: var(--space-8);
+  background: var(--bg-card);
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-sm);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fz-ui-2);
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-dim);
+  text-decoration-thickness: var(--bdw);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--dur-instant) var(--ease-out);
+}
+.link:hover { text-decoration-color: var(--accent); }

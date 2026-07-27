@@ -1,0 +1,205 @@
+.root {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-header);
+  block-size: var(--header-h);
+
+  /* Transparent at rest, over the hero. See .scrim for why it doesn't stay
+     that way. */
+  background: transparent;
+  color: var(--nav-color, var(--text-primary));
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+/**
+ * The header is transparent at scroll 0 — where it sits over the hero, which is
+ * always the page's own theme, so its link colors are guaranteed legible.
+ *
+ * Below the fold that guarantee disappears: a `.theme-sand` section passing
+ * under a transparent header renders --text-muted (#aba093) on cream at 2.53:1,
+ * which is unreadable. There is no single link color legible on both grounds,
+ * so the header takes its own ground instead.
+ *
+ * This is a separate painted layer whose OPACITY animates, not the header's
+ * background-color — opacity is a compositor property, background-color is not,
+ * and this runs on every scroll frame.
+ */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg);
+  border-block-end: var(--bdw) solid var(--border-subtle);
+  /* Default is ON, and the animation fades it 0 -> 1. That direction matters:
+     if the scroll timeline never becomes active — feature flagged off, a
+     browser where @supports lies, a page the compositor never runs — the effect
+     simply isn't applied and the base style wins. Failing to a solid header is
+     safe; failing to a transparent one reintroduces the contrast bug. */
+  opacity: 1;
+  pointer-events: none;
+}
+
+@keyframes nav-scrim-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@supports (animation-timeline: scroll(root block)) {
+  .scrim {
+    /* Longhands, not the `animation` shorthand: `auto` is not a valid <time>,
+       so `animation: name auto ...` is invalid and drops the whole rule. And
+       `auto` is required — a time-based duration on a scroll timeline is a
+       fraction of the timeline, not the range, so the animation would snap to
+       its end state at the first pixel of scroll. */
+    animation-name: nav-scrim-in;
+    animation-duration: auto;
+    animation-timing-function: var(--ease-linear);
+    animation-fill-mode: both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 120px;
+  }
+}
+
+.inner {
+  block-size: 100%;
+  --repel-align: center;
+}
+
+.wordmark {
+  font-family: var(--ff-display);
+  font-size: var(--fz-headline-4);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--lts-tight);
+  color: currentcolor;
+  white-space: nowrap;
+}
+
+/* ── Links ───────────────────────────────────────────────────────────── */
+
+.menu {
+  --cluster-space: var(--space-1);
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3);
+  color: var(--text-muted);
+  border-radius: var(--bdrs-sm);
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out);
+}
+
+.link:hover { color: var(--text-primary); }
+
+/* Active route is marked by an underline as well as a color, so the state is
+   never conveyed by color alone. */
+.link[data-active]::after {
+  content: "";
+  position: absolute;
+  inset-inline: var(--space-3);
+  inset-block-end: calc(var(--space-3) - var(--space-1));
+  block-size: var(--bdw);
+  background: var(--accent);
+}
+.link[data-active] { color: var(--text-primary); }
+
+/* Guarantee the 44×44 hit target without inflating the visible padding. */
+.link::before,
+.toggle::before {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* ── Breakpoint: nav collapses below 900px ───────────────────────────── */
+
+.desktopNav { display: none; }
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+  font-size: var(--fz-headline-3);
+  color: currentcolor;
+  border-radius: var(--bdrs-sm);
+  transition: background-color var(--dur-instant) var(--ease-out);
+}
+.toggle:hover { background: var(--bg-hover); }
+
+@media (min-width: 56.25em) {
+  .desktopNav { display: block; }
+  .toggle { display: none; }
+  .panel { display: none !important; }
+}
+
+/* ── Mobile panel ────────────────────────────────────────────────────── */
+
+.panel {
+  position: fixed;
+  inset: var(--header-h) 0 0;
+  z-index: var(--z-overlay);
+  background: var(--bg);
+  padding: var(--space-8) var(--gutter);
+  overflow-y: auto;
+}
+.panel[hidden] { display: none; }
+
+.panelMenu {
+  --stack-space: var(--space-2);
+}
+.panel .link {
+  font-size: var(--fz-headline-3);
+  padding-block: var(--space-3);
+  padding-inline: 0;
+}
+.panel .link[data-active]::after { inset-inline: 0; }
+
+/* Enter and exit are written separately — reversing one keyframe makes the
+   exit feel sluggish. The exit runs at ~0.6× the entrance. */
+@keyframes panel-on {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel[data-open] {
+    animation: panel-on var(--dur-base) var(--ease-out) both;
+  }
+}
+
+/* ── Scroll behaviour — CSS only, no listener ────────────────────────── */
+/* Chromium-only today. Everything above already renders a complete,
+   permanently transparent sticky header with all links visible, so the absence
+   of this block is not a degradation. */
+
+@supports (container-type: scroll-state) {
+  /* Scrolling DOWN — get out of the way. */
+  @container scroll-state(scrolled: block-end) {
+    @media (min-width: 56.25em) {
+      .menu {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+/* The scrim already restores a solid bar on any scroll, in every browser, so
+   the scroll-up half of Hebbia's behaviour needs no rule of its own. All the
+   scroll-state query adds is the links stepping aside on the way down. */
+
+.menu { transition: opacity var(--dur-base) var(--ease-out); }
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .menu { transition: none; }
+}

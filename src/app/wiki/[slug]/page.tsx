@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import FadeIn from "@/components/FadeIn";
+import Icon from "@/components/Icon";
 import { wikiEntries, getEntry } from "@/lib/wiki";
 import { SITE_URL, person } from "@/lib/site";
+import styles from "../wiki.module.css";
 
 export const dynamicParams = false;
 
@@ -60,64 +61,65 @@ export default async function WikiEntryPage({
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
       { "@type": "ListItem", position: 2, name: "Wiki", item: `${SITE_URL}/wiki/` },
-      { "@type": "ListItem", position: 3, name: entry.title, item: `${SITE_URL}/wiki/${entry.slug}/` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: entry.title,
+        item: `${SITE_URL}/wiki/${entry.slug}/`,
+      },
     ],
   };
 
   return (
-    <div className="wiki-shell wiki-article">
+    <article className="container container--prose inner-section">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]),
+        }}
       />
 
-      <FadeIn>
-        <Link className="wiki-back" href="/wiki/">
-          ← Wiki
+      <div className="stack stack--s">
+        <Link className={styles.back} href="/wiki/">
+          <Icon name="arrow-right" size="sm" className={styles.backArrow} /> Wiki
         </Link>
-        <p className="wiki-kicker" style={{ marginTop: "1.75rem" }}>
-          {entry.kicker}
-        </p>
-        <h1 className="h1-serif" style={{ fontSize: "clamp(2.75rem, 6vw, 4.5rem)" }}>
-          {entry.title}
-        </h1>
-        <p className="wiki-lede">{entry.summary}</p>
-      </FadeIn>
+        <p className="type-eyebrow-3 text-muted">{entry.kicker}</p>
+        <h1 className="type-display-2 text-primary">{entry.title}</h1>
+        <p className={`${styles.lede} type-body-1 text-secondary`}>{entry.summary}</p>
+      </div>
 
-      <FadeIn delay={0.08}>
-        <div style={{ marginTop: "2.5rem" }}>
-          {entry.sections.map((section, i) => (
-            <div key={i}>
-              {section.heading && <h2>{section.heading}</h2>}
-              {section.body?.map((p, j) => (
-                <p key={j}>{p}</p>
-              ))}
-              {section.list && (
-                <ul>
-                  {section.list.map((item, j) => (
-                    <li key={j}>{item}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </div>
-      </FadeIn>
+      <div className={`${styles.body} prose`}>
+        {entry.sections.map((section, i) => (
+          <section key={i}>
+            {section.heading ? <h2>{section.heading}</h2> : null}
+            {section.body?.map((p, j) => (
+              <p key={j}>{p}</p>
+            ))}
+            {section.list ? (
+              <ul>
+                {section.list.map((item, j) => (
+                  <li key={j}>{item}</li>
+                ))}
+              </ul>
+            ) : null}
+          </section>
+        ))}
+      </div>
 
-      {related.length > 0 && (
-        <FadeIn delay={0.12}>
-          <div className="wiki-related">
-            <p className="wiki-kicker">Related</p>
-            <div className="wiki-related-links">
-              {related.map((r) => (
-                <Link key={r.slug} href={`/wiki/${r.slug}/`}>
+      {related.length > 0 ? (
+        <div className={styles.related}>
+          <p className="type-eyebrow-3 text-muted">Related</p>
+          <ul className={`${styles.pills} cluster`}>
+            {related.map((r) => (
+              <li key={r.slug}>
+                <Link href={`/wiki/${r.slug}/`} className={`${styles.pill} type-body-3`}>
                   {r.title}
                 </Link>
-              ))}
-            </div>
-          </div>
-        </FadeIn>
-      )}
-    </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </article>
   );
 }

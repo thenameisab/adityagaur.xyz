@@ -1,10 +1,7 @@
-import BentoGrid from '@/components/BentoGrid';
+import RedirectStub, { redirectMetadata } from "@/components/RedirectStub";
 
-export default function ProjectsPage() {
-  return (
-    <main style={{ paddingBottom: '10vh' }}>
-      <h2 className="h2-serif" style={{ textAlign: 'center', margin: '2rem 0 4rem 0', fontSize: '4rem' }}>Observed Systems</h2>
-      <BentoGrid />
-    </main>
-  );
+export const metadata = redirectMetadata("/work/", "Projects — moved");
+
+export default function Page() {
+  return <RedirectStub to="/work/" label="Work" />;
 }
