@@ -1,0 +1,58 @@
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  block-size: 100%;
+  padding: var(--space-6);
+  background: var(--bg-card);
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-sm);
+  /* No lift, no scale, no shadow, no layout shift. */
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.compact { padding: var(--space-5); }
+
+.root:hover,
+.root:focus-within {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+/* Stretched target: the click area is the whole card, the accessible name is
+   just the title. */
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.link:focus-visible { outline: none; }
+.root:focus-within { outline: var(--focus-w) solid var(--focus-ring); outline-offset: var(--focus-offset); }
+
+.arrow {
+  opacity: 0;
+  translate: var(--arrow-rest) 0;
+  color: var(--accent);
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    translate var(--dur-fast) var(--ease-out);
+}
+.root:hover .arrow,
+.root:focus-within .arrow {
+  opacity: 1;
+  translate: var(--arrow-hover) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow { transition: none; }
+}

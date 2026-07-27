@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
 import "./globals.css";
-import CanvasMesh from "@/components/CanvasMesh";
-import Navigation from "@/components/Navigation";
+import { display, mono, sans, sansAlt } from "@/lib/fonts";
+import Header from "@/components/Header";
+import IconSprite from "@/components/IconSprite";
+import PageFooter from "@/components/PageFooter";
 import { SITE_URL, person } from "@/lib/site";
-
-// We import DM Sans for the clean body text
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -55,17 +50,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${dmSans.variable} antialiased`}>
+    <html
+      lang="en"
+      // sansAlt is the /styleguide/ comparison face only — remove it along with
+      // the §15 Q2 decision (see src/lib/fonts.ts).
+      className={`${display.variable} ${sans.variable} ${mono.variable} ${sansAlt.variable}`}
+    >
+      {/* Warm dark is the site default. A theme class always sets its own
+          background and color, so any section can override it locally. */}
+      <body className="theme-dark">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
-        <CanvasMesh />
-        <Navigation />
-        <div style={{ paddingTop: '100px' }}>
-          {children}
-        </div>
+        <IconSprite />
+        <a className="skip-link type-ui-2" href="#main">
+          Skip to content
+        </a>
+        <Header />
+        <main id="main">{children}</main>
+        <PageFooter />
       </body>
     </html>
   );

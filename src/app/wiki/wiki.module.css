@@ -1,0 +1,65 @@
+/* ── Index ───────────────────────────────────────────────────────── */
+
+.catLabel {
+  margin-block-end: var(--space-6);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 43.75em) {
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── Entry ───────────────────────────────────────────────────────── */
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  inline-size: fit-content;
+  font-size: var(--fz-ui-2);
+  color: var(--text-muted);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+.back:hover { color: var(--text-primary); }
+
+/* Reuse the one signature arrow rather than adding a tenth icon for "left". */
+.backArrow { rotate: 180deg; }
+
+.lede { max-inline-size: var(--measure-lede); }
+
+.body { margin-block-start: var(--space-10); }
+
+.related {
+  margin-block-start: var(--space-16);
+  padding-block-start: var(--space-8);
+  border-block-start: var(--bd-subtle);
+}
+
+.pills {
+  list-style: none;
+  --cluster-space: var(--space-3);
+  margin-block-start: var(--space-5);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  color: var(--text-secondary);
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-full);
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
+}
+.pill:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
