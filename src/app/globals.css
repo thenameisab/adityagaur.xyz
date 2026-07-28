@@ -146,9 +146,16 @@ ol[class] { list-style: none; }
 
   /* Role-based scale. Named by ROLE, not heading level:
      display / headline / eyebrow / body / ui / caption. */
-  --fz-display-1: clamp(2.75rem, 1.4rem + 6.75vw, 6.5rem);
-  --fz-display-2: clamp(2.25rem, 1.5rem + 3.75vw, 4.25rem);
-  --fz-display-3: clamp(1.875rem, 1.45rem + 2.125vw, 3rem);
+
+  /* Sized so EB Garamond's discretionary ligatures actually read. Below ~45px
+     the ct and st joins move a glyph pair by under a pixel: technically on,
+     invisible in practice, which wastes the one reason this face was chosen.
+     They carry from roughly 55px up. Headline roles are deliberately NOT
+     raised — they label cards and list rows, where a 40px heading would
+     outshout the thing it names, so they stay utility type without joins. */
+  --fz-display-1: clamp(3rem, 1.4rem + 6.75vw, 7.5rem);
+  --fz-display-2: clamp(2.5rem, 1.625rem + 3.75vw, 5rem);
+  --fz-display-3: clamp(2rem, 1.375rem + 2.625vw, 3.75rem);
 
   --fz-headline-1: clamp(1.75rem, 1.42rem + 1.65vw, 2.5rem);
   --fz-headline-2: clamp(1.5rem, 1.32rem + 0.9vw, 1.9375rem);
