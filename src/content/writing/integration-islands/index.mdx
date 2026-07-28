@@ -62,9 +62,15 @@ On the surface, that sounds like a one-slide answer. In practice, the number liv
 
 **Everyone has a number. No one has *the* number.**
 
-<Figure label="Figure 1" caption="One question, five systems, five answers. Each number is correct inside the system that produced it." source="Illustrative figures, as specified in the draft.">
+<Plate
+  drums="orange-teal"
+  n={1}
+  subject="five systems, five answers"
+  caption="One question, five systems, five answers. Each number is correct inside the system that produced it."
+  source="Illustrative figures, as specified in the draft."
+>
   <FiveAnswers />
-</Figure>
+</Plate>
 
 So you do what every company does now. You buy an AI. The pitch is exactly the antidote you were hoping for: connect it to your systems, ask in plain English, get the answer no single dashboard could give you. You wire it into the CRM, the billing tool, the warehouse. You type the question your investor asked.
 
@@ -72,9 +78,14 @@ It answers in seconds. Confident. Well-formatted. A number, a segment breakdown,
 
 It is also wrong.
 
-<Figure label="Figure 2" caption="What the assistant returned. The disclosure is real, present, and easy to miss.">
+<Plate
+  drums="orange-teal"
+  n={2}
+  subject="the confident answer"
+  caption="What the assistant returned. The disclosure is real, present, and easy to miss."
+>
   <ConfidentAnswer />
-</Figure>
+</Plate>
 
 Not obviously wrong — that would be easy to catch. Quietly wrong. It read “Closed Won” in the CRM as “active,” missed the churn that only billing knows about, and leaned on the warehouse’s definition of “customer,” which never quite matched either. It didn’t lie. It did exactly what you’d do if someone handed you three of the five islands and told you to hurry.
 
@@ -190,7 +201,12 @@ An Individual Island is not merely “another tool in the stack.” It has three
 
 The key is not whether a system has an API. It is whether the system was designed *from the inside out* or *from the outside in*. Most enterprise products are built inside-out: make the internal world coherent, then expose ports at the edges. Very few are built on the assumption that they are one view onto a larger model that lives elsewhere. That is what makes it an Individual Island — and it is the same property that makes [agents — models that direct their own tools and actions](https://www.anthropic.com/research/building-effective-agents) — so brittle on top of it: they are asked to be the one thing the architecture never provided, a single coherent view.
 
-<Figure label="Figure 3" caption="Each defining trait of an island, and the specific way it breaks an agent.">
+<Plate
+  drums="orange-teal"
+  n={3}
+  subject="what makes an island"
+  caption="Each defining trait of an island, and the specific way it breaks an agent."
+>
   <Switcher
     label="Island traits"
     panels={[
@@ -225,7 +241,7 @@ The key is not whether a system has an API. It is whether the system was designe
       },
     ]}
   />
-</Figure>
+</Plate>
 
 ### Why “Islands,” not “Silos”
 
@@ -305,9 +321,15 @@ The first wave of enterprise AI mostly *read*: copilots that summarized a deal, 
 
 And the errors compound. An agent completing a real task rarely takes one step; it takes a chain — look up the account, check entitlement, compute the figure, write it back, notify someone. Suppose each step is *95%* reliable, which would be excellent. A twenty-step workflow then succeeds end-to-end only about **36%** of the time (0.95²⁰ ≈ 0.36). Reliability that looks impressive per step collapses across a chain — a point [Gary Marcus](https://garymarcus.substack.com/) has made repeatedly about why agent demos dazzle and agent deployments disappoint.
 
-<Figure label="Figure 4" caption="Per-step reliability against end-to-end success. Move either control — the collapse is just p to the power of n." source="The article's own arithmetic. No model or estimate involved.">
+<Plate
+  drums="orange-teal"
+  n={4}
+  subject="reliability, compounded"
+  caption="Per-step reliability against end-to-end success. Move either control — the collapse is just p to the power of n."
+  source="The article's own arithmetic. No model or estimate involved."
+>
   <Compounding />
-</Figure>
+</Plate>
 
 This isn’t hypothetical fragility. When Sierra built [τ-bench](https://sierra.ai/blog/tau-bench-shaping-development-evaluation-agents), a benchmark of agents doing realistic tasks against tools and policies, it found that leading agents often can’t reliably solve the *same* task when the episode is simply re-run — so it introduced a **pass^k** metric just to measure consistency. The wall in front of enterprise agents is not intelligence. It is reliability, and reliability is mostly a function of the context and guardrails you can give them — exactly what an archipelago cannot.
 
@@ -375,9 +397,14 @@ Even with clear systems of record and replaceable interfaces, you still need a p
 
 This is where the most credible recent thinking has landed. a16z argues that for AI, context must become [“a real architectural layer in its own right… first-class infrastructure”](https://a16z.com/your-data-agents-need-context/). Research on agent reliability points the same way: [grounding an agent in an explicit shared schema](https://openreview.net/forum?id=QYrzaPAqnX) measurably reduces overconfident, wrong actions. Vendors are racing to occupy this layer — [Glean](https://www.glean.com/blog/knowledge-graph-agentic-engine) builds a knowledge graph as the “context engine” for enterprise agents, and Salesforce now pitches [“Data 360” as a unified context layer](https://www.salesforce.com/news/press-releases/2025/10/13/agentic-enterprise-announcement/) feeding every agent. That is useful validation that the connective tissue is the real battleground — but note the irony: buying your “neutral” layer from the vendor of your busiest island is precisely the lock-in this piece warns against. The layer doesn’t have to be one product. It does have to feel like *one logical thing* that belongs to you.
 
-<Figure label="Figure 5" caption="The shape the argument points at. Interfaces on top, one neutral layer you own, records underneath.">
+<Plate
+  drums="orange-teal"
+  n={5}
+  subject="the connective layer"
+  caption="The shape the argument points at. Interfaces on top, one neutral layer you own, records underneath."
+>
   <ConnectiveLayer />
-</Figure>
+</Plate>
 
 ### Put AI on top — not locked inside
 
@@ -399,9 +426,14 @@ For each dimension, score yourself from **1 to 5** — 1 means “in good shape,
 
 So don’t score it alone, and don’t obsess over the exact total. Sit in a room with people who understand the stack from different angles — engineering, data, ops, finance, HR, security — and go dimension by dimension. When you’re done, you’ll have a shared vocabulary for “how bad is it?” and a shortlist of where change will have the highest leverage. That shortlist is what the next four moves act on.
 
-<Figure label="Figure 6" caption="Score all seven. The total matters less than the dimensions where you and your colleagues disagree.">
+<Plate
+  drums="orange-teal"
+  n={6}
+  subject="the archipelago index"
+  caption="Score all seven. The total matters less than the dimensions where you and your colleagues disagree."
+>
   <ArchipelagoIndex />
-</Figure>
+</Plate>
 
 *The ARCHIPELAGO Index is an original self-assessment framework for this piece, not a benchmarked external metric.*
 

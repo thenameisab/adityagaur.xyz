@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Fingerprint from "@/components/artifacts/Fingerprint";
+import Status from "@/components/artifacts/Status";
 import styles from "./ArchipelagoIndex.module.css";
 
 /**
@@ -171,10 +173,37 @@ export default function ArchipelagoIndex() {
               / {MAX}
             </span>
           </p>
-          <p className={`${styles.band} type-eyebrow-2`}>
-            {band ? band.name : `${answered.length} of ${DIMENSIONS.length} scored`}
-          </p>
+          {/* Unscored is genuinely "absent, unknown" — the one state the plate
+              vocabulary has a dashed mark for. A band would be a verdict on a
+              half-answered questionnaire, so until all seven are in, this says
+              so in the same language every other plate uses. */}
+          {band ? (
+            <p className={`${styles.band} type-eyebrow-2`}>{band.name}</p>
+          ) : (
+            <Status tone="void">
+              {`${answered.length} of ${DIMENSIONS.length} scored`}
+            </Status>
+          )}
         </div>
+
+        {/* The seven dimensions, one cell each — the profile the total hides.
+            This is the artifact's own argument made visible: "the total matters
+            less than the dimensions where you and your colleagues disagree" is
+            a claim about SHAPE, and a single number cannot carry a shape. Seven
+            cells rather than sixteen because there are seven dimensions; the
+            1–5 anchors quantise onto the printable levels without loss.
+
+            Only once every dimension is scored. A partial strip would imply the
+            unscored dimensions had scored zero. */}
+        {complete ? (
+          <Fingerprint
+            cells={scores.map((s) => ((s ?? 1) - 1) / 4)}
+            alt={DIMENSIONS.map(
+              (d, i) => `${d.name}: ${scores[i]} of 5`,
+            ).join(". ")}
+            legend="One cell per dimension, in the order above"
+          />
+        ) : null}
 
         <div className={styles.sea}>
           <div className={styles.water} style={{ inlineSize: `${fill}%` }} />
