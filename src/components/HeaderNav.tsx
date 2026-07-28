@@ -72,13 +72,55 @@ export default function HeaderNav() {
     };
 
     document.addEventListener("keydown", onKeyDown);
-    // Prevent the page scrolling behind the full-screen panel.
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+
+    /**
+     * Locking the page behind the full-screen panel.
+     *
+     * `overflow: hidden` on the body is not a scroll lock on iOS. The document
+     * keeps its scroll offset, and a `position: fixed` panel is then laid out
+     * against the layout viewport rather than against what the reader can
+     * actually see. Opened halfway down an article on iPhone, the panel landed
+     * roughly 100px too low and took the sticky header — and therefore the close
+     * button — off the top of the screen, which left no obvious way out of the
+     * menu. At scroll 0 it looked perfect, which is why it survives a desktop
+     * check.
+     *
+     * Pinning the body at a negative offset equal to the current scroll is the
+     * fix that holds: the document genuinely stops scrolling, and the two
+     * viewports agree again, so the panel lands under the header where it
+     * belongs. The offset has to be restored on close, since the body no longer
+     * remembers it.
+     */
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      inlineSize: body.style.inlineSize,
+      overflow: body.style.overflow,
+    };
+
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    // A fixed body would otherwise shrink to fit its contents.
+    body.style.inlineSize = "100%";
+    body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = prevOverflow;
+
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.inlineSize = prev.inlineSize;
+      body.style.overflow = prev.overflow;
+
+      // `html` sets `scroll-behavior: smooth`, which would turn restoring the
+      // offset into a visible glide back down the page. Put it back instantly.
+      const html = document.documentElement;
+      const prevBehavior = html.style.scrollBehavior;
+      html.style.scrollBehavior = "auto";
+      window.scrollTo(0, scrollY);
+      html.style.scrollBehavior = prevBehavior;
     };
   }, [open, close]);
 

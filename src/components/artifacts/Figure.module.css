@@ -29,7 +29,8 @@
 }
 
 /* Wide artifacts scroll inside their own frame. The page body never scrolls
-   horizontally. */
+   horizontally. `data-scrollx` on the element adds the edge fade — see
+   globals.css §10. */
 .scroll {
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -49,4 +50,35 @@
 
 .source {
   color: var(--text-faint);
+}
+
+/* ── Full bleed below the prose crossover ──
+   Below ~782px the prose measure is set by the gutters rather than by
+   --maw-prose, so the bleed above computes to 0 and an artifact ends up in the
+   same 335px column as the body text — the worst case for the one kind of
+   content that actually needs width. Here the bleed becomes the gutter itself,
+   so the artifact spans the viewport edge to edge and buys back every pixel.
+   48em is under the crossover with room to spare, so the two rules never
+   disagree about which is in charge.
+
+   Placed last on purpose: these override .frame and .caption, which are declared
+   above at equal specificity, so source order is what decides the winner. */
+@media (max-width: 48em) {
+  .root {
+    --bleed: var(--gutter);
+  }
+
+  /* Full-bleed and a rounded outline are contradictory: the side borders sit off
+     the viewport and the corners cut the content. Keep the horizontal rules, drop
+     the sides — it reads as a band, which is the mobile idiom for this. */
+  .frame {
+    border-inline: none;
+    border-radius: 0;
+  }
+
+  /* The caption stays on the text measure — it is prose, and it should line up
+     with the paragraph above the figure, not with the frame's new edge. */
+  .caption {
+    padding-inline: var(--gutter);
+  }
 }

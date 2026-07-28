@@ -25,6 +25,19 @@
     border-inline-end: none;
     border-block-end: var(--bd-subtle);
     padding-inline: var(--space-3);
+    /* The rail is the one thing here a thumb drags sideways. Snapping each step
+       to the start edge means a flick lands on a step boundary instead of
+       halfway through a label. */
+    scroll-snap-type: inline proximity;
+    scrollbar-width: none;
+  }
+
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .step {
+    scroll-snap-align: start;
   }
 }
 

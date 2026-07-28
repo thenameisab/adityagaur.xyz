@@ -117,11 +117,26 @@
   align-items: center;
 }
 
+/* A 12rem label column plus the widest bar (--space-40, 10rem) needs ~22rem of
+   track. Below that the bar is the only thing that can give, and since its width
+   IS the value being demonstrated, it can't shrink — so the label moves above it
+   and the bar gets the full row. */
+@media (max-width: 34em) {
+  .spaceRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+}
+
 .spaceBar {
   block-size: 12px;
   background: var(--accent-dim);
   border-inline-start: var(--focus-w) solid var(--accent);
   border-radius: var(--bdrs-xs);
+  /* The inline width is a token value set from the markup, and the largest steps
+     are wider than a phone. Clamping here is what keeps the page from scrolling
+     sideways; the bar reads as "at least this wide", which is enough. */
+  max-inline-size: 100%;
 }
 
 /* ── Radius ──────────────────────────────────────────────────────── */
@@ -270,6 +285,15 @@
 .card:focus-within .cardArrow {
   opacity: 0.7;
   translate: var(--arrow-hover) 0;
+}
+
+/* No hover on touch, so the arrow would never appear at all. See
+   Card.module.css — same reasoning, same resting position. */
+@media (hover: none) {
+  .cardArrow {
+    opacity: 0.7;
+    translate: 0 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

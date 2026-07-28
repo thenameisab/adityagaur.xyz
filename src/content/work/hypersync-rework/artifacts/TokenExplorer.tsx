@@ -127,7 +127,7 @@ export default function TokenExplorer() {
             <p className={`${styles.chainHead} type-eyebrow-3`}>
               How {pickedRow.token} reaches a component
             </p>
-            <pre className={`${styles.chainCode} type-body-4`}>
+            <pre className={`${styles.chainCode} type-body-4`} data-scrollx>
               <code>{`tokens.css     --${pickedRow.token}: ${hexToTriplet(pickedRow[mode])};  /* ${pickedRow[mode]} */
 tailwind.js    '${pickedRow.token}': 'rgb(var(--${pickedRow.token}) / <alpha-value>)'
 component      className="bg-${pickedRow.token}/10 text-${pickedRow.token}"`}</code>

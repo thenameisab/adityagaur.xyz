@@ -27,7 +27,10 @@ export default function Figure({
 }: Props) {
   return (
     <figure className={styles.root}>
-      <div className={`${styles.frame} ${scroll ? styles.scroll : ""}`}>
+      <div
+        className={`${styles.frame} ${scroll ? styles.scroll : ""}`}
+        data-scrollx={scroll || undefined}
+      >
         {children}
       </div>
       {label || caption || source ? (

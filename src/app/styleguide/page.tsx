@@ -94,7 +94,7 @@ export default function Styleguide() {
         {THEME_ORDER.map((name) => {
           const t = themes[name];
           return (
-            <div key={name} className={styles.tableWrap}>
+            <div key={name} className={styles.tableWrap} data-scrollx>
               <h3 className="type-headline-4 text-primary">
                 .theme-{name} <span className="type-caption-1 text-faint">on {t.bg}</span>
               </h3>

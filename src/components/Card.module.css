@@ -53,6 +53,17 @@
   translate: var(--arrow-hover) 0;
 }
 
+/* On a touch device there is no hover, so the rule above never fires and the
+   arrow — the card's only "this goes somewhere" cue — stays invisible for the
+   whole visit. Show it at rest instead. It keeps the resting offset, so it reads
+   as a mark rather than as a stuck hover state. */
+@media (hover: none) {
+  .arrow {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .arrow { transition: none; }
 }

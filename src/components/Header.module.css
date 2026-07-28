@@ -148,10 +148,47 @@
   inset: var(--header-h) 0 0;
   z-index: var(--z-overlay);
   background: var(--bg);
-  padding: var(--space-8) var(--gutter);
+  /* The block-end padding clears the home-bar / gesture area, so the last nav
+     item is never sitting under it. */
+  padding: var(--space-8) var(--gutter)
+    calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
+  /* The body is locked while the panel is open, but a flick that reaches the end
+     of the panel would still chain to the page behind it on iOS. */
+  overscroll-behavior: contain;
 }
 .panel[hidden] { display: none; }
+
+/* While the panel is open the page behind it is pinned (see HeaderNav), and a
+   pinned page has no scroll container for `position: sticky` to resolve against
+   — the header drops back to its static position at the top of the DOCUMENT,
+   which when the reader is halfway down an article is far above the screen. It
+   took the close button with it, leaving the menu with no visible way out.
+   Fixed while open holds the header against the viewport, where the panel it has
+   to sit above already is. The two tile exactly: the header is --header-h tall
+   and the panel starts at --header-h.
+
+   Scoped to the widths that actually have a panel: above the nav breakpoint the
+   panel is `display: none`, and without the query a reader who opened the menu
+   narrow and then widened the window would be left with a permanently fixed
+   header. */
+@media (max-width: 56.25em) {
+  .root:has(.panel[data-open]) {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+  }
+
+  /* Pinning the page also puts the root scroller back at 0, which drives
+     `nav-scrim-in` to its first keyframe — a TRANSPARENT header, with the
+     article showing through the bar and straight over the wordmark. The scrim's
+     whole job is to give the header its own ground, so cancel the animation
+     while the panel is open and let the base `opacity: 1` stand. */
+  .root:has(.panel[data-open]) .scrim {
+    animation: none;
+    opacity: 1;
+  }
+}
 
 .panelMenu {
   --stack-space: var(--space-2);
