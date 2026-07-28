@@ -2,13 +2,17 @@
   padding: var(--space-6);
 }
 
+/* The card has to look like something you would trust at a glance, which on this
+   plate means it gets the full treatment: a drum A tint, a density ramp falling
+   away toward the footnote, and a key-ink trim. The polish is the argument — the
+   reader is supposed to admire this card and miss the line at the bottom of it. */
 .card {
   max-inline-size: 34rem;
   margin-inline: auto;
   padding: var(--space-5);
-  background: var(--bg-card);
-  border: var(--bd-subtle);
-  border-radius: var(--bdrs-lg);
+  background: var(--tint-a-1);
+  border: var(--bdw) solid var(--border-strong);
+  border-radius: var(--bdrs-none);
 }
 
 .ask {
@@ -23,13 +27,17 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The growth badge every dashboard has, printed rather than rendered: drum B at
+   step 2 with key type on it, squared off. It is the most confident-looking
+   element on the card and it is decorating a number that is wrong. */
 .delta {
   display: inline-block;
   margin-inline-start: var(--space-3);
   padding: 2px var(--space-2);
+  background: var(--tint-b-2);
   border: var(--bdw) solid var(--border-default);
-  border-radius: var(--bdrs-full);
-  color: var(--text-secondary);
+  border-radius: var(--bdrs-none);
+  color: var(--text-primary);
   vertical-align: middle;
 }
 
@@ -60,14 +68,21 @@
 }
 
 /* The footnote is the whole point: real, present, and easy to miss. It is
-   --text-faint rather than a warning colour, and it does not get an icon. */
+   --text-faint rather than a warning colour, and it does not get an icon.
+   Measured, since it sits on a tint: faint on drum A step 1 on kraft is 4.99:1,
+   over the site's 4.91 floor. Easy to miss is a matter of size and position here,
+   not of failing a contrast check. */
 .footnote {
   margin-block-start: var(--space-5);
   color: var(--text-faint);
 }
 
-/* Revealing it raises contrast and rules it off, so the reader can see what they
-   skipped over rather than being told they skipped it. */
+/* Revealing it draws a marker line through it in the plate's loud ink — orange at
+   full strength, key type on top, 6.45:1. This is the artifact's whole gesture:
+   the reader gets to see themselves skip a line, and then watch it get
+   highlighted the way they would have highlighted it if they had caught it. The
+   swipe wipes on left to right rather than appearing, so it reads as a hand
+   drawing a line rather than as a warning state switching on. */
 .root[data-revealed="true"] .footnote {
   padding-block-start: var(--space-3);
   border-block-start: var(--bd-subtle);
@@ -82,16 +97,23 @@
   margin-block-start: var(--space-5);
 }
 
+/* Loud ink, key type, square, hairlined — the same ink block the golden control
+   on Loam uses, because it is the same kind of act: the one button on the plate
+   that changes what the reader is looking at. */
 .button {
   padding: var(--space-2) var(--space-4);
-  background: var(--bg-btn-primary);
-  color: var(--text-btn-primary);
-  border-radius: var(--bdrs-sm);
-  transition: background-color var(--dur-instant) var(--ease-out);
+  background: var(--bg-loud);
+  border: var(--bdw) solid var(--border-strong);
+  color: var(--text-on-loud);
+  border-radius: var(--bdrs-none);
+  transition:
+    background-color var(--dur-instant) var(--ease-out),
+    color var(--dur-instant) var(--ease-out);
 }
 
 .button:hover {
-  background: var(--bg-btn-primary-hover);
+  background: var(--bg-btn-primary);
+  color: var(--text-btn-primary);
 }
 
 .verdict {

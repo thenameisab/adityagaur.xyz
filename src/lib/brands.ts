@@ -123,6 +123,25 @@ const REGISTRY: BrandEntry[] = [
   { name: "Vellum", domain: "vellum.ai" },
   { name: "Eden AI", domain: "edenai.co", aliases: ["eden ai"] },
 
+  // ── Category exemplars, integration-islands census ──
+  // The ConnectiveLayer plate lists six categories of system with a few real
+  // products under each, because "surface area" is an abstraction until you see
+  // fifteen marks belonging to six categories in one frame.
+  //
+  // These are examples OF A CATEGORY and the artifact says so in as many words.
+  // They are not a claim about any company's stack, anyone's customer list, or
+  // the author's own tooling — which is the only footing on which a logo can
+  // appear next to a category name at all. Every domain below was checked with
+  // `fallback=404` and returns a real mark rather than a monogram.
+  { name: "Freshdesk", domain: "freshdesk.com" },
+  { name: "Intercom", domain: "intercom.com" },
+  { name: "Gusto", domain: "gusto.com" },
+  { name: "Rippling", domain: "rippling.com" },
+  { name: "Chargebee", domain: "chargebee.com" },
+  { name: "SAP", domain: "sap.com" },
+  { name: "NetSuite", domain: "netsuite.com", aliases: ["oracle netsuite"] },
+  { name: "Snowflake", domain: "snowflake.com" },
+
   // ── Named in prose: SaaS the essays and case studies reference ──
   { name: "Salesforce", domain: "salesforce.com" },
   { name: "HubSpot", domain: "hubspot.com" },

@@ -154,6 +154,8 @@ export default function ArchipelagoIndex() {
                     aria-checked={value === n}
                     className={`${styles.notch} type-body-3`}
                     onClick={() => set(i, n)}
+                    data-step={n}
+                    data-slip-hover
                   >
                     {n}
                   </button>
@@ -178,7 +180,15 @@ export default function ArchipelagoIndex() {
               half-answered questionnaire, so until all seven are in, this says
               so in the same language every other plate uses. */}
           {band ? (
-            <p className={`${styles.band} type-eyebrow-2`}>{band.name}</p>
+            <p className={`${styles.band} type-eyebrow-2`}>
+              {/* The verdict, marked. `key` on the band name means a reader who
+                  changes a score and lands in a different band sees the new one
+                  drawn rather than swapped — the band changes rarely enough that
+                  re-drawing it is a moment rather than a flicker. */}
+              <span key={band.name} data-mark data-mark-in>
+                {band.name}
+              </span>
+            </p>
           ) : (
             <Status tone="void">
               {`${answered.length} of ${DIMENSIONS.length} scored`}

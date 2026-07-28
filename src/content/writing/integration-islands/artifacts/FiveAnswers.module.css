@@ -2,20 +2,34 @@
   padding: var(--space-5) var(--space-6) var(--space-6);
 }
 
+/* The question is the only human voice on the plate, so it is the only thing set
+   in the display serif — everything else here is sans controls and mono figures.
+   Three families in one frame is what a print specimen does and what this system
+   had not been using; the serif is doing the work of saying "a person said this
+   out loud", which no amount of size or colour was going to say.
+ *
+   On the overprint's own tint: the sheet colour where both passes landed, which
+   is the right ground for the one element that belongs to neither drum. */
 .question {
   max-inline-size: 46ch;
   margin-inline: auto;
   padding: var(--space-4) var(--space-5);
-  background: var(--bg-card);
-  border-radius: var(--bdrs-md);
+  background: var(--tint-op-1);
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-none);
   color: var(--text-primary);
+  font-family: var(--ff-display);
+  font-size: var(--fz-headline-4);
+  line-height: var(--lh-medium);
   text-align: center;
 }
 
+/* Muted rather than faint: this label sits on a tint. */
 .asker {
   display: block;
   margin-block-end: var(--space-2);
-  color: var(--text-faint);
+  color: var(--text-muted);
+  font-family: var(--ff-mono);
 }
 
 /* The fan-out. Five columns on wide, a list on narrow — the point is that the
@@ -33,27 +47,59 @@
   }
 }
 
+/* ── Ink by generosity ──
+   The five cards are tinted by how big their answer is: the tighter the
+   definition of "customer", the less ink on the card. Finance's 968 prints at
+   step 1; the warehouse's 1,587 prints at step 3.
+ *
+   This is the artifact's argument moved into the colour. The point of the fan is
+   that the numbers disagree, and a reader scanning five identically-styled cards
+   has to read five numbers to see the spread — whereas five cards in a graded ink
+   show it before you have read any of them. The weight comes from the counts
+   themselves (see the component), so it cannot drift away from the data.
+ *
+   Redundancy, as everywhere else here: the number is still there in figures, the
+   basis is still there in words, and greyscale keeps the three steps apart by
+   luminance. */
 .island {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-4) var(--space-3);
   border: var(--bdw) solid var(--border-subtle);
-  border-radius: var(--bdrs-md);
-  background: transparent;
+  border-radius: var(--bdrs-none);
+  background: var(--tint-a-1);
   text-align: start;
   transition:
     border-color var(--dur-instant) var(--ease-out),
-    background-color var(--dur-instant) var(--ease-out);
+    background-color var(--dur-instant) var(--ease-out),
+    color var(--dur-instant) var(--ease-out);
+}
+
+.island[data-weight="2"] {
+  background: var(--tint-a-2);
+}
+
+.island[data-weight="3"] {
+  background: var(--tint-a-3);
 }
 
 .island:hover {
   border-color: var(--border-strong);
 }
 
+/* Selected: the loud pass. Orange at full strength with key type, 6.45:1, and
+   every role inside the card collapses to key ink — which is the rule for a
+   saturated fill, not a stylistic choice. */
 .island[aria-pressed="true"] {
-  border-color: var(--accent);
-  background: var(--bg-card);
+  background: var(--bg-loud);
+  border-color: var(--border-strong);
+}
+
+.island[aria-pressed="true"] .islandName,
+.island[aria-pressed="true"] .count,
+.island[aria-pressed="true"] .basis {
+  color: var(--text-on-loud);
 }
 
 .islandName {
@@ -65,8 +111,16 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Faint is only measured safe on step 1 of this plate's drum A ladder (4.99:1);
+   at steps 2 and 3 it drops to 4.61 and 4.17, under the site's 4.91 floor. So the
+   basis line steps up to muted exactly where the ink gets heavier. */
 .basis {
   color: var(--text-faint);
+}
+
+.island[data-weight="2"] .basis,
+.island[data-weight="3"] .basis {
+  color: var(--text-muted);
 }
 
 /* The selected island's own definition of "customer".

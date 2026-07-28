@@ -23,17 +23,53 @@
   position: relative;
   display: flex;
   align-items: flex-end;
-  background: var(--bg-card);
+  /* The unprinted cell is stock with a whisper of drum A in it rather than a
+     neutral card grey: on a two-drum sheet even the paper between the marks has
+     taken a little ink. */
+  background: var(--tint-a-1);
 }
 
 .fill {
   display: block;
   inline-size: 100%;
-  background: var(--sig-held);
+  background: var(--drum-a);
   /* The top edge of the fill takes the overprint, as though the second drum
      registered just at the ink boundary. It is one pixel of detail that makes
      the strip look printed rather than plotted. */
   border-block-start: 1px solid var(--sig-broken);
+}
+
+/* ── Ink by magnitude ──
+   Three bands across the sixteen levels: a pale tint of drum A for the bottom
+   third, drum A itself for the middle, drum B for the top. The height already
+   carries the value, so the ink is redundant by design — which is the point.
+   Redundant encoding is what lets a reader take a strip in at a glance instead
+   of comparing sixteen heights, and it survives greyscale, where the three bands
+   still separate by luminance.
+
+   It is also a real two-drum move: the densest areas of a screen are where the
+   second pass lands, so a cell going from drum A to drum B as it fills is what a
+   press would actually produce.
+
+   Deliberately NOT the --sig-* vocabulary. Those four tokens mean held / mine /
+   broken / void, and a magnitude is none of those — borrowing them here would
+   quietly break the promise that a reader who learns one plate can read every
+   plate. */
+.cell[data-level="0"] .fill,
+.cell[data-level="1"] .fill,
+.cell[data-level="2"] .fill,
+.cell[data-level="3"] .fill,
+.cell[data-level="4"] .fill,
+.cell[data-level="5"] .fill {
+  background: var(--tint-a-3);
+}
+
+.cell[data-level="11"] .fill,
+.cell[data-level="12"] .fill,
+.cell[data-level="13"] .fill,
+.cell[data-level="14"] .fill,
+.cell[data-level="15"] .fill {
+  background: var(--drum-b);
 }
 
 .legend {

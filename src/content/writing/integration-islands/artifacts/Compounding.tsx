@@ -39,12 +39,20 @@ export default function Compounding() {
     return pts.join(" ");
   }, [p]);
 
+  /* The same curve, closed along the baseline, so the area under it can be
+     screened. Reused rather than recomputed: the area IS the curve plus two
+     corners, and deriving it any other way would let the two disagree. */
+  const area = useMemo(
+    () => `${path} L ${x(MAX_STEPS).toFixed(1)} ${y(0).toFixed(1)} L ${x(1).toFixed(1)} ${y(0).toFixed(1)} Z`,
+    [path],
+  );
+
   const pct = (v: number) => `${Math.round(v * 100)}%`;
   const failures = Math.round((1 - endToEnd) * 100);
 
   return (
     <div className={styles.root}>
-      <div className={styles.controls}>
+      <div className={styles.controls} data-ramp>
         <div className={styles.field}>
           <label className={`${styles.label} type-body-3`} htmlFor="cmp-reliability">
             <span>Reliability per step</span>
@@ -86,6 +94,47 @@ export default function Compounding() {
           role="img"
           aria-label={`At ${perStep} percent reliability per step, a ${steps}-step workflow succeeds end to end ${pct(endToEnd)} of the time.`}
         >
+          {/* ── The screened area ──
+              A riso has no gradient, so the fade under this curve is a real
+              halftone: a 6px dot pitch in drum A, masked so coverage falls away
+              toward the baseline. It is the same mechanism as [data-ramp] in
+              globals.css §14, expressed in SVG because the shape it has to follow
+              is the curve rather than a box.
+
+              It is also the honest reading of the number. Everything under the
+              curve is the fraction of runs that still work, and ink density is
+              exactly how a print says "less of this". */}
+          <defs>
+            <pattern
+              id="cmp-screen"
+              width={6}
+              height={6}
+              patternUnits="userSpaceOnUse"
+            >
+              <circle className={styles.dot} cx={3} cy={3} r={1.15} />
+            </pattern>
+            <linearGradient id="cmp-fade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#fff" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#fff" stopOpacity="0.15" />
+            </linearGradient>
+            <mask id="cmp-mask">
+              <rect
+                x={PAD.left}
+                y={PAD.top}
+                width={PLOT_W}
+                height={PLOT_H}
+                fill="url(#cmp-fade)"
+              />
+            </mask>
+          </defs>
+
+          <path
+            className={styles.area}
+            d={area}
+            fill="url(#cmp-screen)"
+            mask="url(#cmp-mask)"
+          />
+
           {[0, 0.25, 0.5, 0.75, 1].map((g) => (
             <g key={g}>
               <line
@@ -133,14 +182,28 @@ export default function Compounding() {
             y1={y(endToEnd)}
             y2={H - PAD.bottom}
           />
-          <circle className={styles.marker} cx={x(steps)} cy={y(endToEnd)} r={4} />
+          {/* A square register mark rather than a dot — the reader's position is
+              drum B landing on the curve, and everything printed on this plate is
+              cut rather than rounded. */}
+          <rect
+            className={styles.marker}
+            x={x(steps) - 4}
+            y={y(endToEnd) - 4}
+            width={8}
+            height={8}
+          />
         </svg>
       </div>
 
       <div className={styles.readout} aria-live="polite">
         <p>
+          {/* The one figure the article is actually about gets the marker swipe.
+              Deliberately NOT re-drawn per value: this number changes on every
+              tick of a slider drag, and a swipe that restarts its wipe on each
+              tick flickers. It draws once as the plate enters and then holds while
+              the figure inside it moves. Key type on orange, 6.45:1. */}
           <span className={`${styles.statValue} type-headline-2`}>
-            {pct(endToEnd)}
+            <span data-mark>{pct(endToEnd)}</span>
           </span>
           <span className={`${styles.statLabel} type-body-4`}>
             succeed end to end

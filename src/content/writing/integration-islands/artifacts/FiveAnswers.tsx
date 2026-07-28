@@ -50,14 +50,30 @@ const ISLANDS = [
   },
 ] as const;
 
+/**
+ * How much ink a card gets: the three tint steps, assigned from the counts
+ * themselves rather than authored per island. Lowest count prints palest.
+ *
+ * Computed from the same array the numbers are read from, so the colour cannot
+ * drift away from the data — if a count is ever corrected, its card re-tints.
+ */
+const COUNTS = ISLANDS.map((i) => Number(i.count.replace(/,/g, "")));
+const LOW = Math.min(...COUNTS);
+const SPAN = Math.max(...COUNTS) - LOW;
+
+function weight(i: number): 1 | 2 | 3 {
+  const t = (COUNTS[i] - LOW) / SPAN;
+  return t < 1 / 3 ? 1 : t < 2 / 3 ? 2 : 3;
+}
+
 export default function FiveAnswers() {
   const [active, setActive] = useState<number | null>(null);
   const selected = active === null ? null : ISLANDS[active];
 
   return (
     <div className={styles.root}>
-      <p className={`${styles.question} type-body-2`}>
-        <span className={`${styles.asker} type-eyebrow-3`}>Your investor asks</span>
+      <p className={styles.question}>
+        <span className={`${styles.asker} type-stamp`}>Your investor asks</span>
         “How many active paying customers do we have, by segment, with full unit
         economics?”
       </p>
@@ -70,6 +86,8 @@ export default function FiveAnswers() {
             className={styles.island}
             aria-pressed={active === i}
             onClick={() => setActive(active === i ? null : i)}
+            data-weight={weight(i)}
+            data-slip-hover
           >
             <span className={`${styles.islandName} type-body-4`}>
               {island.name}
@@ -101,7 +119,13 @@ export default function FiveAnswers() {
           Lowest to highest <span className={styles.spreadValue}>64%</span>
         </span>
         <span>
-          Systems that agree <span className={styles.spreadValue}>none</span>
+          {/* The punchline gets the marker. One swipe on the plate, on the one
+              value that is the argument rather than a measurement — "none" is
+              what the reader is supposed to leave with. */}
+          Systems that agree{" "}
+          <span className={styles.spreadValue} data-mark>
+            none
+          </span>
         </span>
       </p>
     </div>

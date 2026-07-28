@@ -243,7 +243,7 @@ export default function DeterminismLab() {
     <div className={styles.root}>
       <div className={styles.inputs}>
         <div className={styles.group}>
-          <strong className={`${styles.groupHead} type-eyebrow-3`}>
+          <strong className={`${styles.groupHead} type-stamp`}>
             The three permitted inputs
           </strong>
           <p className={`${styles.groupNote} type-body-4`}>
@@ -277,6 +277,7 @@ export default function DeterminismLab() {
                   key={v}
                   type="button"
                   className={styles.pill}
+                  data-slip-hover
                   aria-pressed={pressVersion === v}
                   onClick={() => setPressVersion(v)}
                 >
@@ -296,6 +297,7 @@ export default function DeterminismLab() {
                   key={t.name}
                   type="button"
                   className={styles.pill}
+                  data-slip-hover
                   aria-pressed={theme === t.name}
                   onClick={() => setTheme(t.name)}
                 >
@@ -307,7 +309,7 @@ export default function DeterminismLab() {
         </div>
 
         <div className={styles.group}>
-          <strong className={`${styles.groupHead} type-eyebrow-3`}>
+          <strong className={`${styles.groupHead} type-stamp`}>
             The six forbidden reads
           </strong>
           <p className={`${styles.groupNote} type-body-4`}>
@@ -323,11 +325,12 @@ export default function DeterminismLab() {
                 className={`${styles.readRow} type-body-3`}
                 aria-pressed={active.includes(read.id)}
                 onClick={() => toggleRead(read.id)}
+                data-slip-hover
               >
                 <span className={styles.box} aria-hidden="true" />
                 <span>
                   <span className={styles.readName}>{read.name}</span>
-                  <span className="text-faint"> — {read.detail}</span>
+                  <span className={styles.readDetail}> — {read.detail}</span>
                 </span>
                 <span className={`${styles.readScope} type-body-4`}>
                   per {read.scope}
@@ -339,7 +342,7 @@ export default function DeterminismLab() {
       </div>
 
       <div className={styles.output}>
-        <strong className={`${styles.groupHead} type-eyebrow-3`}>
+        <strong className={`${styles.groupHead} type-stamp`}>
           What the runners produced
         </strong>
 
@@ -429,17 +432,28 @@ export default function DeterminismLab() {
           ))}
         </div>
 
-        <div className={styles.golden}>
+        {/* The reference sheet, and the one panel with a density ramp on it —
+            see the note in the stylesheet for why this is the panel that earns
+            one. */}
+        <div className={styles.golden} data-ramp>
           <div className={styles.goldenRow}>
             <span className="type-body-3 text-muted">
               Golden file{" "}
-              <span className={styles.goldenHash}>{golden}</span>
+              {/* A marker swipe over the recorded bytes the moment they stop
+                  matching the output. It is what a person does to a proof sheet
+                  with a highlighter, and it is the plate's loud ink doing a job
+                  no other signal here does: pointing at the value that has to be
+                  re-recorded. Key type on fluoro pink, 5.90:1. */}
+              <span className={styles.goldenHash} data-mark={goldenStale ? "" : undefined}>
+                {golden}
+              </span>
             </span>
             <button
               type="button"
               className={`${styles.button} type-body-4`}
               onClick={recordGoldens}
               disabled={!goldenStale}
+              data-slip-hover
             >
               make goldens
             </button>

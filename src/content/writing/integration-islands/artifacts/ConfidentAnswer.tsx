@@ -26,7 +26,7 @@ export default function ConfidentAnswer() {
 
   return (
     <div className={styles.root} data-revealed={revealed}>
-      <div className={styles.card}>
+      <div className={styles.card} data-ramp>
         <p className={`${styles.ask} type-body-3`}>
           How many active paying customers do we have, by segment, with full unit
           economics?
@@ -47,8 +47,23 @@ export default function ConfidentAnswer() {
           ))}
         </div>
 
+        {/* `key` is the trigger for the swipe: revealing remounts the node, the
+            marker line draws itself left to right once, and nothing needs a timer
+            or a transition class. Same mechanism as the slipped pass in
+            globals.css §13. */}
         <p className={`${styles.footnote} type-body-4`}>
-          Synthesized from CRM, Billing, Warehouse · 2 of 5 systems not connected
+          {/* The swipe goes on an inline span, not on the paragraph: a marker
+              covers the line of text it runs along, and `box-decoration-break:
+              clone` only has fragments to work with if the box is inline. On a
+              narrow plate this footnote wraps, and it wraps as two swipes. */}
+          <span
+            key={revealed ? "marked" : "quiet"}
+            data-mark={revealed ? "" : undefined}
+            data-mark-in={revealed ? "" : undefined}
+          >
+            Synthesized from CRM, Billing, Warehouse · 2 of 5 systems not
+            connected
+          </span>
         </p>
       </div>
 
@@ -58,6 +73,7 @@ export default function ConfidentAnswer() {
             type="button"
             className={`${styles.button} type-body-4`}
             onClick={() => setRevealed(true)}
+            data-slip-hover
           >
             What&rsquo;s wrong with this answer?
           </button>
