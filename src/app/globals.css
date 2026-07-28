@@ -107,6 +107,38 @@ ol[class] { list-style: none; }
   --ember-950: #2e170d; /* ember-theme ground — a lighter ground can't reach 15:1
                            against the cream, since even pure white is 15.3:1 */
 
+  /* ── The ink library ───────────────────────────────
+     Risograph drums, at their approximate coated values. This is the only place
+     these appear as raw hex; `.theme-plate` below is the only thing that reads
+     them. Eight drums, which is enough for ten pages to each load a distinct
+     pairing without the site turning into a colour chart.
+
+     Two laws govern them, and both were measured rather than assumed — see
+     /styleguide#plates, which recomputes every ratio here from these same
+     tokens using src/lib/contrast.ts:
+
+       1. A pure ink cannot carry text. Against cream, purple is the only one
+          that clears AA (4.79) and yellow bottoms out at 1.09. So inks fill,
+          block, rule, and mark; they never set body copy.
+       2. The overprint is the type colour. Two inks on one sheet MULTIPLY, so
+          a pairing's own overprint is reliably the darkest thing on it. */
+  --riso-fluoro-pink: #ff48b0;
+  --riso-blue:        #0078bf;
+  --riso-yellow:      #ffe800;
+  --riso-green:       #00a95c;
+  --riso-orange:      #ff6c2f;
+  --riso-purple:      #765ba7;
+  --riso-teal:        #00838a;
+  --riso-bright-red:  #f15060;
+
+  --riso-key: #171514; /* type. Not #000 — the site has no pure black. */
+
+  /* Stocks. Two are assigned: cream for Work, kraft for Writing. Newsprint grey
+     (#e6e4dd) is measured and viable but stays out of the file rather than
+     shipping as a dead token. */
+  --stock-cream: #f4efe4;
+  --stock-kraft: #eadfc8;
+
   /* ── Typography ──────────────────────────────────── */
   --ff-display: var(--font-display), "Iowan Old Style", Georgia, serif;
   --ff-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
@@ -255,7 +287,8 @@ ol[class] { list-style: none; }
 
 .theme-dark,
 .theme-sand,
-.theme-ember {
+.theme-ember,
+.theme-plate {
   background-color: var(--bg);
   color: var(--text-primary);
   /* Re-resolved per theme, so the tap flash on a sand section is the sand
@@ -351,6 +384,176 @@ ol[class] { list-style: none; }
   color-scheme: dark;
 }
 
+/* ── The plate theme ────────────────────────────────────────────────────────
+   A colour plate tipped into the page: different stock, different inks, bound
+   in as a deliberate interruption. It is a fourth theme rather than a new
+   mechanism, because the contract at the top of §3 already describes exactly
+   what a plate is — it sets its own background and colour, so it nests, and it
+   never depends on its parent.
+
+   The consequence worth stating: every existing artifact keeps working. They
+   reference semantic tokens (--text-muted, --bg-card, --accent) and never the
+   ramps, so they inherit plate colours the moment their frame becomes
+   `.theme-plate`. Focus rings, ::selection, and the tap highlight re-resolve
+   too, which is what stops ember appearing inside a plate as a fourth ink
+   nobody loaded.
+
+   A plate has exactly three colours from two passes: drum A, drum B, and A×B
+   for type. The readable colour is generated, not chosen. */
+
+/* One class per loaded pairing — ten of them, one per page. Each carries its
+   own overprint AND its own misregistration.
+
+   The overprint is a LITERAL, computed at authoring time by
+   scripts/riso-library.mjs. It is never computed at runtime: two inks on one
+   sheet multiply — (a × b) / 255 per channel — and color-mix() averages, which
+   is a different and wrong colour. A multiply of #00838a and #ff48b0 is
+   #00255f; the mix would be #80667d.
+
+   The slip is FNV-1a over the page slug, two nibbles per axis mapped to 0–3px.
+   Deterministic on purpose: a site whose figures render differently on every
+   load cannot make Loam's argument about determinism with a straight face. */
+.drums-teal-pink {          /* loam */
+  --drum-a: var(--riso-teal);
+  --drum-b: var(--riso-fluoro-pink);
+  --overprint: #00255f;
+  --slip-x: 2.8px;
+  --slip-y: 0.8px;
+}
+
+.drums-orange-teal {        /* integration-islands */
+  --drum-a: var(--riso-orange);
+  --drum-b: var(--riso-teal);
+  --overprint: #003719;
+  --slip-x: 2.0px;
+  --slip-y: 1.6px;
+}
+
+.drums-blue-red {           /* policyos */
+  --drum-a: var(--riso-blue);
+  --drum-b: var(--riso-bright-red);
+  --overprint: #002648;
+  --slip-x: 1.8px;
+  --slip-y: 2.8px;
+}
+
+.drums-pink-blue {          /* hypersync-rework */
+  --drum-a: var(--riso-fluoro-pink);
+  --drum-b: var(--riso-blue);
+  --overprint: #002284;
+  --slip-x: 0.2px;
+  --slip-y: 2.4px;
+}
+
+.drums-green-purple {       /* wealthlens */
+  --drum-a: var(--riso-green);
+  --drum-b: var(--riso-purple);
+  --overprint: #003c3c;
+  --slip-x: 2.4px;
+  --slip-y: 1.0px;
+}
+
+.drums-orange-purple {      /* crm-dashboard */
+  --drum-a: var(--riso-orange);
+  --drum-b: var(--riso-purple);
+  --overprint: #76271f;
+  --slip-x: 2.8px;
+  --slip-y: 0.2px;
+}
+
+.drums-green-red {          /* mgmt-dash */
+  --drum-a: var(--riso-green);
+  --drum-b: var(--riso-bright-red);
+  --overprint: #003523;
+  --slip-x: 3.0px;
+  --slip-y: 0.4px;
+}
+
+.drums-blue-yellow {        /* internal-wiki */
+  --drum-a: var(--riso-blue);
+  --drum-b: var(--riso-yellow);
+  --overprint: #006d00;
+  --slip-x: 2.2px;
+  --slip-y: 3.0px;
+}
+
+.drums-purple-teal {        /* company-brain */
+  --drum-a: var(--riso-purple);
+  --drum-b: var(--riso-teal);
+  --overprint: #002f5a;
+  --slip-x: 1.8px;
+  --slip-y: 2.2px;
+}
+
+.drums-pink-green {         /* outreach-sequencer */
+  --drum-a: var(--riso-fluoro-pink);
+  --drum-b: var(--riso-green);
+  --overprint: #00303f;
+  --slip-x: 0.4px;
+  --slip-y: 0.8px;
+}
+
+/* Writing takes the warmer stock. Work pages leave it alone and get cream. */
+.stock-kraft { --stock: var(--stock-kraft); }
+
+.theme-plate {
+  /* Every surface and text mix is keyed to the RESOLVED stock, not to cream, so
+     a kraft plate's raised and card surfaces are kraft-derived rather than
+     quietly cream-derived. */
+  --stock-base: var(--stock, var(--stock-cream));
+
+  --bg: var(--stock-base);
+  --bg-raised: color-mix(in srgb, var(--riso-key) 8%, var(--stock-base));
+  --bg-card: color-mix(in srgb, var(--riso-key) 14%, var(--stock-base));
+  --bg-hover: color-mix(in srgb, var(--riso-key) 20%, var(--stock-base));
+
+  /* The ramp is measured against both stocks, and every text role clears AA on
+     both. The percentages are not round numbers because they were chosen to
+     land in family with the other three themes rather than to look tidy:
+     muted 7.80:1 on cream / 7.18:1 on kraft, faint 5.19:1 / 4.87:1, against a
+     site-wide floor of 4.91:1 set by theme-dark's faint. */
+  --text-primary: var(--riso-key);
+  --text-secondary: var(--overprint);
+  --text-muted: color-mix(in srgb, var(--riso-key) 76%, var(--stock-base));
+  --text-faint: color-mix(in srgb, var(--riso-key) 64%, var(--stock-base));
+
+  /* Subtle and default are hairlines and are not expected to clear 3:1 — same
+     as every other theme, where only --border-strong does. Strong is key ink at
+     full weight, because a rule on a riso plate is a rule, not a suggestion. */
+  --border-subtle: color-mix(in srgb, var(--riso-key) 22%, var(--stock-base));
+  --border-default: color-mix(in srgb, var(--riso-key) 40%, var(--stock-base));
+  --border-strong: var(--riso-key);
+
+  /* The accent is the plate's own generated colour, so it changes per page
+     without any page choosing it. --accent-dim has to exist here or ::selection,
+     the tap highlight, and the .prose link underline all fall back to ember —
+     a fourth ink on a two-drum sheet. */
+  --accent: var(--overprint);
+  --accent-hover: var(--drum-b);
+  --accent-dim: color-mix(in srgb, var(--overprint) 30%, transparent);
+  --focus-ring: var(--overprint);
+
+  --bg-btn-primary: var(--riso-key);
+  --text-btn-primary: var(--stock-base);
+  --bg-btn-primary-hover: var(--overprint);
+
+  /* ── The state vocabulary ──
+     Fixed across all ten pairings, so a reader who learns one plate can read
+     every plate. Colour is never the only carrier: every state also has a text
+     label (HELD / DRIFT) and a shape (hollow ring vs filled square), which is
+     what makes this survive greyscale and colour-vision deficiency. */
+  --sig-held: var(--drum-a);    /* held, stable, verified */
+  --sig-mine: var(--drum-b);    /* the reader's own action */
+  --sig-broken: var(--overprint); /* broken, drifted, violated */
+  --sig-void: color-mix(in srgb, var(--riso-key) 30%, transparent); /* absent,
+                  projected, unknown — always paired with a dashed edge */
+
+  /* The halftone dot, in the stock's own darker shade. */
+  --screen-dot: color-mix(in srgb, var(--riso-key) 14%, transparent);
+
+  color-scheme: light;
+}
+
 /* prefers-contrast: more — raise text and border tokens one step. */
 @media (prefers-contrast: more) {
   .theme-dark {
@@ -373,6 +576,15 @@ ol[class] { list-style: none; }
     --text-secondary: var(--ink-050);
     --text-muted: var(--ink-100);
     --text-faint: var(--ink-200);
+  }
+  /* Secondary is deliberately left alone: it is the overprint, and replacing it
+     with key ink would collapse the plate's three colours to two. Muted and
+     faint step up, and the hairlines become key ink at half weight. */
+  .theme-plate {
+    --text-muted: color-mix(in srgb, var(--riso-key) 88%, var(--stock-base));
+    --text-faint: color-mix(in srgb, var(--riso-key) 76%, var(--stock-base));
+    --border-subtle: color-mix(in srgb, var(--riso-key) 40%, var(--stock-base));
+    --border-default: color-mix(in srgb, var(--riso-key) 55%, var(--stock-base));
   }
 }
 
@@ -808,13 +1020,32 @@ hr {
   font-variant-numeric: tabular-nums;
 }
 
+/* A hanging serif mark, not a coloured side stripe. The stripe was on the ban
+   list for the same reason everywhere else it appeared: a 2px bar in the accent
+   is a decorative rail that carries no meaning, and inside a plate it would be
+   a third pass. The mark does the same job with the type itself — it is the
+   quotation, set in the display face, hung into the margin so the quoted line
+   still starts on the prose measure. */
 .prose blockquote {
-  border-inline-start: 2px solid var(--accent-dim);
+  position: relative;
   padding-inline-start: var(--space-5);
   font-family: var(--ff-display);
   font-size: var(--fz-headline-3);
   line-height: var(--lh-fine);
   color: var(--text-primary);
+}
+
+.prose blockquote::before {
+  content: "\201C";
+  position: absolute;
+  inset-inline-start: 0;
+  /* The glyph's own body sits well below its box top at this size, so the mark
+     is nudged up to sit optically level with the first line's cap height rather
+     than mathematically level with its box. */
+  inset-block-start: -0.12em;
+  font-size: 1.6em;
+  line-height: 1;
+  color: var(--text-faint);
 }
 
 .prose code {
@@ -885,4 +1116,67 @@ hr {
    Card.module.css. */
 @media (hover: none) {
   .prose a { text-decoration-color: var(--accent); }
+}
+
+/* ────────────────────────────────────── 13. Misregistration ── */
+/* Two inks printed one pass at a time never land quite in register, and the
+   misregistration is the medium — it is what makes a riso print look like a riso
+   print rather than like a poster of one.
+ *
+ * Keyed to data attributes, not classes, for the same reason as [data-scrollx]
+ * and [data-reveal]: artifacts live in CSS Modules, and an attribute selector is
+ * the one hook that survives scoping. Scoped under .theme-plate so neither has
+ * any effect outside a plate, where there are no drums loaded to slip.
+ *
+ * WHERE the slip goes was settled by specimen 02: on TYPE, not on row
+ * backgrounds. A tinted row reads as a highlight — a UI state. Offset type reads
+ * as a second pass landing wrong, which is the actual phenomenon.
+ *
+ * The offsets come from the page's own `.drums-*` class, computed at authoring
+ * time by FNV-1a over the slug. Deterministic, and that is not decoration: a
+ * site whose figures render differently on every load cannot make Loam's
+ * argument about determinism with a straight face. */
+
+/* The resting offset is held in its own pair of properties, not written straight
+   into `transform`. Both hooks below animate or set `transform`, and an element
+   can carry both at once — a digest that has drifted is permanently out of
+   register AND re-prints when it changes. Routing the rest position through
+   variables is what lets the animation land on "wherever this element rests"
+   instead of hard-coding `none` and wiping the offset out. */
+.theme-plate [data-slip] {
+  --slip-rest-x: var(--slip-x, 0px);
+  --slip-rest-y: var(--slip-y, 0px);
+  transform: translate(var(--slip-rest-x), var(--slip-rest-y));
+}
+
+/* The slipped pass — for when a VALUE changes rather than when a plate enters.
+   The new value lands out of register and settles.
+ *
+ * Driven by a React `key` change, which remounts the node and restarts the
+ * animation. That is the whole trigger: no state, no timer, no cleanup.
+ *
+ * Unlike everything in §9 this is time-based rather than scroll-driven, because
+ * it responds to an interaction rather than to a scroll position. 550ms is slow
+ * enough to read as a press settling and fast enough not to be in the way.
+ *
+ * Transform only, deliberately. Flashing the second ink here as well would mean
+ * animating `color` to whatever the element happens to rest at, which differs
+ * per state — and the second ink is already carried by the offset itself plus
+ * the drifted value's own overprint colour. One mechanism, one job. */
+@keyframes slipped-pass {
+  from {
+    transform: translate(
+      calc(var(--slip-rest-x, 0px) + var(--slip-x, 0px) * 2.5),
+      calc(var(--slip-rest-y, 0px) + var(--slip-y, 0px) * 2.5)
+    );
+  }
+  to {
+    transform: translate(var(--slip-rest-x, 0px), var(--slip-rest-y, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .theme-plate [data-slip-in] {
+    animation: slipped-pass 550ms var(--ease-out) both;
+  }
 }

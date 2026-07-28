@@ -1,0 +1,60 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.swatches {
+  display: flex;
+  flex: none;
+}
+
+/* Overlapped by a third of their width, so the credit shows the overprint
+   happening rather than describing it. `multiply` is the whole point: it is what
+   two inks on one sheet do, and it is why the third colour is darker than
+   either parent. */
+.swatch {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  flex: none;
+}
+
+.swatch[data-drum="a"] {
+  background: var(--drum-a);
+}
+
+.swatch[data-drum="b"] {
+  background: var(--drum-b);
+  margin-inline-start: -0.23rem;
+  mix-blend-mode: multiply;
+}
+
+.text {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Present for screen readers and on wide plates; folded away when the bar runs
+   out of room, because the ink names are the part that has to survive. */
+.overprint {
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.overprint::before {
+  content: " · ";
+}
+
+@media (max-width: 56.25em) {
+  .overprint {
+    /* Not `display: none` — the sentence stays in the accessibility tree, where
+       there is no width to run out of. */
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

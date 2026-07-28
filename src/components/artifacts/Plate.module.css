@@ -1,0 +1,221 @@
+/* The bleed is inherited wholesale from what Figure established: artifacts are
+   wider than the 44rem prose measure, `--bleed` is how far they reach past it,
+   and `--rail-reserve` keeps them clear of the table-of-contents rail. See
+   .entry in globals.css §5. */
+.root {
+  --bleed: clamp(
+    0px,
+    calc(
+      (100vw - var(--gutter) * 2 - var(--maw-prose)) / 2 -
+        var(--rail-reserve, 0px)
+    ),
+    8rem
+  );
+
+  margin-inline: calc(var(--bleed) * -1);
+  margin-block-start: var(--space-12);
+}
+
+.root + :global(.prose > *) {
+  margin-block-start: var(--space-12);
+}
+
+/* ── The plate ──
+   Square corners, no exceptions. A rounded corner is a screen idiom; a plate is
+   a sheet of paper that was cut. The single hairline in key ink is the trimmed
+   edge.
+
+   Two background layers, both cheap and both resolution-independent:
+
+   1. The halftone screen — a 5px dot pitch in the stock's own darker shade.
+      Verified in specimen 02.
+   2. The paper grain — ONE 200x200 feTurbulence tile as a data URI, repeated.
+      No network request and no dependency. The cost is bounded by the tile size
+      rather than by the plate area, which is the entire reason for tiling it
+      instead of filtering the element: a full-plate SVG filter would rasterise
+      the whole surface on every paint. Budget is under 2ms paint per plate; if a
+      mid-range phone exceeds it, the grain is the first thing to drop and the
+      halftone alone carries the texture.
+
+   `multiply` on the grain layer is what makes it read as absorbed ink rather
+   than as a grey veil laid on top. */
+.plate {
+  border: var(--bdw) solid var(--riso-key);
+  border-radius: var(--bdrs-none);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.3'/%3E%3C/svg%3E"),
+    radial-gradient(var(--screen-dot) 1px, transparent 1.2px);
+  background-size:
+    200px 200px,
+    5px 5px;
+  background-blend-mode: multiply, normal;
+}
+
+/* ── The bar ── */
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  align-items: baseline;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  border-block-end: var(--bdw) solid var(--border-default);
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  line-height: var(--lh-medium);
+}
+
+.number {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--lts-wide);
+}
+
+.subject {
+  color: var(--text-muted);
+  font-weight: var(--fw-regular);
+  text-transform: none;
+  letter-spacing: var(--lts-normal);
+}
+
+.subject::before {
+  content: " · ";
+}
+
+/* ── The frame ── */
+
+.frame {
+  overflow: hidden;
+}
+
+.scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+}
+
+/* ── The caption, on the dark page ──
+   Outside `.plate`, so it resolves the PAGE's tokens rather than the plate's.
+   That is the point: the plate is an interruption, and the voice describing it
+   is the page's voice. */
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-block-start: var(--space-4);
+  padding-inline: var(--space-1);
+  max-inline-size: var(--measure-prose);
+}
+
+.captionText {
+  color: var(--text-muted);
+}
+
+.source {
+  color: var(--text-faint);
+}
+
+/* ── The passes register ──
+   As the plate scrolls in, the paper arrives first, then drum A, then drum B —
+   each landing from a larger offset and settling. It is the one motion on the
+   site that is literally what the medium does, and it uses the page's own
+   misregistration values to do it, so a plate settles along the same axis it is
+   permanently offset on.
+
+   Scroll-driven via `animation-timeline: view()`, matching globals.css §9, so
+   there is no scroll listener and it runs on the compositor. Staggered by
+   `animation-range` rather than by delay, for the reason documented there.
+
+   Both guards are load-bearing: without view() support (Firefox today) the plate
+   renders fully registered, and with motion reduced it renders fully registered
+   too. Neither is a broken state — a print that landed in register is the
+   correct outcome. */
+
+@keyframes plate-register {
+  from {
+    opacity: 0;
+    transform: translate(
+      calc(var(--slip-x, 0px) * -4),
+      calc(var(--slip-y, 0px) * 4 + 10px)
+    );
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pass-register {
+  from {
+    transform: translate(
+      calc(var(--slip-x, 0px) * 3),
+      calc(var(--slip-y, 0px) * -3)
+    );
+  }
+  to {
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .plate,
+    .bar,
+    .frame {
+      animation-duration: auto;
+      animation-timing-function: var(--ease-out);
+      animation-fill-mode: both;
+      animation-timeline: view();
+    }
+
+    /* The paper. */
+    .plate {
+      animation-name: plate-register;
+      animation-range: entry 4% cover 22%;
+    }
+
+    /* Drum A, then drum B — the same keyframe, two ranges. The overlap is
+       deliberate: a press does not wait for one pass to finish settling before
+       the next lands. */
+    .bar {
+      animation-name: pass-register;
+      animation-range: entry 8% cover 28%;
+    }
+
+    .frame {
+      animation-name: pass-register;
+      animation-range: entry 12% cover 34%;
+    }
+  }
+}
+
+/* ── Full bleed below the prose crossover ──
+   Below ~782px the prose measure is set by the gutters rather than by
+   --maw-prose, so the bleed above computes to 0 and the plate ends up in the
+   same 335px column as the body text — the worst case for the one kind of
+   content that needs width. Here the bleed becomes the gutter itself and the
+   plate spans the viewport.
+
+   Placed last: these override .plate and .caption, declared above at equal
+   specificity, so source order decides. */
+@media (max-width: 48em) {
+  .root {
+    --bleed: var(--gutter);
+  }
+
+  /* The side edges are off-screen at full bleed, so a border on them is a
+     hairline nobody sees that still costs a pixel of width. The horizontal
+     trims stay, which reads as a tipped-in band — the mobile idiom for this. */
+  .plate {
+    border-inline: none;
+  }
+
+  /* The caption stays on the text measure: it is prose, and it lines up with the
+     paragraph above the plate rather than with the plate's new edge. */
+  .caption {
+    padding-inline: var(--gutter);
+  }
+}

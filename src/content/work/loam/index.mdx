@@ -49,13 +49,15 @@ Output is a pure function of exactly three things: the document, the engine's ou
 
 That list is worth operating rather than reading. Below is the contract as a working model: change one of the three permitted inputs and the digest moves, which is correct. Switch on one of the six forbidden reads and watch which gate catches it.
 
-<Figure
-  label="Figure 1"
-  caption="The determinism contract, and the three gates that enforce it. Switch on a forbidden read to break the build."
+<Plate
+  drums="teal-pink"
+  n={1}
+  subject="the determinism contract"
+  caption="The contract, and the three gates that enforce it. Switch on a forbidden read to break the build."
   source="Real PressVersion and theme versions. The digest is FNV-1a standing in for SHA-256 — it models “the bytes changed”, not Loam's actual hashing."
 >
   <DeterminismLab />
-</Figure>
+</Plate>
 
 The distinction the lab makes is the one I got wrong when I started. I assumed nondeterminism was one problem. It's two, and they need different gates.
 
@@ -73,8 +75,10 @@ The parser is `swift-markdown`, pinned. The serializer is mine. Walking the AST 
 
 Two pieces of JavaScript run at press time, and they're held to the same rule as everything else. A vendored KaTeX 0.16.22 turns TeX into MathML, and a vendored highlight.js 11.11.1 marks up code. Both evaluate inside their own `JSContext` on their own `JSVirtualMachine` — no DOM, no clock, no locale, no network in the context — and both emit static markup, never scripts. `hljs.highlight` is a pure function of the code and the language, so pinned source plus pinned input means pinned output.
 
-<Figure
-  label="Figure 2"
+<Plate
+  drums="teal-pink"
+  n={2}
+  subject="press stages"
   caption="One document through the press, stage by stage. Every stage is a pure function of what the stage before it handed over."
 >
 <Stepper
@@ -126,7 +130,7 @@ Two pieces of JavaScript run at press time, and they're held to the same rule as
     },
   ]}
 />
-</Figure>
+</Plate>
 
 <Stat
   items={[
@@ -155,8 +159,10 @@ I'd take that trade again. What it buys is that a rendered-page diff in a pull r
 
 I've been describing a product brief and a working program, and it matters which is which.
 
-<Figure
-  label="Figure 3"
+<Plate
+  drums="teal-pink"
+  n={3}
+  subject="build state"
   caption="An honest inventory. The reader and the press run today; the seam and the editor are specified and unbuilt."
 >
   <Switcher
@@ -188,7 +194,7 @@ I've been describing a product brief and a working program, and it matters which
       },
     ]}
   />
-</Figure>
+</Plate>
 
 The reader shipped first on purpose. It's the smallest complete thing that's useful on its own, it's the part you touch every day, and it forced the typography and the engine into existence, both of which everything else needs. The press came second because it's the same engine pointed at a file instead of a window.
 

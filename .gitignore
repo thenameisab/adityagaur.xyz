@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/motion/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -43,3 +44,6 @@ next-env.d.ts
 # local agent/skill tooling (machine-specific symlinks, not app code)
 .claude/
 skills-lock.json
+
+# remotion render output (assets get copied into public/ explicitly)
+/motion/out/

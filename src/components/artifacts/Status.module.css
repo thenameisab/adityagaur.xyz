@@ -1,0 +1,72 @@
+.root {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+/* 2px, not 1px: these are marks in ink, and a hairline ring at 0.7rem reads as
+   a smudge rather than a shape. The translate puts the mark on the text baseline
+   instead of the line box, which is where the eye expects it. */
+.mark {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  flex: none;
+  transform: translateY(0.1em);
+  border: 2px solid currentcolor;
+}
+
+.label {
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--lts-wide);
+}
+
+/* ── held: a hollow ring in drum A ──
+   Hollow because nothing has happened. The ring is the register mark that lines
+   up, which is what "held" means on a press. */
+.root[data-tone="held"] {
+  color: var(--sig-held);
+}
+.root[data-tone="held"] .mark {
+  border-radius: var(--bdrs-full);
+}
+
+/* ── mine: a filled ring in drum B ──
+   Same shape as held, filled — the reader did something, and it is on the same
+   axis as the thing that was holding. */
+.root[data-tone="mine"] {
+  color: var(--sig-mine);
+}
+.root[data-tone="mine"] .mark {
+  border-radius: var(--bdrs-full);
+  background: currentcolor;
+}
+
+/* ── broken: a filled square in the overprint ──
+   A different shape, not just a different colour, because this is the state a
+   reader must never miss. The overprint is also the darkest ink on the sheet,
+   so it is the heaviest mark as well as the squarest. */
+.root[data-tone="broken"] {
+  color: var(--sig-broken);
+}
+.root[data-tone="broken"] .mark {
+  background: currentcolor;
+}
+
+/* ── void: a dashed square ──
+   Dashed, always. An absent value has no ink on the sheet, and a dashed edge is
+   how a print says "this outline is where something would go". The label sits at
+   --text-faint rather than in the void tint, because 30% key ink is a fill
+   value and cannot carry type — Law 1. */
+.root[data-tone="void"] {
+  color: var(--sig-void);
+}
+.root[data-tone="void"] .mark {
+  border-style: dashed;
+}
+.root[data-tone="void"] .label {
+  color: var(--text-faint);
+}
