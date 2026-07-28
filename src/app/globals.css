@@ -515,7 +515,12 @@ ol[class] { list-style: none; }
   --text-primary: var(--riso-key);
   --text-secondary: var(--overprint);
   --text-muted: color-mix(in srgb, var(--riso-key) 76%, var(--stock-base));
-  --text-faint: color-mix(in srgb, var(--riso-key) 64%, var(--stock-base));
+  /* 68%, not 64%. A halftone screen is not free: the dots average into the sheet
+     and every ratio here is really measured against stock-plus-dots, not against
+     bare stock. At the old screen density that pulled faint down to 4.68:1 on
+     kraft — clearing AA, but only barely, and on the smallest type on the page.
+     Lighter dots (below) plus this step put the worst case at 5.44:1. */
+  --text-faint: color-mix(in srgb, var(--riso-key) 68%, var(--stock-base));
 
   /* Subtle and default are hairlines and are not expected to clear 3:1 — same
      as every other theme, where only --border-strong does. Strong is key ink at
@@ -548,8 +553,14 @@ ol[class] { list-style: none; }
   --sig-void: color-mix(in srgb, var(--riso-key) 30%, transparent); /* absent,
                   projected, unknown — always paired with a dashed edge */
 
-  /* The halftone dot, in the stock's own darker shade. */
-  --screen-dot: color-mix(in srgb, var(--riso-key) 14%, transparent);
+  /* The halftone dot, in the stock's own darker shade.
+     7%, down from 14%. The problem with the heavier screen was never the
+     measured contrast — averaged out it only cost about 0.2 of a ratio point.
+     It was interference: a 5px dot pitch at 14% sits in the same size range as
+     the strokes of 12px mono type, so the two patterns beat against each other
+     and small type read as fuzzy rather than as low-contrast. Halving the ink
+     and shrinking the dot separates the two scales again. */
+  --screen-dot: color-mix(in srgb, var(--riso-key) 7%, transparent);
 
   color-scheme: light;
 }
