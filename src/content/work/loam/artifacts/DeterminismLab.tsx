@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Fingerprint, { hexCells } from "@/components/artifacts/Fingerprint";
+import Status from "@/components/artifacts/Status";
 import styles from "./DeterminismLab.module.css";
 
 /**
@@ -341,47 +343,85 @@ export default function DeterminismLab() {
           What the runners produced
         </strong>
 
+        {/* Three rows, separated by hairlines rather than by a coloured side
+            stripe. The stripe was doing two jobs badly: it was the only carrier
+            of the diverged state, and on a plate it would have been a third pass
+            in an ink nobody loaded. Now the state is a Status token — a word, a
+            shape, and an ink — and the digest itself slips out of register when
+            it has drifted, which is what a second pass landing wrong actually
+            looks like. */}
         <div className={styles.runs}>
-          <div className={styles.run} data-diverged={!stableWithinMachine}>
-            <span className={`${styles.runName} type-body-3`}>
-              Render 1
-              <span className={`${styles.runMachine} type-body-4`}>
-                {MACHINES.a.label}
+          {[
+            {
+              name: "Render 1",
+              machine: MACHINES.a.label,
+              hash: runs.a1,
+              held: stableWithinMachine,
+            },
+            {
+              name: "Render 2",
+              machine: "same machine, immediately after",
+              hash: runs.a2,
+              held: stableWithinMachine,
+            },
+            {
+              name: "Render 3",
+              machine: MACHINES.b.label,
+              hash: runs.b1,
+              held: stableAcrossMachines,
+            },
+          ].map((run) => (
+            <div key={run.name} className={styles.run}>
+              <span className={`${styles.runName} type-body-3`}>
+                {run.name}
+                <span className={`${styles.runMachine} type-body-4`}>
+                  {run.machine}
+                </span>
               </span>
-            </span>
-            <span className={styles.hash}>{runs.a1}</span>
-          </div>
-          <div className={styles.run} data-diverged={!stableWithinMachine}>
-            <span className={`${styles.runName} type-body-3`}>
-              Render 2
-              <span className={`${styles.runMachine} type-body-4`}>
-                same machine, immediately after
+              {/* `key` on the hash is the trigger for the slipped-pass
+                  animation: a changed digest remounts the node and the new value
+                  prints, out of register, then settles. No timer, no state. */}
+              <span
+                key={run.hash}
+                className={styles.hash}
+                data-slip={run.held ? undefined : true}
+                data-slip-in
+              >
+                {run.hash}
               </span>
-            </span>
-            <span className={styles.hash}>{runs.a2}</span>
-          </div>
-          <div className={styles.run} data-diverged={!stableAcrossMachines}>
-            <span className={`${styles.runName} type-body-3`}>
-              Render 3
-              <span className={`${styles.runMachine} type-body-4`}>
-                {MACHINES.b.label}
-              </span>
-            </span>
-            <span className={styles.hash}>{runs.b1}</span>
-          </div>
+              <Status tone={run.held ? "held" : "broken"}>
+                {run.held ? "held" : "drift"}
+              </Status>
+            </div>
+          ))}
         </div>
+
+        {/* The fingerprint of the shipped render, one cell per hex digit. Two
+            digests that differ in a single byte look obviously different here,
+            which is the whole reason a digest gets a fingerprint instead of
+            being read character by character. The value is real: these are the
+            digits of the FNV-1a output above. */}
+        <Fingerprint
+          cells={hexCells(runs.a1)}
+          alt={`Fingerprint of the render-1 digest ${runs.a1}, sixteen cells, one per hex digit`}
+          legend={`${runs.a1} — one cell per hex digit`}
+        />
 
         <div className={styles.gates}>
           {gates.map((gate) => (
-            <div key={gate.name} className={styles.gate} data-pass={gate.pass}>
-              <span className={styles.mark} aria-hidden="true" />
+            <div key={gate.name} className={styles.gate}>
+              {/* Status carries the verdict now — the word, the shape, and the
+                  ink — so the verdict sentence no longer repeats "Pass."/"Fail."
+                  in front of itself. */}
+              <Status tone={gate.pass ? "held" : "broken"}>
+                {gate.pass ? "pass" : "fail"}
+              </Status>
               <span className="type-body-3">
                 <span className={styles.gateName}>{gate.name}</span>{" "}
                 <span className={`${styles.gateCmd} type-body-4`}>
                   ({gate.cmd})
                 </span>
                 <span className={`${styles.gateVerdict} type-body-3`}>
-                  {gate.pass ? "Pass. " : "Fail. "}
                   {gate.verdict}
                 </span>
               </span>

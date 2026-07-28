@@ -172,26 +172,25 @@
   min-inline-size: 0;
 }
 
+/* Hairline separators, not tinted cards with a coloured side stripe. A tinted
+   row reads as a highlight — a UI state — and the 2px accent bar that used to
+   run down the left of each one was on the ban list: it carried the diverged
+   state entirely in colour, and on a plate it would have been a third ink on a
+   two-drum sheet. The rule between rows is the only chrome the rows need. */
 .runs {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
   margin-block-start: var(--space-3);
 }
 
 .run {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
   gap: var(--space-3);
   align-items: baseline;
-  padding: var(--space-3);
-  background: var(--bg-card);
-  border-radius: var(--bdrs-sm);
-  border-inline-start: 2px solid var(--border-subtle);
+  padding-block: var(--space-3);
 }
 
-.run[data-diverged="true"] {
-  border-inline-start-color: var(--accent);
+.run + .run {
+  border-block-start: var(--bd-subtle);
 }
 
 .runName {
@@ -204,15 +203,29 @@
   color: var(--text-faint);
 }
 
+/* `inline-block` so the transform in globals.css §13 has a box to move. An
+   inline box ignores translate. */
 .hash {
+  display: inline-block;
   color: var(--text-primary);
   font-family: var(--ff-mono);
   font-size: var(--fz-body-4);
   white-space: nowrap;
 }
 
-.run[data-diverged="true"] .hash {
+/* A drifted digest prints in the overprint and out of register. The colour is
+   the plate's own third ink and the offset is its own misregistration, so this
+   row needs nothing that the plate did not already load. */
+.hash[data-slip] {
   color: var(--accent);
+}
+
+/* Narrow: the status token drops under the digest rather than squeezing a third
+   column into 335px. */
+@media (max-width: 30em) {
+  .run {
+    grid-template-columns: 1fr auto;
+  }
 }
 
 /* ── Gates ── */
@@ -233,21 +246,10 @@
   align-items: start;
 }
 
-/* Pass and fail are distinguished by shape as well as color: pass is a hollow
-   ring, fail is a filled bar. Color alone would fail on a mono display. */
-.mark {
-  inline-size: 0.7rem;
-  block-size: 0.7rem;
-  transform: translateY(0.35em);
-  border-radius: var(--bdrs-full);
-  border: 2px solid var(--border-strong);
-}
-
-.gate[data-pass="false"] .mark {
-  border-radius: var(--bdrs-xs);
-  background: var(--accent);
-  border-color: var(--accent);
-}
+/* Pass and fail are still distinguished by shape as well as colour, and by a
+   word as well as a shape — but that logic now lives in the shared Status
+   component rather than being reimplemented here. This artifact was where the
+   pattern was worked out; the plate system is where it became vocabulary. */
 
 .gateName {
   color: var(--text-primary);

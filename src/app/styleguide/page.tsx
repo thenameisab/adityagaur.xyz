@@ -1,8 +1,21 @@
 import type { Metadata } from "next";
 import Brand, { BrandMark } from "@/components/Brand";
 import Icon, { type IconName } from "@/components/Icon";
+import Fingerprint, { hexCells } from "@/components/artifacts/Fingerprint";
+import InkCredit from "@/components/artifacts/InkCredit";
+import Status from "@/components/artifacts/Status";
 import { allBrands } from "@/lib/brands";
 import { contrastRatio, passes, ratio } from "@/lib/contrast";
+import {
+  INKS,
+  KEY,
+  PAIRINGS,
+  STOCKS,
+  multiply,
+  slipFor,
+  type DrumsKey,
+  type StockName,
+} from "@/lib/plates";
 import { contrastTargets, ramps, themes, type ThemeName } from "@/lib/tokens";
 import styles from "./styleguide.module.css";
 
@@ -15,6 +28,29 @@ export const metadata: Metadata = {
 };
 
 const THEME_ORDER: ThemeName[] = ["dark", "sand", "ember"];
+
+const STOCK_ORDER: StockName[] = ["cream", "kraft"];
+
+/** Work index order, which is the order the pages convert in. */
+const PAIRING_ORDER: DrumsKey[] = [
+  "teal-pink",
+  "orange-teal",
+  "blue-red",
+  "pink-blue",
+  "green-purple",
+  "orange-purple",
+  "green-red",
+  "blue-yellow",
+  "purple-teal",
+  "pink-green",
+];
+
+/** Law 1, as a word. 4.5 is body text, 3 is marks and 24px+ type. */
+function verdict(worstRatio: number): string {
+  if (worstRatio >= 4.5) return "TEXT";
+  if (worstRatio >= 3) return "MARKS ONLY";
+  return "FILL ONLY";
+}
 
 const TYPE_ROLES = [
   ["type-display-1", "Display 1 — hero moments"],
@@ -194,6 +230,287 @@ export default function Styleguide() {
               </div>
             </div>
           ))}
+        </div>
+      </Section>
+
+      {/* ── Plates ───────────────────────────────────────────────── */}
+      <Section
+        id="plates"
+        title="Plates"
+        note="The fourth theme. Sixteen artifacts read as a series of prints rather than one design repeated sixteen times, because each page loads its own two drums. Everything below is computed from src/lib/plates.ts with the site's own WCAG math — a swatch that does not match its stated hex is a drift between the tokens and this page."
+      >
+        <div className="stack stack--l">
+          {/* ── Law 1 ── */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">
+              Law 1 — a pure ink cannot carry text
+            </h3>
+            <p className="type-body-3 text-muted">
+              Measured against both assigned stocks. Purple is the only drum that
+              clears AA anywhere, and yellow bottoms out at 1.09:1. So inks fill,
+              block, rule, and mark. They never set body copy. This is not a
+              compromise — it is how riso posters actually work, and it is why
+              they look the way they do.
+            </p>
+            <div className={styles.tableWrap} data-scrollx>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th scope="col">Drum</th>
+                    <th scope="col">Hex</th>
+                    {STOCK_ORDER.map((s) => (
+                      <th key={s} scope="col">
+                        on {STOCKS[s].label}
+                      </th>
+                    ))}
+                    <th scope="col">Verdict</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {([["key", { hex: KEY, label: "Key" }]] as const)
+                    .concat(Object.entries(INKS) as never)
+                    .map(([name, ink]) => {
+                      const worst = Math.min(
+                        ...STOCK_ORDER.map((s) =>
+                          contrastRatio(ink.hex, STOCKS[s].hex),
+                        ),
+                      );
+                      return (
+                        <tr key={name}>
+                          <th scope="row" className={styles.tokenCell}>
+                            <span
+                              className={styles.dot}
+                              style={{ background: ink.hex, borderColor: KEY }}
+                            />
+                            {ink.label}
+                          </th>
+                          <td className="type-caption-1">{ink.hex}</td>
+                          {STOCK_ORDER.map((s) => (
+                            <td key={s} className="type-caption-1">
+                              {ratio(ink.hex, STOCKS[s].hex)}
+                            </td>
+                          ))}
+                          <td>
+                            <span
+                              className={styles.result}
+                              data-result={worst >= 4.5 ? "pass" : "fail"}
+                            >
+                              {verdict(worst)}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ── Law 2 ── */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">
+              Law 2 — the overprint is the type colour
+            </h3>
+            <p className="type-body-3 text-muted">
+              Two inks on one sheet multiply, so a pairing&rsquo;s own overprint is
+              reliably the darkest thing on it. Every plate therefore has exactly
+              three colours from two passes: drum A, drum B, and A×B for type. The
+              readable colour is generated, not chosen. The
+              &ldquo;matches multiply&rdquo; column recomputes each literal in
+              globals.css from its two parents — a mismatch means the CSS and this
+              table have drifted apart.
+            </p>
+            <div className={styles.tableWrap} data-scrollx>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th scope="col">Page</th>
+                    <th scope="col">Drums</th>
+                    <th scope="col">Overprint</th>
+                    <th scope="col">On stock</th>
+                    <th scope="col">Separation</th>
+                    <th scope="col">Slip</th>
+                    <th scope="col">Checks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {PAIRING_ORDER.map((key) => {
+                    const p = PAIRINGS[key];
+                    const stock = STOCKS[p.stock].hex;
+                    const computed = multiply(INKS[p.a].hex, INKS[p.b].hex);
+                    const derived = slipFor(p.page);
+                    // Three independent things that could rot: the overprint
+                    // literal, the slip numbers, and AA on the actual stock.
+                    const ok =
+                      computed === p.overprint &&
+                      derived[0] === p.slip[0] &&
+                      derived[1] === p.slip[1] &&
+                      passes(p.overprint, stock, 4.5);
+                    return (
+                      <tr key={key}>
+                        <th scope="row" className={styles.tokenCell}>
+                          <span
+                            className={styles.dot}
+                            style={{ background: p.overprint, borderColor: KEY }}
+                          />
+                          {p.page}
+                        </th>
+                        <td className="type-caption-1">
+                          .drums-{key}
+                          <br />
+                          <span className="text-faint">
+                            {INKS[p.a].label} + {INKS[p.b].label} on{" "}
+                            {STOCKS[p.stock].label}
+                          </span>
+                        </td>
+                        <td className="type-caption-1">{p.overprint}</td>
+                        <td className="type-caption-1">
+                          {ratio(p.overprint, stock)}
+                        </td>
+                        <td className="type-caption-1">
+                          {p.separation.toFixed(3)}
+                        </td>
+                        <td className="type-caption-1">
+                          {p.slip[0]}px, {p.slip[1]}px
+                        </td>
+                        <td>
+                          <span
+                            className={styles.result}
+                            data-result={ok ? "pass" : "fail"}
+                          >
+                            {ok ? "PASS" : "FAIL"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ── Knockout ── */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">
+              Knockout is nearly unusable
+            </h3>
+            <p className="type-body-3 text-muted">
+              Stock-coloured type on a solid ink block. This is the easiest law to
+              break by accident, which is the only reason it gets its own table:
+              knockout is restricted to display sizes on the three darkest drums,
+              and never used for running text. A status block that needs knockout
+              uses key ink on a pale tint instead.
+            </p>
+            <div className={styles.tableWrap} data-scrollx>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th scope="col">Cream type on</th>
+                    <th scope="col">Measured</th>
+                    <th scope="col">Verdict</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(INKS).map(([name, ink]) => {
+                    const r = contrastRatio(STOCKS.cream.hex, ink.hex);
+                    return (
+                      <tr key={name}>
+                        <th scope="row" className={styles.tokenCell}>
+                          <span
+                            className={styles.dot}
+                            style={{ background: ink.hex, borderColor: KEY }}
+                          />
+                          {ink.label}
+                        </th>
+                        <td className="type-caption-1">
+                          {ratio(STOCKS.cream.hex, ink.hex)}
+                        </td>
+                        <td>
+                          <span
+                            className={styles.result}
+                            data-result={r >= 4.5 ? "pass" : "fail"}
+                          >
+                            {r >= 4.5
+                              ? "TEXT"
+                              : r >= 3
+                                ? "DISPLAY ONLY"
+                                : "NEVER"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ── The ten plates, live ── */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">
+              Ten pairings, four states each
+            </h3>
+            <p className="type-body-3 text-muted">
+              Rendered from the real CSS classes, so this is the regression test
+              for the semantic mapping rather than a picture of it. The state
+              vocabulary is fixed across all ten: a reader who learns one plate
+              can read every plate. Colour is never the only carrier — each state
+              has a word and a shape as well as an ink, which is what makes the
+              system survive greyscale and colour-vision deficiency. Check that
+              claim by desaturating this section.
+            </p>
+            <div className={styles.plateGrid}>
+              {PAIRING_ORDER.map((key) => {
+                const p = PAIRINGS[key];
+                return (
+                  <div
+                    key={key}
+                    className={`theme-plate drums-${key} ${
+                      p.stock === "kraft" ? "stock-kraft" : ""
+                    } ${styles.plateCard}`}
+                  >
+                    <div className="stack stack--s">
+                      <p className="type-eyebrow-3 text-muted">{p.page}</p>
+                      <InkCredit drums={key} />
+                      <p className="type-body-3 text-secondary">
+                        Secondary text is the overprint — the plate&rsquo;s own
+                        generated colour.
+                      </p>
+                      <p className="type-body-3 text-muted">
+                        Muted for supporting detail.
+                      </p>
+                      <p className="type-body-3 text-faint">
+                        Faint — never body copy.
+                      </p>
+                      <hr />
+                      <div className={styles.stateRow}>
+                        <Status tone="held">held</Status>
+                        <Status tone="mine">mine</Status>
+                        <Status tone="broken">drift</Status>
+                        <Status tone="void">void</Status>
+                      </div>
+                      {/* Real data, not filler: the plate's own three colours,
+                          drum A then drum B then the overprint, as hex digits.
+                          Present here to prove --sig-held and --sig-broken
+                          resolve inside every pairing — a fingerprint whose
+                          cells or top edge vanish is a broken mapping. */}
+                      <Fingerprint
+                        cells={hexCells(
+                          (
+                            INKS[p.a].hex +
+                            INKS[p.b].hex +
+                            p.overprint
+                          ).replaceAll("#", ""),
+                        )}
+                        alt={`The ${p.page} plate's three colours as hex digits`}
+                      />
+                      <p className="type-body-4 text-faint">{p.rationale}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </Section>
 

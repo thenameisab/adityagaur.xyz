@@ -1,0 +1,103 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* `grid` rather than `flex` so all sixteen cells are exactly equal width and the
+   strip reads as a measured screen instead of a chart. `minmax(0, 1fr)` is what
+   stops a cell refusing to shrink below its content on a narrow plate. */
+.strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 2px;
+  block-size: 2.75rem;
+}
+
+/* The cell is the paper: a screened square that is visible whether or not much
+   ink lands in it. A zero digit is still a printed cell, which is why level 0
+   below is 6% and not 0 — an empty column would read as missing data rather
+   than as a low value. */
+.cell {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  background: var(--bg-card);
+}
+
+.fill {
+  display: block;
+  inline-size: 100%;
+  background: var(--sig-held);
+  /* The top edge of the fill takes the overprint, as though the second drum
+     registered just at the ink boundary. It is one pixel of detail that makes
+     the strip look printed rather than plotted. */
+  border-block-start: 1px solid var(--sig-broken);
+}
+
+.legend {
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  line-height: var(--lh-medium);
+  color: var(--text-faint);
+}
+
+/* ── The sixteen printable levels ──
+   Discrete on purpose: a Risograph screens, it does not render continuous tone.
+   Sixteen steps is both what the process would give and a one-to-one map onto a
+   hex digit. Written out rather than computed because `attr()` cannot yet be
+   read as a number in CSS, and the alternative — an inline custom property per
+   cell — would spend the codebase's single inline-style allowance twice. */
+.cell[data-level="0"] .fill { block-size: 6%; }
+.cell[data-level="1"] .fill { block-size: 12.27%; }
+.cell[data-level="2"] .fill { block-size: 18.53%; }
+.cell[data-level="3"] .fill { block-size: 24.8%; }
+.cell[data-level="4"] .fill { block-size: 31.07%; }
+.cell[data-level="5"] .fill { block-size: 37.33%; }
+.cell[data-level="6"] .fill { block-size: 43.6%; }
+.cell[data-level="7"] .fill { block-size: 49.87%; }
+.cell[data-level="8"] .fill { block-size: 56.13%; }
+.cell[data-level="9"] .fill { block-size: 62.4%; }
+.cell[data-level="10"] .fill { block-size: 68.67%; }
+.cell[data-level="11"] .fill { block-size: 74.93%; }
+.cell[data-level="12"] .fill { block-size: 81.2%; }
+.cell[data-level="13"] .fill { block-size: 87.47%; }
+.cell[data-level="14"] .fill { block-size: 93.73%; }
+.cell[data-level="15"] .fill { block-size: 100%; }
+
+/* ── The cells scale in ──
+   18ms apart, left to right. Fast enough to read as one gesture rather than
+   sixteen events — at 60ms, the site's normal stagger, sixteen cells take almost
+   a second and the strip turns into an animation you wait for.
+
+   Scroll-driven, so it runs on the compositor with no scroll listener, and it
+   settles as the plate enters. Both guards matter: without
+   `animation-timeline: view()` support the strip is simply complete, and with
+   motion reduced it is complete too. Nothing here is load-bearing. */
+@keyframes fingerprint-in {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .fill {
+      transform-origin: bottom;
+      animation-name: fingerprint-in;
+      /* `auto` — the RANGE is the duration on a scroll timeline. A time value
+         here would be read as a fraction of the whole timeline and the strip
+         would snap to its end state on the first pixel of scroll. See the same
+         trap documented in globals.css §9. */
+      animation-duration: auto;
+      animation-timing-function: var(--ease-out);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      /* The stagger goes inside the percentage slot. `calc(entry 5% + …)` —
+         wrapping the range NAME — is invalid CSS and drops the declaration
+         silently. 18ms of the site's rhythm expressed as range percent: 1.2%
+         per cell keeps all sixteen inside the entry phase. */
+      animation-range: entry calc(4% + var(--i, 0) * 1.2%) cover 26%;
+    }
+  }
+}

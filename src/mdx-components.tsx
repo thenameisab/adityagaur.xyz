@@ -1,8 +1,12 @@
 import type { MDXComponents } from "mdx/types";
 import Brand from "@/components/Brand";
 import Figure from "@/components/artifacts/Figure";
+import Fingerprint from "@/components/artifacts/Fingerprint";
+import InkCredit from "@/components/artifacts/InkCredit";
 import Note from "@/components/artifacts/Note";
+import Plate from "@/components/artifacts/Plate";
 import Stat from "@/components/artifacts/Stat";
+import Status from "@/components/artifacts/Status";
 import Stepper from "@/components/artifacts/Stepper";
 import Switcher from "@/components/artifacts/Switcher";
 
@@ -19,9 +23,15 @@ import Switcher from "@/components/artifacts/Switcher";
  */
 const components: MDXComponents = {
   Brand,
+  /** @deprecated Superseded by `Plate`. Still here so unconverted pages keep
+      rendering; goes away once the last page takes its drums. */
   Figure,
+  Fingerprint,
+  InkCredit,
   Note,
+  Plate,
   Stat,
+  Status,
   Stepper,
   Switcher,
 };

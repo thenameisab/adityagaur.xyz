@@ -17,6 +17,11 @@ type Props = {
  * The frame every artifact sits in: one border treatment, one caption position,
  * one bleed width. Keeping it here is what stops twelve pages of artifacts from
  * each inventing their own chrome.
+ *
+ * @deprecated Superseded by `Plate`, which does the same job on its own stock in
+ * its own two inks. This is kept — unchanged and still working — so that no MDX
+ * breaks in the commit that introduces the plate system. Delete it once the last
+ * page has taken its drums; nothing new should reach for it.
  */
 export default function Figure({
   label,
