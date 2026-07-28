@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import InkCredit from "./InkCredit";
 import { PAIRINGS, type DrumsKey } from "@/lib/plates";
 import styles from "./Plate.module.css";
 
@@ -56,15 +55,22 @@ export default function Plate({
   return (
     <figure className={styles.root}>
       <div className={plateClass}>
-        {/* The bar is the job ticket: which plate this is, and which drums are on
-            the press. It is also the legend — the two swatches are the two inks
-            the reader is about to see carrying meaning. */}
+        {/* The bar carries the plate's number and its subject, and nothing else.
+            It used to also print the ink credit — "Teal + Fluorescent Pink on
+            cream · overprinting … gives #00255f" — which was a mistake. Which
+            drums are loaded and what they multiply to is authoring metadata: it
+            documents the system rather than telling the reader anything about
+            what they are looking at, and a hex value on a published page is
+            simply a leak. That belongs on /styleguide#plates, where InkCredit
+            still renders as the legend it was written to be.
+
+            What stays is the equivalent of a figure number, which the caption
+            below refers back to. */}
         <div className={styles.bar}>
           <span className={styles.number}>
             Plate {String(n).padStart(2, "0")}
             {subject ? <span className={styles.subject}>{subject}</span> : null}
           </span>
-          <InkCredit drums={drums} />
         </div>
 
         <div

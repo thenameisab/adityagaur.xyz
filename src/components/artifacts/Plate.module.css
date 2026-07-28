@@ -40,15 +40,121 @@
    `multiply` on the grain layer is what makes it read as absorbed ink rather
    than as a grey veil laid on top. */
 .plate {
+  position: relative;
+  /* `clip`, not `hidden` — the same distinction documented on `html` in
+     globals.css §1. It keeps the texture layer inside the trim without creating
+     a scroll container, so a sticky element inside an artifact keeps working. */
+  overflow: clip;
+  /* A stacking context of its own, so the two texture layers can sit at z-index 0
+     and the content at 1 without either escaping to interleave with the page. */
+  isolation: isolate;
   border: var(--bdw) solid var(--riso-key);
   border-radius: var(--bdrs-none);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.3'/%3E%3C/svg%3E"),
-    radial-gradient(var(--screen-dot) 1px, transparent 1.2px);
-  background-size:
-    200px 200px,
-    5px 5px;
-  background-blend-mode: multiply, normal;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.3'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  background-blend-mode: multiply;
+}
+
+/* ── The screen, and its density ──
+   A riso never lays ink down evenly. The drum inks unevenly, the paper takes it
+   unevenly, and coverage varies across the sheet — so a screen that is
+   mathematically uniform is the one thing a real print never looks like.
+
+   Three things are happening here, and they are separated deliberately:
+
+   1. THE DOTS, in `background-image`. 0.9px on a 5px pitch rather than 1.1px,
+      which drops coverage from 15% of the sheet to 10%. Together with halving
+      --screen-dot, that is what stopped small mono type beating against the
+      screen — the old 1.1px dot at 14% sat in the same size range as a 12px
+      glyph stroke, and two patterns at one scale read as fuzz.
+
+   2. THE SPATIAL GRADIENT, in `mask-image`. Two radial tiles at deliberately
+      incommensurate sizes — 760px and 1130px — composited by intersection. One
+      tiled gradient alone would show its own grid; two whose periods do not
+      divide into each other only repeat after many thousands of pixels, so the
+      result reads as cloud rather than as pattern. Sized in ABSOLUTE units, not
+      percentages, which is the point: percentage insets resolve against the
+      element's own height, so on the 3881px-tall Loam plate they produced
+      something completely different from a short plate. Pixels behave the same
+      on every plate.
+
+   3. THE PULSE, in the opacity animation below. The whole screen breathes.
+
+   Why this is safe for readability, explicitly: the mask and the animation can
+   only ever REMOVE ink. Every ratio measured for this theme was taken against
+   the screen at full density with the mask at its densest — the darkest state
+   this surface can reach — and the worst case there is --text-faint on kraft at
+   5.44:1. Everything the mask and the pulse do moves contrast upward from a
+   floor that already passes. There is no state of this animation that can push a
+   ratio down.
+
+   And it is cheap. The mask is computed once. Only `opacity` animates, so it
+   runs on the compositor with no layout and no repaint — which matters when
+   integration-islands puts six of these on one page. */
+.plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    var(--screen-dot) 0.9px,
+    transparent 1.1px
+  );
+  background-size: 5px 5px;
+
+  mask-image:
+    radial-gradient(
+      closest-side circle,
+      #000 0%,
+      rgb(0 0 0 / 38%) 62%,
+      rgb(0 0 0 / 64%) 100%
+    ),
+    radial-gradient(
+      closest-side circle,
+      #000 0%,
+      rgb(0 0 0 / 44%) 58%,
+      rgb(0 0 0 / 70%) 100%
+    );
+  mask-size:
+    760px 760px,
+    1130px 1130px;
+  mask-repeat: repeat, repeat;
+  mask-composite: intersect;
+}
+
+/* The screen breathes. `alternate` is what makes it seamless — the timeline runs
+   forward then reverses back through the same values, so there is no jump at the
+   loop point.
+
+   13s, and only between 0.55 and 1. Slow and shallow on purpose: the effect
+   should be something you notice when you rest on a plate, never something
+   competing with the sentence you are reading. */
+@keyframes screen-breathe {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .plate::before {
+    animation: screen-breathe 13s var(--ease-in-out) infinite alternate;
+  }
+}
+
+/* With motion reduced the screen does not pulse, and it does not vanish either —
+   the masked density variation stays, because an unevenly inked sheet is what
+   this is a picture of. It simply stops moving. */
+
+/* Content sits above both texture layers. */
+.bar,
+.frame {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── The bar ── */
