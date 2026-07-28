@@ -681,7 +681,7 @@ export default function Styleguide() {
       <Section
         id="sans"
         title="Sans candidates"
-        note="§15 Q2 — Geist vs Inter Tight, both against Instrument Serif. Pick one; the loser and its font payload get deleted."
+        note="§15 Q2 — Geist vs Inter Tight, both against EB Garamond. Pick one; the loser and its font payload get deleted."
       >
         <div className={styles.themeRow}>
           {[
@@ -802,7 +802,7 @@ export default function Styleguide() {
       <Section
         id="icons"
         title="Icons"
-        note="Nine, hand-maintained. The two arrows are filled glyphs drawn to Instrument Serif; the rest are 24×24 stroked. All currentColor, all em-sized."
+        note="Nine, hand-maintained. The two arrows are filled glyphs drawn to Instrument Serif's stems (re-check against EB Garamond); the rest are 24×24 stroked. All currentColor, all em-sized."
       >
         <div className={styles.iconGrid}>
           {ICONS.map((name) => (

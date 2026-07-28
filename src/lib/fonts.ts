@@ -1,13 +1,25 @@
-import { Geist, Geist_Mono, Instrument_Serif, Inter_Tight } from "next/font/google";
+import { Geist, Geist_Mono, Inter_Tight } from "next/font/google";
+import localFont from "next/font/local";
 
-// Display serif. Renders in the hero, so it preloads. Instrument Serif ships
-// only a 400 roman + a 400 italic — a constraint, not a problem: a display
-// serif should never be bolded.
-export const display = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
+// Display serif. Renders in the hero, so it preloads. EB Garamond is a
+// variable font (wght 400–800), but the type roles all pin --fw-regular —
+// a display serif should never be bolded. It's here for its discretionary
+// ligatures (Th, ct, st, ck…), enabled globally in globals.css; only this
+// face has a dlig table, so the rule can't leak into the sans or mono.
+//
+// Self-hosted from a hand-subsetted file, NOT next/font/google: Google's
+// CDN strips the dlig lookups from its latin subset, so the ligatures the
+// face was chosen for never arrive. ./fonts/EBGaramond-latin.woff2 is the
+// upstream variable TTF (google/fonts@main, OFL — licence alongside) run
+// through fonttools with the same latin unicode range plus
+// --layout-features+=dlig. Re-subset from upstream to update; verify with
+// a GSUB dump that dlig survived before shipping.
+export const display = localFont({
+  src: "./fonts/EBGaramond-latin.woff2",
+  weight: "400 800",
   display: "swap",
   preload: true,
+  adjustFontFallback: "Times New Roman",
   variable: "--font-display",
 });
 
