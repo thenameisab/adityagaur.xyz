@@ -21,6 +21,9 @@ html {
      keeps working. */
   overflow-x: clip;
   scroll-behavior: smooth;
+  /* The UA default is a translucent blue that has no relation to this palette.
+     Set on `html` so it inherits to every tappable descendant. */
+  -webkit-tap-highlight-color: var(--accent-dim, rgb(217 123 79 / 30%));
   /* Anchor targets land below the sticky header. */
   scroll-padding-block-start: calc(var(--header-h) + var(--space-8));
   -webkit-text-size-adjust: 100%;
@@ -199,8 +202,23 @@ ol[class] { list-style: none; }
   --maw-prose: 44rem;
   --maw-content: 72rem;
   --maw-wide: 90rem;
-  --gutter: clamp(var(--space-5), 5vw, var(--space-16));
+
+  /* The horizontal page margin. `max()` against the safe-area insets is what
+     keeps content clear of the notch and the rounded corners when a phone is
+     held in landscape — both insets are 0 in portrait and on every desktop, so
+     the clamp is what applies everywhere else. Both sides take the larger inset
+     so the measure stays centred rather than drifting one way. */
+  --gutter-base: clamp(var(--space-5), 5vw, var(--space-16));
+  --gutter: max(
+    var(--gutter-base),
+    env(safe-area-inset-left, 0px),
+    env(safe-area-inset-right, 0px)
+  );
   --header-h: 64px;
+
+  /* The smallest comfortable touch target. Applied only under
+     `pointer: coarse` — see §11 — so desktop density is untouched. */
+  --tap-min: 44px;
 
   --z-base: 0;
   --z-raised: 10;
@@ -240,6 +258,9 @@ ol[class] { list-style: none; }
 .theme-ember {
   background-color: var(--bg);
   color: var(--text-primary);
+  /* Re-resolved per theme, so the tap flash on a sand section is the sand
+     accent rather than the dark theme's. */
+  -webkit-tap-highlight-color: var(--accent-dim);
 
   --bd: var(--bdw) solid var(--border-default);
   --bd-subtle: var(--bdw) solid var(--border-subtle);
@@ -636,7 +657,77 @@ hr {
   }
 }
 
-/* ──────────────────────────────────────────── 10. Prose ── */
+/* ─────────────────────────── 10. Horizontal scroll affordance ── */
+/* Several artifacts are too wide to shrink honestly, so they scroll inside their
+   own frame. On a phone there is no scrollbar to reveal that, and a diagram cut
+   flush at the frame edge reads as clipped rather than continuable.
+   `[data-scrollx]` fades whichever edges still have content behind them.
+ *
+ * Keyed to a data attribute, not a class, because these containers live in CSS
+ * Modules and an attribute selector is the one hook that survives scoping.
+ *
+ * The whole effect hangs off a scroll-progress timeline, which is inactive
+ * unless the element genuinely overflows. That is the graceful part: content
+ * that fits is never masked, and a browser without scroll-driven animation gets
+ * today's behaviour — a plain scroller, complete and usable. No JS either way.
+ *
+ * Every keyframe declares FOUR stops in the same order. Gradients only
+ * interpolate stop-for-stop; a 3-stop keyframe next to a 4-stop one snaps
+ * instead of sliding, which looks like a flicker on every scroll frame. */
+
+/* Deliberately does NOT declare `overflow-x`. Each container decides when it
+   scrolls — the Stepper rail, for one, is a plain vertical list on desktop and
+   only becomes a scroller below the nav breakpoint, and forcing a scroll
+   container on it at every width would be wrong. Everything here is inert on an
+   element that isn't overflowing, which is what makes the attribute safe to add
+   unconditionally. */
+[data-scrollx] {
+  overscroll-behavior-x: contain;
+  /* Momentum scrolling on older iOS. */
+  -webkit-overflow-scrolling: touch;
+}
+
+@keyframes scrollx-edges {
+  from {
+    mask-image: linear-gradient(
+      to right,
+      #000 0%,
+      #000 0%,
+      #000 88%,
+      transparent 100%
+    );
+  }
+  50% {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 12%,
+      #000 88%,
+      transparent 100%
+    );
+  }
+  to {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 12%,
+      #000 100%,
+      #000 100%
+    );
+  }
+}
+
+@supports (animation-timeline: scroll(self inline)) {
+  [data-scrollx] {
+    animation-name: scrollx-edges;
+    animation-duration: auto;
+    animation-timing-function: var(--ease-linear);
+    animation-fill-mode: both;
+    animation-timeline: scroll(self inline);
+  }
+}
+
+/* ──────────────────────────────────────────── 11. Prose ── */
 
 .prose {
   max-inline-size: var(--measure-prose);
@@ -723,7 +814,59 @@ hr {
   border-radius: var(--bdrs-sm);
   padding: var(--space-5);
   overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 .prose pre code { background: none; padding: 0; font-size: var(--fz-body-3); }
 
 .prose strong { font-weight: var(--fw-semibold); color: var(--text-primary); }
+
+/* ──────────────────────────────────── 12. Touch refinements ── */
+/* Everything here is gated on `pointer: coarse` — a finger, not a mouse. The
+   desktop layout is deliberately dense and none of it changes. */
+
+@media (pointer: coarse) {
+  /* A tap target is at least --tap-min tall. Applied to the base elements so a
+     control in a module that sets no height of its own is covered without every
+     module having to opt in. */
+  a[class],
+  button,
+  summary,
+  [role="tab"],
+  [role="button"] {
+    min-block-size: var(--tap-min);
+  }
+
+  /* Inline links inside running prose are exempt: a 44px line box inside a
+     paragraph would wreck the leading, and WCAG 2.5.8 excludes targets whose
+     position is determined by the flow of the sentence around them. */
+  .prose p a,
+  .prose li a,
+  .prose blockquote a {
+    min-block-size: 0;
+  }
+
+  .skip-link {
+    padding-block: var(--space-4);
+  }
+
+  /* A range input's box renders about 16px tall — under the target minimum, and
+     tight enough that a thumb aimed at it easily lands on the paragraph behind.
+     Growing the CONTROL to --tap-min centres the native track and thumb inside a
+     compliant box and leaves both looking exactly as they did. Note what this
+     does NOT do: WebKit keeps the thumb its own size, so the draggable thumb is
+     no bigger — it is the press area and the breathing room around each slider
+     that improve. Every slider here is a native input styled only through
+     `accent-color`, so one element selector covers all of them. */
+  input[type="range"] {
+    block-size: var(--tap-min);
+  }
+}
+
+/* A hover state that paints a background is a liability on touch: there is no
+   pointer to leave, so the last-tapped element keeps the hover look until
+   something else is tapped. Where a hover is the ONLY thing revealing an
+   affordance, the touch branch shows it at rest instead — see
+   Card.module.css. */
+@media (hover: none) {
+  .prose a { text-decoration-color: var(--accent); }
+}

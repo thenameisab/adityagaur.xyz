@@ -95,7 +95,7 @@ export default function ThreadView() {
                 <span className={`${styles.day} type-body-4`}>{m.day}</span>
               </div>
               <p className={`${styles.preview} type-body-4`}>{m.preview}</p>
-              <pre className={`${styles.headers} type-body-4`}>
+              <pre className={`${styles.headers} type-body-4`} data-scrollx>
                 <code>
                   {threaded
                     ? m.headers.join("\n")

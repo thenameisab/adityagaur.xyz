@@ -44,7 +44,7 @@ function Arrow({ x, from, to }: { x: number; from: number; to: number }) {
 
 export default function ConnectiveLayer() {
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-scrollx>
       <svg
         className={styles.svg}
         viewBox={`0 0 ${W} ${H}`}

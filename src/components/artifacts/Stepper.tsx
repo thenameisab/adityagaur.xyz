@@ -67,6 +67,7 @@ export default function Stepper({ steps, label }: Props) {
       <div
         ref={railRef}
         className={styles.rail}
+        data-scrollx
         role="tablist"
         aria-label={label}
         aria-orientation="vertical"
