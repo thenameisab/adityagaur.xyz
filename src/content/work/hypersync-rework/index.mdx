@@ -1,0 +1,121 @@
+import TokenExplorer from "./artifacts/TokenExplorer";
+import TourEmbed from "./artifacts/TourEmbed";
+
+export const meta = {
+  slug: "hypersync-rework",
+  title: "HyperSync: reworking a 3.1/10 frontend",
+  kicker: "Frontend rework",
+  summary:
+    "A v1-to-v2 rework where the reasoning was written down before the pixels moved, and where the migration stalled one phase short, for a reason worth reading.",
+  role: "Solo — audit, design system, migration plan, v2 build",
+  timeframe: "2026 — May to June",
+  stack: ["React 19", "TypeScript", "Vite", "Tailwind", "CSS custom properties"],
+  status: "prototype",
+  order: 8,
+};
+
+## The audit came first, and it was brutal on purpose
+
+You inherit a frontend that ships. Customers use it daily, the build passes, and everyone involved knows it's bad in a way nobody has written down. The temptation is to start fixing; the discipline is to start scoring.
+
+So the rework began with a review titled *brutally honest*, scored across ten dimensions like a design audit scores a stranger's product. Visual craft: 3. Accessibility: 2. Test coverage: 1. Composite: **3.1 out of 10**, with the review's own gloss that this is *a "shipped" rating, not a "good" one*.
+
+The numbers underneath the scores are what made the review actionable rather than mean. Five styling systems in one app (a component library, a utility framework, two CSS-in-JS runtimes, and inline styles), with `important: true` in the Tailwind config as the war scar where they collide. 639 `any` annotations. 39 aria attributes across a hundred thousand lines. A 90 MB asset folder whose largest single image was 13 MB. And the tell that summarizes all of it: the package manifest, the repo, the brand token and the README each called the product a different name.
+
+<Stat
+  items={[
+    { value: "3.1/10", label: "composite score of the v1 audit" },
+    { value: "45", label: "screens rebuilt as v2, behind flags" },
+    { value: "90 → 4.9 MB", label: "asset folder, after the cleanup phase" },
+    { value: "273", label: "files still importing the old UI library at the end" },
+  ]}
+/>
+
+## The thesis: cold chrome, proud numbers
+
+The v1 design system had a real point of view, a serif/sans/mono trio almost no competitor has, applied in the wrong room. Editorial pacing and warm lavender-tinted neutrals read as consumer software, and HyperSync is an operator console: people watching sync runs, tailing failures, living in it eight hours a day. The v2 document states the split in one line: *the chrome goes cold, the data reads proudly numeric, and the serif becomes a signature you meet at deliberate beats* — invoices, reports, marketing. Never the dashboard at 3 AM.
+
+Everything else in the spec falls out of that sentence. Dark mode becomes the default, because ops lives in dark. Table rows drop from 44px to 32px, because density is respect for the operator's screen. Hover effects that move layout are banned outright. And the accent mint is confined to live-status pulses, never a fill, with the stated reason that this one rule is what prevents the candy-store look.
+
+<Figure
+  label="Figure 1"
+  caption="The v2 token system, at its real values. Pick a token to see the three-hop chain that carries it into a component; flip the mode and watch one attribute swap repaint the specimen."
+  source="Every hex is from the shipped tokens.css and the v2 spec, unedited. The preview panel is a specimen rendered from those values — deliberately not this site's palette."
+>
+  <TokenExplorer />
+</Figure>
+
+The mechanism matters more than the palette. Each token is declared as a space-separated RGB triplet rather than a hex, because that's the form Tailwind can compose opacity onto. One declaration then serves the solid fill, the 10% hover wash and the focus ring, and the acceptance test for the whole discipline is a single grep: any six-digit hex outside the token file, brand SVGs, or one-off illustrations fails the build review. Editing one line repaints 45 screens in one mode without touching the other.
+
+## Sequenced so the product keeps shipping
+
+A rework of a live product has one governing rule, and the plan states it as a prohibition: **foundations, then shell, then screens, never the other way.** A v2 shell wrapping v1 screens is the migration path. A v2 screen inside the v1 shell is forbidden, because it forces both styling systems to load at once.
+
+<Figure
+  label="Figure 2"
+  caption="Eleven phases. Ten landed. The gap between phase 6's plan and its audit is the honest center of this page."
+>
+<Stepper
+  label="Migration phases"
+  steps={[
+    {
+      name: "Foundations",
+      title: "Tokens, type, primitives — zero user-visible change",
+      body: "The token pipeline, eight type roles, and 25 hand-rolled primitives land first, plus a kitchen-sink route that renders every primitive in every variant in both modes as the merge gate for every later PR. The old library stays live. Nothing a user sees changes.",
+    },
+    {
+      name: "Shell",
+      title: "New chrome around old screens",
+      body: "Topbar, sidebar, status rail, inspector, command palette and incident banner ship behind a flag that defaults off. The v2 shell wraps the untouched v1 pages — which validates the chrome against real screens before any screen is rebuilt.",
+    },
+    {
+      name: "Screens",
+      title: "Lighthouse pages, then the three loops",
+      body: "Dashboard and connections first, then the operator loop, the build loop, and the govern loop — 45 screens in all, five of them pages v1 never had: incidents, audit log, API keys, billing, data mapping. Each screen ships behind its own flag with the v1 version as the fallback.",
+      output: { label: "The switch", code: "<PageGate flag=\"v2.page.connections\"\n  v1Component={ConnectionsV1} />" },
+    },
+    {
+      name: "Cleanup",
+      title: "Where the plan met the repo",
+      body: "Three cleanups landed: the important flag came off the Tailwind config, TypeScript strict went on with zero suppressions, and the asset folder went from 90 MB to 4.9. The fourth — dropping the old dependencies — is where the audit stopped the plan.",
+    },
+    {
+      name: "The block",
+      title: "273 files still importing the old library",
+      body: "The dependency audit found every legacy package still load-bearing: 273 files importing the old component library, 197 the old icon set, 97 the old state library. The plan said cleanup happens after every screen is migrated. In this repo, migrated meant built-behind-a-flag — not v1-deleted. Two different definitions of done, discovered at phase six.",
+      output: { label: "Audit verdict", code: "@chakra-ui/react   273 files   blocked\nreact-icons        197 files   blocked\njotai               97 files   blocked" },
+    },
+    {
+      name: "Retrofit",
+      title: "Three phases the plan didn't have",
+      body: "The fix was more sequencing: a laggard tracker burning down the remaining v1 surfaces, then flag-default-on with a seven-day bake per flag, then v1 deletion with each dependency removed in its own commit so every bundle delta stays attributable.",
+    },
+  ]}
+/>
+</Figure>
+
+Every phase that landed is logged in a 3,800-line changelog, each entry in the same five-part shape — old state, what changed, verified in browser, current state, why. That log is how I can tell you precisely where the project stands rather than roughly.
+
+## So: did v2 ship?
+
+No, and the evidence is unambiguous, which is rarer than shipping. Every one of the 23 feature flags still defaults to false. The bake phase has no changelog entries. The nine legacy dependencies are still in the manifest. The design system, the shell, and all 45 screens exist and pass their own review; not one has been default-on for a user.
+
+What the project produced instead of a release is a complete, honest migration state: a v2 that is real behind flags, a tracker that says exactly which nine surfaces still block deletion, and a candid audit entry explaining why the gap exists. The work after May pivoted to packaging (a single-file standalone build, and the product tour below), which is the shape of a project that moved from *ship it* to *show it*. This page is that showing, done with the numbers left in.
+
+<Figure
+  label="Figure 3"
+  caption="The real product tour — the shipped artifact, not a recreation. A spotlight walks six mocked screens; two mini-tours branch from the finish."
+  source="One 938-line self-contained HTML file, embedded in a sandboxed frame. The only edits are two outbound marketing links removed. All company and people names inside are fictional."
+>
+  <TourEmbed />
+</Figure>
+
+The tour deserves its place here on craft grounds: one file, no build step, no dependencies, 35 inline SVGs, and a spotlight whose scrim is a single enormous box-shadow rather than an SVG mask. Each step targets a real CSS selector in the mocked screens, so the highlight is driven by layout geometry rather than hardcoded coordinates — the two wizard mini-tours actually advance the fake wizard as the callout advances.
+
+## What I'd do differently
+
+**Define "migrated" in phase zero.** The entire late-plan retrofit traces to one ambiguous word. The plan's author and the repo disagreed about whether a screen behind a flag counts as migrated, and neither found out until the dependency audit failed. One sentence in the foundations doc, *a screen is migrated when its v1 file is deleted*, would have surfaced the three missing phases before any of the eleven ran.
+
+**Flags are a loan, not a gift.** Nineteen gate components and 23 flags made every screen independently shippable and rollback-able, which was correct. They also made it possible to declare victory while both frontends still shipped in the bundle. A flag system needs its retirement date written down when the flag is created, or the safe state quietly becomes the permanent one.
+
+**The audit should have priced the exit, not just the entry.** The review scored v1 exhaustively and specced v2 beautifully, but never counted the 273 import sites standing between them. Scoring how bad something is takes a week; counting what it costs to leave is a grep, and it was the grep that ended up governing the schedule.

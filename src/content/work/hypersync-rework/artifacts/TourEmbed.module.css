@@ -1,0 +1,37 @@
+.root {
+  display: block;
+}
+
+.frame {
+  display: block;
+  inline-size: 100%;
+  block-size: min(72vh, 640px);
+  border: none;
+  background: var(--bg-raised);
+}
+
+.launch {
+  display: block;
+  inline-size: 100%;
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  background: var(--bg-raised);
+  transition: background-color var(--dur-instant) var(--ease-out);
+}
+
+.launch:hover {
+  background: var(--bg-hover);
+}
+
+.launchTitle {
+  display: block;
+  color: var(--text-primary);
+}
+
+.launchNote {
+  display: block;
+  margin-block-start: var(--space-2);
+  margin-inline: auto;
+  max-inline-size: 44ch;
+  color: var(--text-muted);
+}

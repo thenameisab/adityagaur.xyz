@@ -1,0 +1,228 @@
+.root {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+}
+
+@media (max-width: 56.25em) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Left: the tables ── */
+
+.left {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  border-inline-end: var(--bd-subtle);
+  min-inline-size: 0;
+}
+
+@media (max-width: 56.25em) {
+  .left {
+    border-inline-end: none;
+    border-block-end: var(--bd-subtle);
+  }
+}
+
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.mode {
+  padding: var(--space-1) var(--space-3);
+  border: var(--bdw) solid transparent;
+  border-radius: var(--bdrs-full);
+  color: var(--text-muted);
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
+}
+
+.mode:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.mode[aria-pressed="true"] {
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border-color: var(--border-strong);
+}
+
+.table {
+  inline-size: 100%;
+  margin-block-start: var(--space-5);
+  border-collapse: collapse;
+}
+
+.caption {
+  text-align: start;
+  color: var(--text-muted);
+  padding-block-end: var(--space-2);
+}
+
+.table td {
+  padding: 2px var(--space-3) 2px 0;
+  vertical-align: middle;
+}
+
+.tokenBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 2px var(--space-2);
+  border: var(--bdw) solid transparent;
+  border-radius: var(--bdrs-sm);
+  color: var(--text-secondary);
+  font-family: var(--ff-mono);
+  transition: border-color var(--dur-instant) var(--ease-out);
+}
+
+.tokenBtn:hover {
+  border-color: var(--border-default);
+}
+
+.tokenBtn[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.swatch {
+  inline-size: 12px;
+  block-size: 12px;
+  border-radius: var(--bdrs-xs);
+  box-shadow: inset 0 0 0 1px var(--border-default);
+}
+
+.hex {
+  color: var(--text-faint);
+  font-family: var(--ff-mono);
+  white-space: nowrap;
+}
+
+.role {
+  color: var(--text-muted);
+}
+
+.chain {
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--bd-subtle);
+}
+
+.chainHead {
+  color: var(--text-muted);
+}
+
+.chainCode {
+  margin-block-start: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  overflow-x: auto;
+  background: var(--bg-card);
+  border-radius: var(--bdrs-sm);
+  color: var(--text-secondary);
+  font-family: var(--ff-mono);
+  line-height: var(--lh-medium);
+}
+
+.chainNote {
+  margin-block-start: var(--space-3);
+  max-inline-size: 56ch;
+  color: var(--text-faint);
+}
+
+/* ── Right: the rendered slice ──
+   Colors here come from the HyperSync token values via inline style, not the
+   site's tokens — the panel is a specimen of the other product's system. */
+
+.preview {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  transition: background-color var(--dur-base) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview {
+    transition: none;
+  }
+}
+
+.previewLabel {
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  letter-spacing: var(--lts-wider);
+}
+
+.card {
+  margin-block-start: var(--space-4);
+  padding: 16px;
+  border: 1px solid;
+  border-radius: 10px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pulse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.pulseDot {
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 999px;
+}
+
+.rows {
+  margin-block-start: 12px;
+  border: 1px solid;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  block-size: 32px;
+  padding-inline: 10px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.row + .row {
+  border-block-start: 1px solid;
+  border-color: inherit;
+}
+
+.rowId {
+  font-family: var(--ff-mono);
+  font-size: 11px;
+}
+
+.cta {
+  margin-block-start: 12px;
+  block-size: 36px;
+  padding-inline: 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: default;
+}
+
+.previewNote {
+  margin-block-start: var(--space-4);
+  max-inline-size: 44ch;
+  font-size: var(--fz-body-4);
+}

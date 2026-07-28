@@ -1,0 +1,157 @@
+import SequenceSim from "./artifacts/SequenceSim";
+import ThreadView from "./artifacts/ThreadView";
+
+export const meta = {
+  slug: "outreach-sequencer",
+  title: "A cold-email sequencer in 512 lines",
+  kicker: "Internal tool",
+  summary:
+    "Gmail and a Google Sheet doing the job of a seat-priced sales tool, where the hard part turned out to be deliverability rather than sending.",
+  role: "Solo — wrote it, ran it, broke it",
+  timeframe: "2026 — June to July",
+  stack: ["Google Apps Script", "Gmail API", "Google Sheets", "CSV"],
+  status: "shipped",
+  order: 3,
+};
+
+## Two hundred contacts and a quote
+
+You have a list. It is not a big list — a couple of hundred partnership prospects across HR and payroll platforms, assembled by hand, and each row is a company whose API you would like access to. You need to send each of them three emails over about two weeks, stop the moment anyone answers, and keep a record of who is where.
+
+Every sales tool does this. You open one, and the pricing page wants a per-seat annual commitment for a campaign that will be finished before the first invoice clears, plus a connected mailbox, plus a warm-up period, plus a dashboard nobody will look at twice.
+
+The thing you actually need is a loop over a spreadsheet and a way to send mail as yourself. You already have both. Gmail is the mailbox, Sheets is the database, and Apps Script is a cron job that can reach them both without a credential leaving Google.
+
+So I wrote it. It took a weekend, it is 512 lines across three campaigns, and almost none of that code is about sending email.
+
+<Stat
+  items={[
+    { value: "512", label: "lines of Apps Script, three campaigns" },
+    { value: "187", label: "contacts across the three sheets" },
+    { value: "3", label: "emails per sequence, two of them in-thread" },
+    { value: "23", label: "addresses that shipped locked, not sending" },
+  ]}
+/>
+
+## Sending is the easy fifth of the problem
+
+Sending is one call. What surrounds it is the actual program: when to send, whether to send at all today, whether this person already answered, and what to do when Gmail refuses.
+
+The rules the script enforces on every tick:
+
+- **One email per run.** Not a batch. The runner picks the single most-due row, sends it, and stops.
+- **A two-minute gap**, enforced through a stored timestamp rather than a sleep, so a crashed run can't reset it.
+- **A daily cap** checked against a counter that rolls over on an IST date key. Twenty for the first campaign, thirty for the second.
+- **A working-hours window**, 8am to 8pm, and weekdays only.
+- **A reply check before every send**, so an answer that arrived overnight cancels a follow-up that was already due.
+
+None of that is because Gmail would stop me. Apps Script permits 100 sends a day on a consumer account and 1,500 on Workspace, and I was nowhere near either. The cap is about the recipient, and about the domain's reputation, which is a resource you can spend far faster than a quota.
+
+<Note term="Domain warm-up">
+A brand-new sending domain has no history, so mail providers treat volume from it as suspicious by default. Reputation accrues from small, consistent, engaged-with volume over weeks. Sending two hundred emails on day one is the reliable way to teach every major provider that your domain is a bulk sender — a lesson which is much harder to unteach than it was to teach.
+</Note>
+
+## The scheduler, run forward
+
+Rules stated as a list are easy to nod at. What they cost is only visible when you run them against a real queue and watch it drain — or fail to.
+
+<Figure
+  label="Figure 1"
+  caption="Thirty days of the same scheduler. Change the cap and the step delays, and watch where the queue backs up."
+  source="A faithful port of the script's scheduling logic — same cap, gate, delays and halt-on-reply — over 40 synthetic contacts. Reply timing is a fixed deterministic pattern rather than a real response distribution, so treat the halted count as a shape, not a rate."
+>
+  <SequenceSim />
+</Figure>
+
+Two things fall out of this that I did not expect when I wrote the config block.
+
+The cap and the step delay interact badly at the wrong settings. A short follow-up delay means every contact from the first big batch comes due on the same day, and if the cap is lower than that day's demand, the sequence quietly slips. Nothing errors. The follow-up that was meant to land three days later lands on day six, which is a different email in a different conversation.
+
+And the weekday gate costs more than two sevenths. Because it removes the weekend from the *sending* days but not from the *elapsed* days, a Thursday email one puts email two into the following Monday whether the delay says three days or five. The calendar, not the config, is doing the scheduling at that point.
+
+## Threading is the whole trick
+
+The first version sent three separate emails. It worked, in the sense that mail arrived. It was also the version I would not send to anyone I wanted a reply from.
+
+<Figure
+  label="Figure 2"
+  caption="The same three emails, delivered as three sends and as one thread."
+  source="The header lines are the ones the script writes. The sender brand is aliased and the prospect is synthetic."
+>
+  <ThreadView />
+</Figure>
+
+The follow-ups go out as genuine replies: same thread, `In-Reply-To` and `References` both set from the first message's `Message-ID`, subject prefixed with `Re:` only if it isn't already. The prospect sees one conversation, and email two can be four lines because email one is sitting right underneath it.
+
+Getting there took a detour. Apps Script has `GmailThread.reply()`, which is exactly the method this needs and does not do what its name implies. Because the first message in the thread was sent *by me*, replying to the thread replies to the sender, and the sender is me. So a batch of follow-ups went into my own inbox — correctly threaded, perfectly formatted, addressed to nobody who had ever heard of us.
+
+The fix is to stop using the convenience method and build the MIME message by hand: multipart body, plain-text and HTML alternatives, headers set explicitly, then `Gmail.Users.Messages.send` with the `threadId` attached. That requires enabling the Gmail advanced service, which is a checkbox in the editor and a re-authorisation, and is the only real setup step in the whole thing.
+
+Then there was the damage. Those bad sends had already written their timestamps to the sheet, so as far as the script was concerned those contacts were done. I wrote a function called `resetFollowups`, which clears the false step-two and step-three timestamps and re-arms the row — while skipping anyone who had actually replied, because re-sending to someone mid-conversation is worse than not sending at all. It ran once, and it is still in the file with its comment on top. It is not the part of the code I am proudest of, and it is the part that most accurately describes the week.
+
+## The states, and the one that admits something
+
+<Figure
+  label="Figure 3"
+  caption="Every row in the sheet is in exactly one of these. Two of them are the interesting ones."
+>
+  <Stepper
+    label="Row states"
+    steps={[
+      {
+        name: "Queued",
+        title: "In the list, never contacted",
+        body: "The default for an imported row with a verified address. The runner scans top to bottom and takes the first row eligible to move, so the sheet's order is the send order.",
+        output: { label: "Sheet", code: "Status: Queued\nE1_SentAt: —\nThreadId: —" },
+      },
+      {
+        name: "Hold-VerifyEmail",
+        title: "The address was inferred, not found",
+        body: "Twenty-three of the ninety-eight rows in the first wave had addresses assembled from a pattern rather than confirmed anywhere. They import in a state the runner refuses to send to. A human has to look at each one and change the cell by hand before it can move.",
+        output: { label: "Sheet", code: "Status: Hold-VerifyEmail\nEmail Status: inferred\nConfidence: 70" },
+      },
+      {
+        name: "Active",
+        title: "Email one is out, the thread exists",
+        body: "The send writes back the Gmail thread id, which is what every subsequent step reads. From here the row is only touched when a delay has elapsed and the cap allows it.",
+        output: { label: "Sheet", code: "Status: Active\nE1_SentAt: 2026-06-24 09:12 IST\nThreadId: 197f…" },
+      },
+      {
+        name: "Replied",
+        title: "Someone answered, so stop",
+        body: "The check is deliberately crude: fetch the thread, look for any message whose sender isn't me. It cannot tell an interested reply from an out-of-office, and I would rather halt on a bounce-back than send a follow-up over the top of a real answer. A separate half-hourly scan catches replies on threads the main runner wasn't going to touch.",
+        output: { label: "Sheet", code: "Status: Replied\nReplied: Yes\nRepliedAt: 2026-06-26 14:02 IST" },
+      },
+      {
+        name: "Done",
+        title: "Three sent, no answer",
+        body: "The terminal state, and the most common one. The row stays in the sheet with its full timestamp history, because the next wave needs to know who has already heard from us and when.",
+        output: { label: "Sheet", code: "Status: Done\nE3_SentAt: 2026-07-02 09:08 IST" },
+      },
+      {
+        name: "Error",
+        title: "Gmail said no",
+        body: "Any exception is caught, truncated to 200 characters, and written to the row's own LastError cell rather than thrown. A failure has to stay attached to the contact it belongs to; a run that dies halfway through the list is a worse outcome than one bad row.",
+        output: { label: "Sheet", code: "LastError: Invalid to header\nStatus: Active" },
+      },
+    ]}
+  />
+</Figure>
+
+`Hold-VerifyEmail` is the state that gives the game away. Twenty-three addresses in the first wave were guessed from a naming pattern, and guessed addresses bounce. Bounces are the fastest way to burn a sending domain, and a bounce rate is the one deliverability metric with no grace period.
+
+The honest version of this tool would have been a script that sent everything in the list. The version I actually wanted to run was one that could not send to a row I had not personally looked at. So the guardrail is a state rather than a comment, and releasing it is a manual edit — twenty-three of them.
+
+## What it cost, and what I can't tell you
+
+The math against a paid tool is not close. A seat on a mainstream sequencer runs somewhere in the tens of dollars a month with an annual commitment, plus a mailbox connection and a warm-up allowance. This runs inside a Workspace account we already paid for, and it uses about a tenth of the send quota that account already had. The marginal cost of the campaign is zero, and the fixed cost was a weekend.
+
+What I can't give you is the part everyone actually wants. The sheets I have are pre-run snapshots: every row is `Queued`, every timestamp is empty. I did not preserve a copy of the post-campaign state, so I have no send volume, no reply rate, no meetings booked. I am not going to reconstruct those from memory and present them as measurements. The tool is what this page is about, and the tool is real; the outcome number is missing, and it stays missing.
+
+## What I'd do differently
+
+**Two campaigns from one mailbox was a mistake I noticed only in a comment.** The second script ships with a warning at the top saying it sends from the same address as the first, so their caps add up. That is the correct thing to know and the wrong place to put it. Two projects with independent counters and a shared reputation should have shared the counter — a single script-properties key across both, not a paragraph asking me to remember.
+
+**The reply check should have run before anything else, always.** It runs at the top of the row loop, which is good, and a separate half-hourly scan covers the rest, which is a patch over the same gap. One reply-scan pass over every active thread, then one send pass, would have been simpler than two functions that partly overlap.
+
+**I should have tested the follow-up path against a real external address on day one.** The reply-to-self bug is invisible in testing, because a test send to yourself looks exactly like the bug. Every subsequent guardrail in the script exists because of a mistake, and the one that caught me was the one I had already written a test for.
