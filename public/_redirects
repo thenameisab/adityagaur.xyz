@@ -1,5 +1,6 @@
 # Real 301s on Cloudflare Pages. The corresponding /<path>/page.tsx stubs are the
 # fallback for any host that doesn't read this file.
+/work/company-brain/*  /writing/company-brain/  301
 /journey/*   /about/    301
 /projects/*  /work/     301
 /essays/*    /writing/  301

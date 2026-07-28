@@ -175,7 +175,10 @@ export const PAIRINGS: Record<DrumsKey, Pairing> = {
     separation: 0.245,
     slip: [1.8, 2.2],
     page: "company-brain",
-    stock: "cream",
+    /* Kraft, not cream: this piece is filed under Writing, and the stock follows
+       the section rather than the subject. It is the second Writing page and the
+       second kraft plate. */
+    stock: "kraft",
     rationale: "Confidence grades: cool, and graded.",
   },
   "pink-green": {
