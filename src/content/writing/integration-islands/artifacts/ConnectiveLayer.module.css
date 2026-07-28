@@ -1,8 +1,12 @@
-/* The diagram has a floor below which its labels stop being legible, so it keeps
-   a minimum width and scrolls inside its own frame on narrow screens rather than
-   squashing — or being silently clipped by the Figure's rounded frame. */
 .root {
   padding: var(--space-6);
+}
+
+/* The diagram has a floor below which its labels stop being legible, so it keeps
+   a minimum width and scrolls inside its own frame on narrow screens rather than
+   squashing. The scroll container is now the diagram alone rather than the whole
+   artifact, so the census below it wraps instead of scrolling sideways with it. */
+.diagram {
   overflow-x: auto;
   overscroll-behavior-x: contain;
 }
@@ -21,9 +25,11 @@
   text-transform: uppercase;
 }
 
+/* The tiers take drum A at step 1 — they are the things that exist, not the thing
+   being argued for. Overprint type on that tint measures 9.23:1. */
 .node {
-  fill: var(--bg-card);
-  stroke: var(--border-subtle);
+  fill: var(--tint-a-1);
+  stroke: var(--border-default);
   stroke-width: 1;
 }
 
@@ -33,22 +39,27 @@
   font-size: 12px;
 }
 
-/* The middle band is the argument, so it is the only filled, accented shape. */
+/* The middle band is the argument, so it gets the loud pass: orange at full
+   strength with key ink set on it, which measures 6.45:1 — the same licence every
+   other saturated fill on this plate runs on. Before this it was a 30%-alpha wash
+   of the overprint, which is what "the only accented shape" looks like when the
+   system has no vocabulary for a saturated fill. Now it does.
+   Squared, because a printed block is cut. */
 .band {
-  fill: var(--accent-dim);
-  stroke: var(--accent);
+  fill: var(--bg-loud);
+  stroke: var(--border-strong);
   stroke-width: 1;
 }
 
 .bandTitle {
-  fill: var(--text-primary);
+  fill: var(--text-on-loud);
   font-family: var(--ff-sans);
   font-size: 13px;
   font-weight: 500;
 }
 
 .bandSub {
-  fill: var(--text-secondary);
+  fill: var(--text-on-loud);
   font-family: var(--ff-mono);
   font-size: 11px;
 }
@@ -73,13 +84,84 @@
   fill: none;
 }
 
+/* The cross itself is the overprint — the "broken" ink in the state vocabulary,
+   which is exactly what a forbidden connection is. The dashed curve under it stays
+   faint: the link is hypothetical, and only the prohibition is emphatic. */
 .forbiddenMark {
-  stroke: var(--text-faint);
-  stroke-width: 1.5;
+  stroke: var(--sig-broken);
+  stroke-width: 2;
 }
 
 .forbiddenText {
-  fill: var(--text-faint);
-  font-family: var(--ff-sans);
+  fill: var(--text-muted);
+  font-family: var(--ff-mono);
   font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+/* ── The census ──
+   Six categories of system with real products under each. Layout notes only; the
+   reason this strip exists, and the line it must not cross, are in the component.
+
+   `auto-fit` with a 9rem floor rather than a fixed column count: the groups have
+   two or three vendors each and the whole strip has to survive a 335px plate. */
+.census {
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--bdw) solid var(--border-strong);
+}
+
+.censusHead {
+  color: var(--text-muted);
+}
+
+.censusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr));
+  gap: var(--space-4);
+  margin-block-start: var(--space-4);
+  list-style: none;
+  padding: 0;
+}
+
+/* Each category is a printed cell: drum A at step 1, key-ink trim, square. Six of
+   them in a row is the picture of surface area the diagram above cannot draw. */
+.censusGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--tint-a-1);
+  border: var(--bd-subtle);
+}
+
+.censusCat {
+  color: var(--text-primary);
+}
+
+.censusRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.vendor {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+/* The name is real text beside the mark, not alt text behind it. A logo is
+   decoration on top of a fact, and the fact has to be in the HTML — for a reader
+   whose images failed as much as for a crawler that never requests them. */
+.vendorName {
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.censusNote {
+  margin-block-start: var(--space-4);
+  max-inline-size: 58ch;
+  color: var(--text-muted);
 }

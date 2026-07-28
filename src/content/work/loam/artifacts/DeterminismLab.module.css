@@ -54,9 +54,12 @@
   min-block-size: 6.5rem;
   resize: vertical;
   padding: var(--space-3);
-  background: var(--bg-card);
+  /* The input document is the one field that belongs to neither drum, so it takes
+     the overprint's own tint — the colour a sheet goes where both passes landed.
+     Overprint type on it measures 10.18:1. */
+  background: var(--tint-op-1);
   border: var(--bd-subtle);
-  border-radius: var(--bdrs-sm);
+  border-radius: var(--bdrs-none);
   color: var(--text-secondary);
   font-family: var(--ff-mono);
   font-size: var(--fz-body-4);
@@ -74,11 +77,17 @@
   gap: var(--space-1);
 }
 
+/* Square, not a pill — a printed tab is cut, not rounded. The rest state is a
+   step-1 tint so the control reads as a coloured surface even before anyone
+   touches it, and the pressed state is the plate's loud ink at full strength with
+   key type on it. Fluoro pink against key measures 5.90:1, which is what licenses
+   type on a saturated fill at this size. */
 .pill {
   padding: var(--space-1) var(--space-3);
-  border: var(--bdw) solid transparent;
-  border-radius: var(--bdrs-full);
-  color: var(--text-muted);
+  border: var(--bdw) solid var(--border-subtle);
+  border-radius: var(--bdrs-none);
+  background: var(--tint-b-1);
+  color: var(--text-secondary);
   font-family: var(--ff-mono);
   font-size: var(--fz-body-4);
   transition:
@@ -88,13 +97,15 @@
 }
 
 .pill:hover {
+  background: var(--tint-b-2);
+  border-color: var(--border-default);
   color: var(--text-primary);
 }
 
 .pill[aria-pressed="true"] {
-  color: var(--text-primary);
-  background: var(--bg-card);
-  border-color: var(--border-default);
+  background: var(--bg-loud);
+  border-color: var(--border-strong);
+  color: var(--text-on-loud);
 }
 
 /* ── Forbidden reads ── */
@@ -106,24 +117,48 @@
   margin-block-start: var(--space-3);
 }
 
+/* A switched-on forbidden read is the READER's doing, so the row takes drum B —
+   the "mine" ink — as a tint, and the tint is the whole signal. No coloured side
+   stripe: that device is on the ban list, and a filled surface says the same
+   thing without pretending to be structure.
+ *
+ * The row's own quiet type steps up with the tint, which is the ladder's rule
+   made mechanical: --text-faint is not permitted on any tint step, so at step 2
+   the detail and scope text become muted (6.12:1 on this plate) instead. */
 .readRow {
   display: grid;
   grid-template-columns: 1.1rem 1fr auto;
   gap: var(--space-3);
   align-items: baseline;
-  padding: var(--space-2) var(--space-2) var(--space-2) 0;
+  padding: var(--space-2);
   text-align: start;
   color: var(--text-muted);
-  border-radius: var(--bdrs-xs);
-  transition: color var(--dur-instant) var(--ease-out);
+  border-radius: var(--bdrs-none);
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out);
 }
 
 .readRow:hover {
+  background: var(--tint-b-1);
   color: var(--text-secondary);
 }
 
 .readRow[aria-pressed="true"] {
+  background: var(--tint-b-2);
   color: var(--text-primary);
+}
+
+.readDetail {
+  color: var(--text-faint);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.readRow:hover .readDetail,
+.readRow:hover .readScope,
+.readRow[aria-pressed="true"] .readDetail,
+.readRow[aria-pressed="true"] .readScope {
+  color: var(--text-muted);
 }
 
 /* An empty square that fills when the forbidden read is switched on. No
@@ -139,9 +174,12 @@
     border-color var(--dur-instant) var(--ease-out);
 }
 
+/* Drum B, not the overprint. Switching a forbidden read on is the reader's own
+   action, and "mine" is drum B in the state vocabulary — the overprint means
+   broken, which is what the DIGEST does two panels over, not what this box is. */
 .readRow[aria-pressed="true"] .box {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--sig-mine);
+  border-color: var(--sig-mine);
 }
 
 .readName {
@@ -204,27 +242,46 @@
 }
 
 /* `inline-block` so the transform in globals.css §13 has a box to move. An
-   inline box ignores translate. */
+   inline box ignores translate.
+ *
+ * The digest is now a printed chip rather than bare mono: a step-1 drum A tint,
+ * squared off, keyed to the "held" ink. Sixteen hex characters is the densest
+ * type in the artifact and giving it its own field is what stops it reading as a
+ * wall of grey — 13.67:1 with key ink, so the chip costs nothing in legibility. */
 .hash {
   display: inline-block;
+  padding: 2px var(--space-2);
+  background: var(--tint-a-1);
   color: var(--text-primary);
   font-family: var(--ff-mono);
   font-size: var(--fz-body-4);
   white-space: nowrap;
+  transition: background-color var(--dur-base) var(--ease-out);
 }
 
-/* A drifted digest prints in the overprint and out of register. The colour is
-   the plate's own third ink and the offset is its own misregistration, so this
-   row needs nothing that the plate did not already load. */
+/* A drifted digest prints in the overprint, out of register, on the overprint's
+   own tint. Three signals for one state — colour, offset, and field — and none
+   of them is the only carrier, because the Status token beside it says DRIFT in
+   words and in a filled square. */
 .hash[data-slip] {
+  background: var(--tint-op-1);
   color: var(--accent);
 }
 
-/* Narrow: the status token drops under the digest rather than squeezing a third
-   column into 335px. */
+/* Narrow: one column, so the digest gets a line of its own.
+ *
+ * Sixteen mono characters is 115px and a chip adds 16px of field to that; beside
+ * a machine label in a 327px column the pair overflows by 7px, and the plate
+ * clips rather than scrolls, so the last character of a digest would be cut. A
+ * digest is the one string in this artifact that must survive intact, and giving
+ * it its own row is cheaper than giving up the field the chip provides. */
 @media (max-width: 30em) {
   .run {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
+  }
+
+  .hash {
+    justify-self: start;
   }
 }
 
@@ -268,11 +325,17 @@
 
 /* ── Golden bar ── */
 
+/* The golden panel is the one surface in this artifact that gets a density ramp.
+   It earns it: it is the only panel describing a RECORD rather than a live value,
+   and the ramp — dots growing toward the block-end, drum A screened at 40% — is
+   the closest a two-drum press comes to saying "this is the reference sheet".
+   Square, and hairlined in key ink, because a proof sheet has a trimmed edge. */
 .golden {
   margin-block-start: var(--space-6);
   padding: var(--space-4);
-  background: var(--bg-card);
-  border-radius: var(--bdrs-sm);
+  background: var(--tint-a-1);
+  border: var(--bdw) solid var(--border-strong);
+  border-radius: var(--bdrs-none);
 }
 
 .goldenRow {
@@ -289,39 +352,57 @@
   font-size: var(--fz-body-4);
 }
 
+/* The loud pass, on the one control that changes the record. Fluoro pink at full
+   strength with key type — 5.90:1 — squared and hairlined, so it reads as an ink
+   block rather than as a UI button. Hover presses it into the paper: key ink
+   ground, stock-coloured type, which is the same swap `--bg-btn-primary` already
+   makes everywhere else on the site.
+ *
+ * Disabled is the honest opposite: no ink at all. Nothing was printed, so there
+ * is nothing to press. */
 .button {
   padding: var(--space-2) var(--space-4);
-  background: var(--bg-btn-primary);
-  color: var(--text-btn-primary);
-  border-radius: var(--bdrs-sm);
+  background: var(--bg-loud);
+  border: var(--bdw) solid var(--border-strong);
+  color: var(--text-on-loud);
+  border-radius: var(--bdrs-none);
   white-space: nowrap;
-  transition: background-color var(--dur-instant) var(--ease-out);
+  transition:
+    background-color var(--dur-instant) var(--ease-out),
+    color var(--dur-instant) var(--ease-out);
 }
 
 .button:hover {
-  background: var(--bg-btn-primary-hover);
+  background: var(--bg-btn-primary);
+  color: var(--text-btn-primary);
 }
 
 .button:disabled {
   background: none;
-  border: var(--bd-subtle);
-  color: var(--text-faint);
+  border-color: var(--border-subtle);
+  color: var(--text-muted);
   cursor: default;
 }
 
+/* Muted, not faint: this note sits on a tint, and faint is not permitted there. */
 .goldenNote {
   margin-block-start: var(--space-2);
-  color: var(--text-faint);
+  color: var(--text-muted);
 }
 
 .reset {
   margin-block-start: var(--space-4);
   color: var(--text-muted);
   text-decoration: underline;
-  text-decoration-color: var(--border-default);
+  /* The rule under the link is drum B: it is the reader's own escape hatch, and
+     "mine" is drum B everywhere else in this artifact. */
+  text-decoration-color: var(--sig-mine);
+  text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
+  transition: color var(--dur-instant) var(--ease-out);
 }
 
 .reset:hover {
   color: var(--text-primary);
+  text-decoration-thickness: 2px;
 }

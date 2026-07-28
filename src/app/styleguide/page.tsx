@@ -5,7 +5,7 @@ import Fingerprint, { hexCells } from "@/components/artifacts/Fingerprint";
 import InkCredit from "@/components/artifacts/InkCredit";
 import Status from "@/components/artifacts/Status";
 import { allBrands } from "@/lib/brands";
-import { contrastRatio, passes, ratio } from "@/lib/contrast";
+import { contrastRatio, mixSrgb, passes, ratio } from "@/lib/contrast";
 import {
   INKS,
   KEY,
@@ -443,6 +443,153 @@ export default function Styleguide() {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* ── The loud pass ──
+              The mirror of the knockout table above, and the reason the tint
+              ladder and --ink-loud exist at all. Law 1 measured inks against
+              CREAM type, which is the direction that fails; against KEY type five
+              of the eight drums clear AA outright. Both tables are computed from
+              the same INKS map, so they cannot disagree about a hex. */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">
+              Key type on a solid ink is a different question
+            </h3>
+            <p className="type-body-3 text-muted">
+              Key ink on a full-strength drum. This is what licenses the loud pass
+              — filled buttons, selected states, and the marker swipe — and it is
+              the measurement Law 1 never took, because Law 1 was asking about
+              knockout. Each pairing names whichever of its two drums clears AA
+              here as its <code className="type-caption-1">--ink-loud</code>;
+              purple + teal is the one plate with no body-safe option, so its loud
+              pass is display-size only.
+            </p>
+            <div className={styles.tableWrap} data-scrollx>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th scope="col">Key type on</th>
+                    <th scope="col">Measured</th>
+                    <th scope="col">Verdict</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(INKS)
+                    .map(
+                      ([name, ink]) =>
+                        [name, ink, contrastRatio(KEY, ink.hex)] as const,
+                    )
+                    .sort((a, b) => b[2] - a[2])
+                    .map(([name, ink, r]) => (
+                      <tr key={name}>
+                        <th scope="row" className={styles.tokenCell}>
+                          <span
+                            className={styles.dot}
+                            style={{ background: ink.hex, borderColor: KEY }}
+                          />
+                          {ink.label}
+                        </th>
+                        <td className="type-caption-1">{ratio(KEY, ink.hex)}</td>
+                        <td>
+                          <span
+                            className={styles.result}
+                            data-result={r >= 4.5 ? "pass" : "fail"}
+                          >
+                            {r >= 4.5
+                              ? "TEXT"
+                              : r >= 3
+                                ? "DISPLAY ONLY"
+                                : "NEVER"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ── The tint ladder ──
+              Three steps per ink per stock, with the ratio for every text role
+              that is allowed to sit on them. This is the table that catches the
+              easiest new mistake in the system: putting --text-faint on a tint,
+              which passes AA in most cells and still lands under the site's own
+              4.91 floor in several. */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">
+              The tint ladder, per stock
+            </h3>
+            <p className="type-body-3 text-muted">
+              An ink at low coverage is a pastel, and a pastel is where this system
+              gets to be colourful without arguing with its own contrast law. Step
+              1 takes key, secondary, or muted type; steps 2 and 3 take key only.
+              Faint is measured per cell rather than licensed — it clears the 4.91
+              floor on some step-1 tints and not others.
+            </p>
+            <div className={styles.tableWrap} data-scrollx>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th scope="col">Tint</th>
+                    <th scope="col">Key</th>
+                    <th scope="col">Muted</th>
+                    <th scope="col">Faint</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(STOCKS).flatMap(([stockName, stock]) =>
+                    ([12, 22, 34] as const).flatMap((pct) =>
+                      Object.entries(INKS)
+                        .filter(([n]) => n === "orange" || n === "teal")
+                        .map(([name, ink]) => {
+                          const tint = mixSrgb(ink.hex, stock.hex, pct / 100);
+                          const muted = mixSrgb(KEY, stock.hex, 0.76);
+                          const faint = mixSrgb(KEY, stock.hex, 0.68);
+                          const faintR = contrastRatio(faint, tint);
+                          return (
+                            <tr key={`${stockName}-${name}-${pct}`}>
+                              <th scope="row" className={styles.tokenCell}>
+                                <span
+                                  className={styles.dot}
+                                  style={{ background: tint, borderColor: KEY }}
+                                />
+                                {ink.label} {pct}% on {stock.label}
+                              </th>
+                              <td className="type-caption-1">
+                                {ratio(KEY, tint)}
+                              </td>
+                              <td className="type-caption-1">
+                                {pct === 12 ? ratio(muted, tint) : "—"}
+                              </td>
+                              <td>
+                                <span
+                                  className={styles.result}
+                                  data-result={
+                                    pct === 12 && faintR >= 4.91
+                                      ? "pass"
+                                      : "fail"
+                                  }
+                                >
+                                  {pct === 12
+                                    ? faintR >= 4.91
+                                      ? ratio(faint, tint)
+                                      : `${ratio(faint, tint)} — NO`
+                                    : "NOT PERMITTED"}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        }),
+                    ),
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <p className="type-body-4 text-faint">
+              Shown for the two drums the shipped plates use at surface level —
+              orange and teal, which are Integration Islands&rsquo; pair and half
+              of Loam&rsquo;s. Every other ink follows the same arithmetic.
+            </p>
           </div>
 
           {/* ── The ten plates, live ── */}

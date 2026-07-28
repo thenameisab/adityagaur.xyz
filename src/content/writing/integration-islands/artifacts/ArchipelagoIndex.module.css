@@ -52,11 +52,22 @@
 
 .anchor {
   flex: 1;
+  padding: 2px var(--space-2);
+  border: var(--bdw) solid transparent;
   color: var(--text-faint);
-  transition: color var(--dur-instant) var(--ease-out);
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
 }
 
+/* The anchor the reader's own score has landed against takes drum B — "mine" —
+   at step 1, which is the step where secondary type is still measured safe. It is
+   a light touch on purpose: the anchors are reference text, and the score itself
+   is what the loud ink is for. */
 .anchor[data-active="true"] {
+  background: var(--tint-b-1);
+  border-color: var(--border-subtle);
   color: var(--text-secondary);
 }
 
@@ -67,11 +78,20 @@
   gap: var(--space-1);
 }
 
+/* ── The 1–5 scale, printed as an ink ladder ──
+   The scale runs from "in good shape" to "on fire", so the notches take more ink
+   as they climb: 1 and 2 at step 1, 3 at step 2, 4 and 5 at step 3. The scale's
+   direction is legible before you read a single digit, which is the whole point
+   of a coloured control — and the digits are still there, so nothing depends on
+   seeing the colour.
+
+   Squared, because a notch on a printed scale is cut. */
 .notch {
   inline-size: 2.25rem;
   padding-block: var(--space-2);
+  background: var(--tint-a-1);
   border: var(--bdw) solid var(--border-subtle);
-  border-radius: var(--bdrs-xs);
+  border-radius: var(--bdrs-none);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   transition:
@@ -80,15 +100,26 @@
     background-color var(--dur-instant) var(--ease-out);
 }
 
+.notch[data-step="3"] {
+  background: var(--tint-a-2);
+}
+
+.notch[data-step="4"],
+.notch[data-step="5"] {
+  background: var(--tint-a-3);
+}
+
 .notch:hover {
   border-color: var(--border-strong);
   color: var(--text-primary);
 }
 
+/* Selected: the loud pass, with a key-ink trim so the chosen notch reads as a
+   block of ink laid over the ladder rather than as one rung lighting up. */
 .notch[aria-checked="true"] {
-  background: var(--bg-btn-primary);
-  border-color: var(--bg-btn-primary);
-  color: var(--text-btn-primary);
+  background: var(--bg-loud);
+  border-color: var(--border-strong);
+  color: var(--text-on-loud);
 }
 
 /* ── Result ── */
@@ -116,6 +147,10 @@
   color: var(--text-faint);
 }
 
+/* The band name is the verdict, and it is the one thing a reader will quote back
+   at themselves, so it gets the plate's marker swipe. The swipe supplies its own
+   colour (key ink on the loud pass), so this rule only handles the case where the
+   plate has not loaded — outside a plate the band is still the accent. */
 .band {
   color: var(--accent);
 }
@@ -131,20 +166,35 @@
    climbs. It is a mirror, not a measurement, so it stays a single simple bar
    rather than a gauge with a needle. */
 
+/* Land is drum A, water is drum B. That is not decoration: this plate's two
+   drums are orange and teal, and a rising sea reading teal against warm land is
+   the one place on the page where the ink choice and the subject are the same
+   decision. Squared off, and taller than before — a printed band, not a progress
+   bar. */
 .sea {
   position: relative;
   margin-block-start: var(--space-5);
-  block-size: 0.5rem;
-  border-radius: var(--bdrs-full);
-  background: var(--bg-card);
+  block-size: 0.75rem;
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-none);
+  background: var(--tint-a-2);
   overflow: hidden;
 }
 
+/* The waterline is screened rather than solid: dots at a 5px pitch over the ink,
+   masked so coverage thins toward the leading edge. A tide does not have a hard
+   border and neither does a second pass running out of ink. */
 .water {
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
-  background: var(--accent);
+  background-color: var(--drum-b);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--overprint) 45%, transparent) 1px,
+    transparent 1.3px
+  );
+  background-size: 5px 5px;
+  mask-image: linear-gradient(to right, #000 0%, #000 72%, rgb(0 0 0 / 55%) 100%);
   transition: inline-size var(--dur-base) var(--ease-out);
 }
 

@@ -2,12 +2,16 @@
   padding: var(--space-5) var(--space-6) var(--space-6);
 }
 
+/* The controls are the reader's own instrument, so the panel takes drum B — the
+   "mine" ink — at step 1, with a density ramp running up into it. */
 .controls {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
   gap: var(--space-5);
-  padding-block-end: var(--space-5);
-  border-block-end: var(--bd-subtle);
+  padding: var(--space-4);
+  background: var(--tint-b-1);
+  border: var(--bd-subtle);
+  --ramp-angle: to top;
 }
 
 .field {
@@ -48,21 +52,25 @@
   border-radius: var(--bdrs-full);
 }
 
+/* The thumb is the loud ink with a key-ink trim: the one thing on this panel the
+   reader physically moves, printed as the brightest mark on the plate. Square,
+   like every other mark here — a round thumb is a screen idiom. */
 .range::-webkit-slider-thumb {
   appearance: none;
-  inline-size: 0.85rem;
-  block-size: 0.85rem;
-  margin-block-start: -0.375rem;
-  border-radius: var(--bdrs-full);
-  background: var(--accent);
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  margin-block-start: -0.4rem;
+  border: var(--bdw) solid var(--border-strong);
+  border-radius: var(--bdrs-none);
+  background: var(--bg-loud);
 }
 
 .range::-moz-range-thumb {
-  inline-size: 0.85rem;
-  block-size: 0.85rem;
-  border: none;
-  border-radius: var(--bdrs-full);
-  background: var(--accent);
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  border: var(--bdw) solid var(--border-strong);
+  border-radius: var(--bdrs-none);
+  background: var(--bg-loud);
 }
 
 .range:focus-visible {
@@ -91,6 +99,19 @@
   stroke-width: 1;
 }
 
+/* The screened area under the curve. `fill` comes from the pattern in the
+   component; the dot inside the pattern takes drum A from here, so the ink is a
+   token rather than a hardcoded colour inside the SVG. */
+.dot {
+  fill: var(--drum-a);
+}
+
+.area {
+  /* The pattern and the mask do the work; this is only here to document that the
+     area is deliberately not stroked. A screen has no edge. */
+  stroke: none;
+}
+
 .curve {
   fill: none;
   stroke: var(--accent);
@@ -98,12 +119,17 @@
   stroke-linecap: round;
 }
 
+/* The reader's own position on the curve, in drum B — "mine" — rather than in the
+   overprint the curve itself is drawn in. Squared, and large enough to read as a
+   register mark. */
 .marker {
-  fill: var(--accent);
+  fill: var(--sig-mine);
+  stroke: var(--border-strong);
+  stroke-width: 1;
 }
 
 .markerLine {
-  stroke: var(--accent);
+  stroke: var(--sig-mine);
   stroke-width: 1;
   stroke-dasharray: 3 3;
 }

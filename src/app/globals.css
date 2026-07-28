@@ -413,10 +413,25 @@ ol[class] { list-style: none; }
    The slip is FNV-1a over the page slug, two nibbles per axis mapped to 0–3px.
    Deterministic on purpose: a site whose figures render differently on every
    load cannot make Loam's argument about determinism with a straight face. */
+/* --ink-loud is the pairing's SATURATED ink — the one that may be laid down at
+   full strength with key ink set on top of it. It exists because Law 1 above was
+   under-measured: it tested inks against CREAM type, which is the direction that
+   fails. Against KEY type a pure ink is a different proposition entirely, and the
+   ratios are computed on /styleguide#plates from the same tokens:
+
+     yellow 14.56  ·  orange 6.45  ·  green 5.92  ·  fluoro pink 5.90
+     bright red 5.25  ·  teal 4.00  ·  blue 3.85  ·  purple 3.31
+
+   So each pairing names whichever of its two drums clears AA with key type, and
+   that ink is the plate's loud pass: filled buttons, selected states, and the
+   highlighter swipe. Law 1 stands unchanged for the direction it measured —
+   stock-coloured type on ink is still display-only, and no ink ever sets body
+   copy in its own colour. */
 .drums-teal-pink {          /* loam */
   --drum-a: var(--riso-teal);
   --drum-b: var(--riso-fluoro-pink);
   --overprint: #00255f;
+  --ink-loud: var(--riso-fluoro-pink); /* 5.90 with key */
   --slip-x: 2.8px;
   --slip-y: 0.8px;
 }
@@ -425,6 +440,7 @@ ol[class] { list-style: none; }
   --drum-a: var(--riso-orange);
   --drum-b: var(--riso-teal);
   --overprint: #003719;
+  --ink-loud: var(--riso-orange); /* 6.45 with key */
   --slip-x: 2.0px;
   --slip-y: 1.6px;
 }
@@ -433,6 +449,7 @@ ol[class] { list-style: none; }
   --drum-a: var(--riso-blue);
   --drum-b: var(--riso-bright-red);
   --overprint: #002648;
+  --ink-loud: var(--riso-bright-red); /* 5.25 with key */
   --slip-x: 1.8px;
   --slip-y: 2.8px;
 }
@@ -441,6 +458,7 @@ ol[class] { list-style: none; }
   --drum-a: var(--riso-fluoro-pink);
   --drum-b: var(--riso-blue);
   --overprint: #002284;
+  --ink-loud: var(--riso-fluoro-pink); /* 5.90 with key */
   --slip-x: 0.2px;
   --slip-y: 2.4px;
 }
@@ -449,6 +467,7 @@ ol[class] { list-style: none; }
   --drum-a: var(--riso-green);
   --drum-b: var(--riso-purple);
   --overprint: #003c3c;
+  --ink-loud: var(--riso-green); /* 5.92 with key */
   --slip-x: 2.4px;
   --slip-y: 1.0px;
 }
@@ -457,6 +476,7 @@ ol[class] { list-style: none; }
   --drum-a: var(--riso-orange);
   --drum-b: var(--riso-purple);
   --overprint: #76271f;
+  --ink-loud: var(--riso-orange); /* 6.45 with key */
   --slip-x: 2.8px;
   --slip-y: 0.2px;
 }
@@ -465,6 +485,7 @@ ol[class] { list-style: none; }
   --drum-a: var(--riso-green);
   --drum-b: var(--riso-bright-red);
   --overprint: #003523;
+  --ink-loud: var(--riso-green); /* 5.92 with key; red is 5.25 and also viable */
   --slip-x: 3.0px;
   --slip-y: 0.4px;
 }
@@ -473,6 +494,7 @@ ol[class] { list-style: none; }
   --drum-a: var(--riso-blue);
   --drum-b: var(--riso-yellow);
   --overprint: #006d00;
+  --ink-loud: var(--riso-yellow); /* 14.56 with key — the loudest available */
   --slip-x: 2.2px;
   --slip-y: 3.0px;
 }
@@ -481,6 +503,10 @@ ol[class] { list-style: none; }
   --drum-a: var(--riso-purple);
   --drum-b: var(--riso-teal);
   --overprint: #002f5a;
+  /* The one pairing with NO body-safe loud ink: teal reaches 4.00 with key and
+     purple only 3.31. So this plate's loud pass is display-size only (24px+,
+     where 3:1 is the bar), and company-brain must not put body copy on it. */
+  --ink-loud: var(--riso-teal); /* 4.00 with key — large text only */
   --slip-x: 1.8px;
   --slip-y: 2.2px;
 }
@@ -489,6 +515,7 @@ ol[class] { list-style: none; }
   --drum-a: var(--riso-fluoro-pink);
   --drum-b: var(--riso-green);
   --overprint: #00303f;
+  --ink-loud: var(--riso-fluoro-pink); /* 5.90 with key; green is 5.92 too */
   --slip-x: 0.4px;
   --slip-y: 0.8px;
 }
@@ -553,6 +580,50 @@ ol[class] { list-style: none; }
   --sig-void: color-mix(in srgb, var(--riso-key) 30%, transparent); /* absent,
                   projected, unknown — always paired with a dashed edge */
 
+  /* ── The tint ladder ──
+     An ink at low coverage is a pastel, and a pastel is the one place this
+     system can be genuinely colourful without arguing with its own contrast
+     law: key ink on ANY step below sits between 7.11:1 and 13.93:1 across both
+     stocks. Three steps per ink, so a plate has nine coloured surfaces on top
+     of its three inks — which is what lets colour carry meaning (held / mine /
+     broken) at surface level instead of only at mark level.
+
+     One rule, and it is the whole safety argument. Measured on both stocks:
+
+       step 1 (12%) — key 11.11–13.93, muted 5.79–6.84, faint 4.44–5.17
+       step 2 (22%) — key  9.15–12.45, muted 4.77–6.12
+       step 3 (34%) — key  7.11–10.93
+
+     So: step 1 takes key, secondary, or muted type. Steps 2 and 3 take KEY ONLY.
+
+     --text-faint is the one role that has to be measured per plate rather than
+     licensed by the ladder. On step 1 it lands at 5.07 (drum A on cream) and
+     4.99 (drum A on kraft) — both over the site's 4.91 floor — but at 4.79 on
+     drum B on kraft, which is under it. So faint on a tint is a per-plate
+     decision with a number attached, never a default; where a tinted panel just
+     needs quiet type, the type is muted and the tint is step 1. */
+  --tint-a-1: color-mix(in srgb, var(--drum-a) 12%, var(--stock-base));
+  --tint-a-2: color-mix(in srgb, var(--drum-a) 22%, var(--stock-base));
+  --tint-a-3: color-mix(in srgb, var(--drum-a) 34%, var(--stock-base));
+
+  --tint-b-1: color-mix(in srgb, var(--drum-b) 12%, var(--stock-base));
+  --tint-b-2: color-mix(in srgb, var(--drum-b) 22%, var(--stock-base));
+  --tint-b-3: color-mix(in srgb, var(--drum-b) 34%, var(--stock-base));
+
+  /* The overprint tints grey out fast — 34% is 7.11:1 with key and 3.71 with
+     muted — so this ink stops at two steps rather than three. */
+  --tint-op-1: color-mix(in srgb, var(--overprint) 12%, var(--stock-base));
+  --tint-op-2: color-mix(in srgb, var(--overprint) 22%, var(--stock-base));
+
+  /* The loud pass. --ink-loud is set per pairing (see the .drums-* block above).
+     The fallback is deliberately the top tint step rather than an ink: a drum
+     class that forgets to name a loud ink degrades to a pale surface that is
+     still 10.2:1 with key type, instead of to a saturated one that might not be.
+     Type on a loud fill is ALWAYS key ink — that is what the measurement
+     licenses, and nothing else. */
+  --bg-loud: var(--ink-loud, var(--tint-a-3));
+  --text-on-loud: var(--riso-key);
+
   /* The halftone dot, in the stock's own darker shade.
      7%, down from 14%. The problem with the heavier screen was never the
      measured contrast — averaged out it only cost about 0.2 of a ratio point.
@@ -561,6 +632,13 @@ ol[class] { list-style: none; }
      and small type read as fuzzy rather than as low-contrast. Halving the ink
      and shrinking the dot separates the two scales again. */
   --screen-dot: color-mix(in srgb, var(--riso-key) 7%, transparent);
+
+  /* The ramp dot, for [data-ramp] in §14. Drum A rather than key ink, and
+     heavier than the sheet screen, because this one is a deliberate ink
+     gradient rather than the paper's own unevenness. It only ever sits on a
+     tint and only ever darkens toward one edge, so the worst case under it is
+     that tint's own measured figure with the ramp at full density. */
+  --screen-dot-ramp: color-mix(in srgb, var(--drum-a) 40%, transparent);
 
   color-scheme: light;
 }
@@ -802,6 +880,20 @@ hr {
   font-size: var(--fz-caption-1);
   line-height: var(--lh-medium);
   letter-spacing: var(--lts-normal);
+}
+
+/* The stamp. Mono, uppercase, tracked wide — the voice of a job ticket rather
+   than of an interface, and the third family in a plate's type mix (serif
+   display, sans controls, mono data). It is a role and not a plate device, so it
+   lives here with the rest of the scale and works in any theme; plates are just
+   where the register it belongs to actually comes up. */
+.type-stamp {
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-fine);
+  letter-spacing: var(--lts-wider);
+  text-transform: uppercase;
 }
 
 /* ─────────────────────────────────────────── 7. Color utilities ── */
@@ -1189,5 +1281,140 @@ hr {
 @media (prefers-reduced-motion: no-preference) {
   .theme-plate [data-slip-in] {
     animation: slipped-pass 550ms var(--ease-out) both;
+  }
+}
+
+/* ───────────────────────────────────────── 14. The loud pass ── */
+/* Three devices, all of them things a two-drum press can actually do, all of
+   them plate-scoped, and all of them keyed to data attributes for the same
+   reason as §13: artifacts live in CSS Modules and an attribute selector is the
+   one hook that survives scoping.
+ *
+ * Together these are what make a plate read as PRINTED IN COLOUR rather than as
+ * a light-themed section with two accent colours available. The tint ladder in
+ * §3 does the surfaces; this does the marks. */
+
+/* ── The swipe ──
+   A marker pass in the plate's loud ink, laid behind type. This is the one place
+   the system puts a saturated ink under running text, and it is licensed by
+   measurement rather than by taste: type on a swipe is always key ink, and every
+   --ink-loud is a drum that clears AA against key (see the .drums-* block).
+   Yellow reaches 14.56.
+
+   `background-size` at 0.9em rather than 100% is deliberate — a marker does not
+   cover a line, it covers the x-height and a bit. Where the glyph overhangs the
+   ink it sits on bare stock at 15.87:1, so both halves of the letterform are
+   safely above AA and the uneven coverage is the point.
+
+   `box-decoration-break: clone` is what makes a swipe that wraps across two
+   lines print as two swipes instead of one long band with a hole in it. */
+.theme-plate [data-mark] {
+  padding-inline: 0.2em;
+  color: var(--text-on-loud);
+  background-image: linear-gradient(var(--bg-loud), var(--bg-loud));
+  background-repeat: no-repeat;
+  background-position: 0 0.58em;
+  background-size: 100% 0.92em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* The swipe wipes on, left to right, as the plate enters — the gesture of a hand
+   drawing a line rather than a box fading up. `background-size` is not a
+   compositor property, but a plate carries a handful of these and each animates
+   once on entry, which is a different cost profile from something animating
+   every frame of a scroll. */
+@keyframes mark-swipe {
+  from { background-size: 0% 0.92em; }
+  to   { background-size: 100% 0.92em; }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .theme-plate [data-mark] {
+      animation-name: mark-swipe;
+      animation-duration: auto;
+      animation-timing-function: var(--ease-out);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 24%;
+    }
+  }
+}
+
+/* The same swipe, drawn in response to an INTERACTION rather than to a scroll
+   position — so it is time-based, exactly as the slipped pass in §13 is, and for
+   the same reason. Trigger is a React `key` change: the node remounts and the
+   animation runs once. Declared after the scroll-driven rule so it wins on
+   source order for an element carrying both.
+ *
+ * 420ms rather than the 550 of a slipped pass. A swipe is one continuous gesture
+ * and a press settling is a bounce; the gesture wants to be a little quicker than
+ * the mechanism. */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-plate [data-mark][data-mark-in] {
+    animation: mark-swipe 420ms var(--ease-out) both;
+    animation-timeline: auto;
+  }
+}
+
+/* ── The ramp ──
+   A riso cannot blend two inks, so it has no gradient in the CSS sense. What it
+   does have is a DENSITY gradient: the same ink, screened, with the dots growing
+   across the sheet. That is a real mechanism and it is the honest version of
+   what a fade wants to be here — which also keeps it clear of the "no gradient
+   blobs" line in BUILD-BRIEF §1.
+ *
+ * Two layers do it: a dot pattern at a fixed pitch, masked by a linear gradient
+ * so coverage falls off toward one edge. The dots are drum A at 40%, which only
+ * ever darkens a tint it sits on; the worst case under a ramp at full density is
+ * the host tint's own measured ratio.
+ *
+ * Painted on ::after rather than on the element so the host keeps its own
+ * background, and both `position: relative` and the stacking context are set
+ * here rather than being required of every caller. `isolation: isolate` is
+ * load-bearing: it makes the host a stacking context, which is what puts a
+ * z-index of -1 ABOVE the host's own tint and BELOW its text. Without it the
+ * negative layer would fall behind the tint and disappear entirely.
+ * --ramp-angle points it; the default runs to the block-end. */
+.theme-plate [data-ramp] {
+  position: relative;
+  isolation: isolate;
+}
+
+.theme-plate [data-ramp]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(
+    var(--screen-dot-ramp) 1.1px,
+    transparent 1.4px
+  );
+  background-size: 6px 6px;
+  mask-image: linear-gradient(
+    var(--ramp-angle, to bottom),
+    transparent 0%,
+    rgb(0 0 0 / 55%) 55%,
+    #000 100%
+  );
+}
+
+/* ── The hover slip ──
+   The whole system in one gesture: touch anything interactive and its second
+   pass slides out of register, then settles when you let go.
+ *
+ * Uses the `translate` property rather than `transform`, so it composes with the
+ * permanent misregistration in §13 instead of overwriting it — an element can be
+ * both out of register AND slipping under the cursor. */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-plate [data-slip-hover] {
+    transition: translate var(--dur-fast) var(--ease-out);
+  }
+
+  .theme-plate [data-slip-hover]:hover,
+  .theme-plate [data-slip-hover]:focus-visible {
+    translate: var(--slip-x, 0px) var(--slip-y, 0px);
   }
 }
