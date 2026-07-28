@@ -782,6 +782,22 @@ hr {
   border-radius: var(--bdrs-full);
   background: var(--text-faint);
 }
+
+/* A classed list inside prose is a component, not prose — same reasoning as the
+   `ol[class]` reset in §1, extended to the marker this block draws. Artifact
+   lists bring their own markers, and `list-style: none` above never stopped this
+   one because a pseudo-element isn't a list marker: the Landscape chips each
+   carried a stray dot floating off their top-left corner.
+   `[class]` is what raises this above `.prose ul > li::before`; a bare
+   `.chips > li::before` in a CSS module has one class fewer and loses the
+   cascade. Only `content` is reset — the marker is absolutely positioned, so
+   dropping it shifts nothing. The inherited `.prose li` indent is left alone
+   here on purpose: several artifacts have been laid out around it, and each one
+   opts out in its own file if it doesn't want it. */
+.prose :is(ul, ol)[class] > li::before {
+  content: none;
+}
+
 .prose ol { counter-reset: prose-ol; }
 .prose ol > li { counter-increment: prose-ol; }
 .prose ol > li::before {

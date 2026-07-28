@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import { BrandMark } from "@/components/Brand";
 import styles from "./Switcher.module.css";
 
 export type SwitcherPanel = {
@@ -9,7 +10,22 @@ export type SwitcherPanel = {
   title: string;
   body: string;
   /** Optional detail rows. `marker` is a short prefix — a count, a state, a glyph. */
-  items?: { marker?: string; label: string; detail?: string }[];
+  items?: {
+    marker?: string;
+    label: string;
+    detail?: string;
+    /**
+     * Products this row is about, as a row of logos beneath the text.
+     *
+     * Deliberately separate from `detail` rather than replacing it. A row that
+     * reads "GoSearch, and Dashworks until it was sunset in July 2025" is a
+     * sentence, not a list, and turning it into logo chips would delete the
+     * clause that matters. The marks are recognition; the prose keeps the
+     * qualifications — and because every name is already in the text, the row is
+     * `aria-hidden` rather than announced twice.
+     */
+    brands?: string[];
+  }[];
 };
 
 type Props = {
@@ -97,6 +113,13 @@ export default function Switcher({ panels, label }: Props) {
                     <span>
                       <span className={styles.itemLabel}>{item.label}</span>
                       {item.detail ? ` — ${item.detail}` : null}
+                      {item.brands ? (
+                        <span className={styles.brands} aria-hidden="true">
+                          {item.brands.map((b) => (
+                            <BrandMark key={b} name={b} size={18} />
+                          ))}
+                        </span>
+                      ) : null}
                     </span>
                   </li>
                 ))}

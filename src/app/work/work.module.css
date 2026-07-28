@@ -113,6 +113,20 @@
   color: var(--text-secondary);
 }
 
+/* The Stack row. Each item is one inline-flex unit so a logo never separates
+   from its label, and the separator travels with the item that follows it —
+   which means the row wraps between products rather than mid-pair. */
+.stackItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  margin-inline-end: 0.4em;
+}
+
+.stackSep {
+  color: var(--text-faint);
+}
+
 .outcome {
   margin-block-start: var(--space-8);
   padding-inline-start: var(--space-5);

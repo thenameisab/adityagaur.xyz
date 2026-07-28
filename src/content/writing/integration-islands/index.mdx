@@ -42,7 +42,7 @@ You’re a founder with a small team, a few early customers, and a product that 
 
 - Finance wants clean books, so you connect accounting and maybe a lightweight **ERP**.
 
-None of these feel like irreversible decisions. They’re quick calls, usually made in a Slack thread.
+None of these feel like irreversible decisions. They’re quick calls, usually made in a <Brand name="Slack" /> thread.
 
 *“We just need something that works. We can always change it later.”*
 
@@ -154,7 +154,7 @@ And it brought its own sprawl: an ingestion tool, a warehouse, a transformation 
 
 ### Era 4: Integration-as-a-Category — Connecting Islands With More Islands
 
-As both sides grew more complex, someone had to own the bridges. If you were lucky, an early engineer quietly became “the integration person.” If you were less lucky, integrations accumulated wherever there was a free afternoon and a Zapier account. Eventually the pain got big enough that a whole new category appeared: integration platforms and workflow automation tools — iPaaS.
+As both sides grew more complex, someone had to own the bridges. If you were lucky, an early engineer quietly became “the integration person.” If you were less lucky, integrations accumulated wherever there was a free afternoon and a <Brand name="Zapier" /> account. Eventually the pain got big enough that a whole new category appeared: integration platforms and workflow automation tools — iPaaS.
 
 It was a powerful idea. Pre-built connectors instead of custom scripts. Drag-and-drop flows instead of logic hard-coded inside each tool. A central place to monitor and retry. But it introduced a new twist. The integration layer itself became critical infrastructure. Build dozens of flows in one platform and switching it becomes as daunting as switching any core system. Business logic that used to be trapped inside your CRM was now trapped inside someone else’s workflow engine. For every dependency you removed between two islands, you added a dependency on a new one. And many integrations still encoded brittle, local assumptions: they knew how to move a field between two specific systems, but they **didn’t embody a shared understanding of what that data meant to your business.** You had added a coordination layer. You hadn’t added a coherent model.
 

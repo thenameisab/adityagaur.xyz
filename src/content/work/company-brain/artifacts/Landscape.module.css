@@ -120,6 +120,14 @@
   list-style: none;
 }
 
+/* Chips are a flex row, so the `.prose li` indent (globals.css §10) reads as an
+   extra 24px of gap before every chip. `ul.chips` rather than `.chips` because
+   the two selectors otherwise tie on specificity and the winner comes down to
+   stylesheet order. */
+ul.chips > li {
+  padding-inline-start: 0;
+}
+
 .chip {
   display: inline-flex;
   align-items: center;
@@ -181,6 +189,9 @@
 }
 
 .detailName {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   color: var(--text-primary);
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { BrandMark } from "@/components/Brand";
 import {
   ARCHETYPES,
   PRICING_LABELS,
@@ -161,6 +162,10 @@ export default function Landscape() {
                         aria-hidden="true"
                         data-confidence={p.confidence}
                       />
+                      {/* Renders nothing for the rows the research couldn't
+                          attribute a domain to — see src/lib/brands.ts. Those
+                          chips keep the shape they always had. */}
+                      <BrandMark name={p.name} size={16} />
                       {p.name}
                     </button>
                   </li>
@@ -178,6 +183,7 @@ export default function Landscape() {
 
         <aside className={styles.detail} aria-live="polite">
           <h5 className={`${styles.detailName} type-headline-4`}>
+            <BrandMark name={active.name} size={22} />
             {active.name}
           </h5>
           <p className={`${styles.detailArchetype} type-body-4`}>

@@ -66,6 +66,15 @@ export default function Colophon() {
             analytics, no cookies, so there is nothing to consent to.
           </p>
           <p>
+            One exception, stated plainly: where a page names a product, its logo
+            is an image served by logo.dev. That is a request to a host I
+            don&rsquo;t control, so your browser tells it an IP address and a user
+            agent. No script runs, nothing is stored, and every product name is
+            real text underneath, so a blocked image costs the page nothing. The
+            registry of which names carry a logo, and which deliberately
+            don&rsquo;t, is a single file in the repo.
+          </p>
+          <p>
             The icons — nine of them — are a hand-maintained SVG sprite rather than
             a library. The two arrows are filled glyphs drawn to match Instrument
             Serif&rsquo;s stem weight, so they read as typography rather than as UI.

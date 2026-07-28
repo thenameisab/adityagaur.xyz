@@ -66,7 +66,7 @@ Naming the archetypes was the part that changed how I read everything else. A co
         title: "Copy everything, carry the ACLs with it",
         body: "Crawl each source into a tenant index and replicate the source system's permissions alongside the content, so a result is filtered out before the user sees it. The dominant pattern, and the best capitalised.",
         items: [
-          { marker: "→", label: "Who", detail: "Glean, Coveo, Elastic, Onyx, Notion AI" },
+          { marker: "→", label: "Who", detail: "Glean, Coveo, Elastic, Onyx, Notion AI", brands: ["Glean", "Coveo", "Elastic", "Onyx", "Notion AI"] },
           { marker: "→", label: "The bet", detail: "recall and latency are worth the cost of holding a second copy of the company" },
           { marker: "!", label: "The exposure", detail: "permission changes are only as fresh as the last sync, and the index is a new thing to breach" },
         ],
@@ -76,7 +76,7 @@ Naming the archetypes was the part that changed how I read everything else. A co
         title: "Ask the source at query time",
         body: "Hold no copy. Fan out to the live systems on every question, which makes ACL staleness structurally impossible because you are always reading through the user's own credentials.",
         items: [
-          { marker: "→", label: "Who", detail: "GoSearch, and Dashworks until it was sunset in July 2025" },
+          { marker: "→", label: "Who", detail: "GoSearch, and Dashworks until it was sunset in July 2025", brands: ["GoSearch", "Dashworks"] },
           { marker: "→", label: "The bet", detail: "freshness and a smaller blast radius beat raw recall" },
           { marker: "!", label: "The exposure", detail: "latency scales with the number of sources, and the camp's only production casualty so far is on this side" },
         ],
@@ -86,7 +86,7 @@ Naming the archetypes was the part that changed how I read everything else. A co
         title: "Live inside a suite you already pay for",
         body: "Do no permission work at all: operate within an existing identity boundary and let the suite decide what the user can see. Distribution arrives free, and so does the ceiling.",
         items: [
-          { marker: "→", label: "Who", detail: "Microsoft 365 Copilot, and Sana on Workday's identity backbone" },
+          { marker: "→", label: "Who", detail: "Microsoft 365 Copilot, and Sana on Workday's identity backbone", brands: ["Microsoft 365 Copilot", "Sana", "Workday"] },
           { marker: "→", label: "The bet", detail: "the buyer would rather add a line to an existing contract than run a procurement" },
           { marker: "!", label: "The exposure", detail: "everything outside the suite is a second-class source, and Sana's own docs admit shared integrations skip source ACLs" },
         ],
@@ -96,7 +96,7 @@ Naming the archetypes was the part that changed how I read everything else. A co
         title: "Facts with a lifetime, not documents with a score",
         body: "Extract durable facts from what passes through, track when each one stops being true, and serve them to somebody else's agent. Sold to developers, not to employees.",
         items: [
-          { marker: "→", label: "Who", detail: "Mem0, Zep/Graphiti, Cognee, Letta, Supermemory, LlamaIndex" },
+          { marker: "→", label: "Who", detail: "Mem0, Zep/Graphiti, Cognee, Letta, Supermemory, LlamaIndex", brands: ["Mem0", "Zep", "Cognee", "Letta", "Supermemory", "LlamaIndex"] },
           { marker: "→", label: "The bet", detail: "the durable layer is the fact graph, and the chat interface above it is a commodity" },
           { marker: "!", label: "The exposure", detail: "every recall and latency benchmark in this archetype is vendor-run, and none has been independently reproduced" },
         ],
@@ -106,7 +106,7 @@ Naming the archetypes was the part that changed how I read everything else. A co
         title: "Own the conversation before it becomes a file",
         body: "Start at the meeting, where the decisions are actually made and nothing is written down, then work outward into search and analytics over the archive.",
         items: [
-          { marker: "→", label: "Who", detail: "Fireflies, Otter, Read AI, Fathom, Circleback" },
+          { marker: "→", label: "Who", detail: "Fireflies, Otter, Read AI, Fathom, Circleback", brands: ["Fireflies", "Otter", "Read AI", "Fathom", "Circleback"] },
           { marker: "→", label: "The bet", detail: "the richest company data is spoken, and no index has it" },
           { marker: "!", label: "The exposure", detail: "three of the five are now selling cross-meeting knowledge products, so treating capture as a mere ingestion source is out of date" },
         ],
@@ -116,7 +116,7 @@ Naming the archetypes was the part that changed how I read everything else. A co
         title: "The plumbing that decides where the data may sit",
         body: "Sit between the application and the models: route, fail over, cache, and enforce policy. Boring until a regulator asks where a prompt was processed.",
         items: [
-          { marker: "→", label: "Who", detail: "Kong, TrueFoundry, LiteLLM, Vellum, Portkey, OpenRouter, Databricks, Cloudflare, Martian, Eden AI" },
+          { marker: "→", label: "Who", detail: "Kong, TrueFoundry, LiteLLM, Vellum, Portkey, OpenRouter, Databricks, Cloudflare, Martian, Eden AI", brands: ["Kong", "TrueFoundry", "LiteLLM", "Vellum", "Portkey", "OpenRouter", "Databricks", "Cloudflare", "Martian", "Eden AI"] },
           { marker: "→", label: "The bet", detail: "model choice churns quarterly, so the abstraction outlives every model behind it" },
           { marker: "!", label: "The exposure", detail: "only four of the ten can genuinely run air-gapped, which decides the entire field for a regulated deployment" },
         ],

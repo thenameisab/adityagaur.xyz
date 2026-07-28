@@ -1,0 +1,60 @@
+/* The logo tile.
+   `--brand-size` defaults to an em so an inline <Brand> in prose scales with the
+   paragraph; a caller passing `size` overrides it with px for chips and lists,
+   where the mark should stay put while the label's type role changes. */
+
+.tile {
+  --brand-size: 1.05em;
+
+  display: inline-block;
+  /* Immune to a flex parent's stretch — chips and list rows put marks in flex
+     containers where a square would otherwise be pulled to the row's height. */
+  flex: none;
+  inline-size: var(--brand-size);
+  block-size: var(--brand-size);
+  /* vertical-align, not transform: inline layout has to know about the shift, or
+     the tile drags the line box around it. */
+  vertical-align: -0.16em;
+  overflow: hidden;
+  /* Cream rather than white — the same warm ink-050 the body text uses, so a row
+     of tiles doesn't punch a cold hole in a warm page. */
+  background: var(--ink-050);
+  border-radius: var(--bdrs-xs);
+  /* Inside the tile, so a white-on-transparent logo still has an edge on the
+     sand theme where tile and ground are nearly the same colour. */
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 12%);
+}
+
+.img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+/* ── Inline pair: mark + name ── */
+
+/* Deliberately not a flex container. `<Brand>` lands in the middle of a
+   paragraph, and an inline-flex box would wrap the product name *inside* itself
+   and blow out the line box. Left as plain inline content, the name wraps like
+   the words either side of it.
+   `nowrap` here is what keeps the mark attached to its name. Emitting no
+   whitespace between them isn't enough — a line break is still allowed either
+   side of an atomic inline-level box, which is how a Slack mark ended up alone
+   at the end of a line with "Slack" on the next one. The junction sits inside
+   `.root`, so `.root`'s nowrap governs it; the name re-opens breaking for its own
+   text, or a long product name would push past the measure. */
+.root {
+  /* The gap between mark and name. Margin, not flex gap. */
+  --brand-gap: 0.4em;
+
+  white-space: nowrap;
+}
+
+.root > .tile {
+  margin-inline-end: var(--brand-gap);
+}
+
+.name {
+  white-space: normal;
+}

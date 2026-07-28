@@ -4,6 +4,7 @@ import { display, mono, sans, sansAlt } from "@/lib/fonts";
 import Header from "@/components/Header";
 import IconSprite from "@/components/IconSprite";
 import PageFooter from "@/components/PageFooter";
+import { LOGO_HOST } from "@/lib/brands";
 import { SITE_URL, person } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -59,6 +60,15 @@ export default function RootLayout({
       {/* Warm dark is the site default. A theme class always sets its own
           background and color, so any section can override it locally. */}
       <body className="theme-dark">
+        {/* Product logos come from logo.dev as images (src/lib/brands.ts).
+            Every logo on a page is one connection to one host, so paying for the
+            DNS, TCP, and TLS handshake once up front is the whole cost —
+            `crossOrigin` because images are fetched anonymously, and a preconnect
+            with the wrong credentials mode opens a second connection instead.
+            Rendered here rather than in a hand-written `<head>`: React hoists
+            link tags into the head itself, and layout.md is explicit that a root
+            layout shouldn't hand-roll one. */}
+        <link rel="preconnect" href={LOGO_HOST} crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

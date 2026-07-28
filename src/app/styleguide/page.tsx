@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Brand, { BrandMark } from "@/components/Brand";
 import Icon, { type IconName } from "@/components/Icon";
+import { allBrands } from "@/lib/brands";
 import { contrastRatio, passes, ratio } from "@/lib/contrast";
 import { contrastTargets, ramps, themes, type ThemeName } from "@/lib/tokens";
 import styles from "./styleguide.module.css";
@@ -357,6 +359,60 @@ export default function Styleguide() {
         <p className="type-display-3 text-primary">
           And at display size <Icon name="arrow-right" />
         </p>
+      </Section>
+
+      {/* ── Brands ───────────────────────────────────────────────── */}
+      <Section
+        id="brands"
+        title="Product logos"
+        note="Every name the site can set with a logo, from src/lib/brands.ts, served by logo.dev as plain images. A name missing from the registry fails the build; an entry with no domain renders as text on purpose, and the reason is in the note beside it."
+      >
+        <p className="type-body-2 text-secondary">
+          Inline in prose, where the mark scales with the type: the memory camp is{" "}
+          <Brand name="Mem0" />, <Brand name="Letta" />, and{" "}
+          <Brand name="Supermemory" />, while <Brand name="GBrain" /> has no logo
+          to show.
+        </p>
+
+        {/* Notion's cube and GitHub's octocat are black on transparent; Sana's
+            is white on black. All three have to survive all three grounds. */}
+        <div className={styles.brandGrounds}>
+          {THEME_ORDER.map((name) => (
+            <div key={name} className={`theme-${name} ${styles.brandGround}`}>
+              <span className="type-caption-1 text-faint">.theme-{name}</span>
+              {["Notion", "GitHub", "Sana", "Linear", "Stripe"].map((b) => (
+                <BrandMark key={b} name={b} size={24} standalone />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.tableWrap} data-scrollx>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th scope="col">Mark</th>
+                <th scope="col">Name</th>
+                <th scope="col">Domain</th>
+                <th scope="col">Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allBrands().map((brand) => (
+                <tr key={brand.name}>
+                  <td>
+                    <BrandMark name={brand.name} size={20} standalone />
+                  </td>
+                  <td>{brand.name}</td>
+                  <td className="type-caption-1 text-faint">
+                    {brand.domain ?? "— no logo"}
+                  </td>
+                  <td className="type-body-4 text-muted">{brand.note ?? ""}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Section>
 
       {/* ── States ───────────────────────────────────────────────── */}
