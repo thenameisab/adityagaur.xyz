@@ -1,0 +1,125 @@
+.root {
+  display: block;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-6);
+  border-block-end: var(--bd-subtle);
+}
+
+.control {
+  padding: var(--space-1) var(--space-3);
+  border: var(--bdw) solid transparent;
+  border-radius: var(--bdrs-full);
+  color: var(--text-muted);
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
+}
+
+.control:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.control[aria-pressed="true"] {
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border-color: var(--border-strong);
+}
+
+.panes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+}
+
+@media (max-width: 56.25em) {
+  .panes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pane {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  min-inline-size: 0;
+}
+
+.pane + .pane {
+  border-inline-start: var(--bd-subtle);
+}
+
+@media (max-width: 56.25em) {
+  .pane + .pane {
+    border-inline-start: none;
+    border-block-start: var(--bd-subtle);
+  }
+}
+
+.paneHead {
+  color: var(--text-muted);
+}
+
+.aggRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-block-start: var(--space-4);
+}
+
+.aggValue {
+  color: var(--text-primary);
+  font-family: var(--ff-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.aggKey {
+  margin-block-start: 2px;
+  color: var(--text-faint);
+}
+
+.paneNote {
+  margin-block-start: var(--space-4);
+  max-inline-size: 48ch;
+  color: var(--text-muted);
+}
+
+/* ── Table ── */
+
+.table {
+  inline-size: 100%;
+  margin-block-start: var(--space-4);
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: start;
+  padding: var(--space-1) var(--space-3) var(--space-2) 0;
+  color: var(--text-faint);
+  font-weight: var(--fw-regular);
+}
+
+.table td {
+  padding: var(--space-1) var(--space-3) var(--space-1) 0;
+  color: var(--text-secondary);
+  font-family: var(--ff-mono);
+  font-variant-numeric: tabular-nums;
+  border-block-start: var(--bd-subtle);
+}
+
+.table td:first-child {
+  font-family: var(--ff-sans);
+}
+
+.table tr[data-hidden] td {
+  color: var(--text-faint);
+}
+
+.table th.banned,
+.table td.banned {
+  color: var(--text-faint);
+  text-align: center;
+}

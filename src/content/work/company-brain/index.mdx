@@ -1,0 +1,209 @@
+import Landscape from "./artifacts/Landscape";
+
+export const meta = {
+  slug: "company-brain",
+  title: "The Company Brain landscape",
+  kicker: "Market research",
+  summary:
+    "Forty-one products across six archetypes, researched in parallel, with a confidence grade on every headline number and the unverifiable ones left visible.",
+  role: "Solo — research design, agent orchestration, synthesis",
+  timeframe: "July 2026",
+  stack: ["Claude Code", "Parallel research agents", "GitHub API", "Markdown"],
+  status: "research",
+  order: 2,
+};
+
+## Forty-one products and one question
+
+You are about to build something that reads a company's Slack, its drive, its CRM and its meeting archive, and answers questions over the lot. Before you write a line of it you need to know what already exists, who funded it, and which parts of the problem are genuinely unsolved rather than merely unmarketed.
+
+So you search. And what comes back is a category with no agreed name, occupied by companies that describe themselves in each other's words. Enterprise search calls itself an agent platform. A memory library calls itself infrastructure and then ships an end-user product. Four separate startups use the literal phrase *company brain*, and one of them is a meeting recorder.
+
+The usual response is a market map: ten logos on two axes, drawn by someone with a position. I wanted the opposite. Forty-one products, each researched individually against primary sources, and every claim carrying a grade for how well it stood up.
+
+The grades turned out to be the finding.
+
+<Stat
+  items={[
+    { value: "41", label: "products researched individually" },
+    { value: "6", label: "archetypes the field actually splits into" },
+    { value: "3", label: "star counts re-verified live against the GitHub API" },
+    { value: "1", label: "widely-cited valuation I refused to carry forward" },
+  ]}
+/>
+
+## Why forty-one and not the obvious ten
+
+The obvious ten are the ten that buy search ads. Restricting the set to them would have produced a report that agreed with every other report, which is a way of learning nothing.
+
+The number came from the shape of the problem rather than a target. If the product is a layer that reads company data and answers over it, then everyone who owns a piece of that path is a competitor for the same budget: the search platforms that already index the drive, the memory libraries other people's agents remember through, the meeting tools that own the conversation before it becomes a document, the self-declared company-brain startups, and the model gateways underneath all of them that decide where the data is allowed to sit.
+
+Five paths in, and the products cluster into six recognisable architectures. Each was researched to the same template — ingestion model, permissions handling, funding, traction, pricing, competitive position — so the rows are comparable rather than merely adjacent.
+
+<Figure
+  label="Figure 1"
+  caption="The full set. Filter by archetype, then set the confidence bar and watch how much of a market map is actually load-bearing."
+  source="Research pass of 22 July 2026. Funding, valuation and revenue figures are point-in-time and were checked per product; GitHub counts marked as verified were pulled live from the API. Confidence grades and caveats are carried over from the source reports unedited."
+>
+  <Landscape />
+</Figure>
+
+Set the confidence filter to *High* and roughly half the field goes grey. That is not a failure of the research. It is what the market looks like when you refuse to launder a Crunchbase preview into a fact.
+
+## The six architectures, and what each one is really betting
+
+Naming the archetypes was the part that changed how I read everything else. A company's category tells you who it sells against. Its architecture tells you what it can never do without a rewrite.
+
+<Figure
+  label="Figure 2"
+  caption="The six patterns, by what each one does with your data rather than what it calls itself."
+>
+  <Switcher
+    label="Architecture archetypes"
+    panels={[
+      {
+        label: "Index and mirror",
+        title: "Copy everything, carry the ACLs with it",
+        body: "Crawl each source into a tenant index and replicate the source system's permissions alongside the content, so a result is filtered out before the user sees it. The dominant pattern, and the best capitalised.",
+        items: [
+          { marker: "→", label: "Who", detail: "Glean, Coveo, Elastic, Onyx, Notion AI" },
+          { marker: "→", label: "The bet", detail: "recall and latency are worth the cost of holding a second copy of the company" },
+          { marker: "!", label: "The exposure", detail: "permission changes are only as fresh as the last sync, and the index is a new thing to breach" },
+        ],
+      },
+      {
+        label: "Navigate, don't index",
+        title: "Ask the source at query time",
+        body: "Hold no copy. Fan out to the live systems on every question, which makes ACL staleness structurally impossible because you are always reading through the user's own credentials.",
+        items: [
+          { marker: "→", label: "Who", detail: "GoSearch, and Dashworks until it was sunset in July 2025" },
+          { marker: "→", label: "The bet", detail: "freshness and a smaller blast radius beat raw recall" },
+          { marker: "!", label: "The exposure", detail: "latency scales with the number of sources, and the camp's only production casualty so far is on this side" },
+        ],
+      },
+      {
+        label: "Inherit the tenant",
+        title: "Live inside a suite you already pay for",
+        body: "Do no permission work at all: operate within an existing identity boundary and let the suite decide what the user can see. Distribution arrives free, and so does the ceiling.",
+        items: [
+          { marker: "→", label: "Who", detail: "Microsoft 365 Copilot, and Sana on Workday's identity backbone" },
+          { marker: "→", label: "The bet", detail: "the buyer would rather add a line to an existing contract than run a procurement" },
+          { marker: "!", label: "The exposure", detail: "everything outside the suite is a second-class source, and Sana's own docs admit shared integrations skip source ACLs" },
+        ],
+      },
+      {
+        label: "Memory substrate",
+        title: "Facts with a lifetime, not documents with a score",
+        body: "Extract durable facts from what passes through, track when each one stops being true, and serve them to somebody else's agent. Sold to developers, not to employees.",
+        items: [
+          { marker: "→", label: "Who", detail: "Mem0, Zep/Graphiti, Cognee, Letta, Supermemory, LlamaIndex" },
+          { marker: "→", label: "The bet", detail: "the durable layer is the fact graph, and the chat interface above it is a commodity" },
+          { marker: "!", label: "The exposure", detail: "every recall and latency benchmark in this archetype is vendor-run, and none has been independently reproduced" },
+        ],
+      },
+      {
+        label: "Capture-first",
+        title: "Own the conversation before it becomes a file",
+        body: "Start at the meeting, where the decisions are actually made and nothing is written down, then work outward into search and analytics over the archive.",
+        items: [
+          { marker: "→", label: "Who", detail: "Fireflies, Otter, Read AI, Fathom, Circleback" },
+          { marker: "→", label: "The bet", detail: "the richest company data is spoken, and no index has it" },
+          { marker: "!", label: "The exposure", detail: "three of the five are now selling cross-meeting knowledge products, so treating capture as a mere ingestion source is out of date" },
+        ],
+      },
+      {
+        label: "Routing layer",
+        title: "The plumbing that decides where the data may sit",
+        body: "Sit between the application and the models: route, fail over, cache, and enforce policy. Boring until a regulator asks where a prompt was processed.",
+        items: [
+          { marker: "→", label: "Who", detail: "Kong, TrueFoundry, LiteLLM, Vellum, Portkey, OpenRouter, Databricks, Cloudflare, Martian, Eden AI" },
+          { marker: "→", label: "The bet", detail: "model choice churns quarterly, so the abstraction outlives every model behind it" },
+          { marker: "!", label: "The exposure", detail: "only four of the ten can genuinely run air-gapped, which decides the entire field for a regulated deployment" },
+        ],
+      },
+    ]}
+  />
+</Figure>
+
+The split matters most where the marketing is thinnest. Nine companies in the set use *company brain* as their own positioning, and they do not share an architecture, a price, or a level of evidence. Three have inspectable systems with real commit activity. Three are a landing page and a demo booking form. Calling that cohort "early and unproven" flattens a spread that runs from a working fact graph to a site that returns no body text when you fetch it.
+
+## The method is the deliverable
+
+<Note term="Confidence, as used here">
+A grade on the *headline numbers* for one product, not on the company. High means independently corroborated or pulled from a primary source. Medium means a single credible source with no contradiction found. Low means aggregator-sourced, self-reported, or contradicted between sources. The grade travels with the row, so it cannot be lost in a summary.
+</Note>
+
+Any research pass over forty-one companies produces claims of wildly different quality, and the ordinary way to handle that is to write confidently and hope. The rule here was the opposite: a claim that could not be promoted stayed marked, and the mark survived into the synthesis.
+
+Three real examples, and what happened to each.
+
+<Figure
+  label="Figure 3"
+  caption="Three claims, three fates. The middle one is why the marking exists."
+>
+  <Switcher
+    label="What happened to three claims"
+    panels={[
+      {
+        label: "Promoted",
+        title: "GStack has 123,495 stars",
+        body: "A star count that large on a four-month-old repository reads like a research error, and the first instinct was to cut it. Re-checking it directly against the GitHub API confirmed the figure, so it shipped with the verification method named in the row.",
+        items: [
+          { marker: "01", label: "Claim", detail: "123,495 stars and 18,500 forks, on a repository created in March 2026" },
+          { marker: "02", label: "Check", detail: "pulled live from the GitHub API rather than a secondary tracker" },
+          { marker: "03", label: "Outcome", detail: "kept, and the count is stated as a count — what it measures is a separate question the number cannot answer" },
+        ],
+      },
+      {
+        label: "Flagged",
+        title: "Martian is valued at about $1.3B",
+        body: "This one appears in several write-ups, always in the same phrasing, and never with a source. No filing, no press release, no named investor. It stayed in the report as a rumour with the word attached, because deleting it silently would mean the next person has to rediscover the same hole.",
+        items: [
+          { marker: "01", label: "Claim", detail: "a roughly $1.3B valuation, widely repeated" },
+          { marker: "02", label: "Check", detail: "no primary source found; every citation trails back to another summary" },
+          { marker: "03", label: "Outcome", detail: "carried with an explicit unsourced flag, and named in the caveats as the one figure not to put in a deck" },
+        ],
+      },
+      {
+        label: "Downgraded",
+        title: "Zep raised about $5M",
+        body: "This figure was in my own internal notes before the pass started, which is exactly the kind of claim that survives on familiarity. Only $500K could be corroborated. The row now carries the smaller verifiable number and says what it could not confirm.",
+        items: [
+          { marker: "01", label: "Claim", detail: "~$5M raised, per an earlier internal document" },
+          { marker: "02", label: "Check", detail: "$500K corroborable; the remainder appears in no source" },
+          { marker: "03", label: "Outcome", detail: "downgraded to low confidence, with the origin of the inflated figure named" },
+        ],
+      },
+    ]}
+  />
+</Figure>
+
+Marking beats deleting for a practical reason. A landscape with the weak claims removed looks identical to a landscape where they were never checked, and the reader has no way to tell those two documents apart.
+
+## What the landscape gets wrong
+
+Three patterns show up across all forty-one, and each one contradicts something the category takes for granted.
+
+**Navigate-don't-index has a casualty count.** It is the architecturally elegant answer: hold no copy, inherit permissions for free. It is also the camp with the only dead product in the set. Dashworks was acquired and sunset in July 2025 without ever building a persistent context layer, and the surviving independent in that camp has had no new funding since February 2022 and no verifiable customer logos. Meanwhile the index-and-mirror side produced an acquisition at $1.1B and a run-rate near $300M. That is weak evidence rather than proof, and it points the other way from the architecture argument.
+
+**Funding silence clusters.** Hebbia has not raised in over two years, Guru not since 2020, and Letta is pivoting on a 2024 seed, all while direct peers raised through 2026. Silence is not distress on its own. In a category moving this fast it is the specific thing to diligence before treating any of them as a stable partner.
+
+**Nobody's memory benchmark has been reproduced.** Every player in the memory archetype leads with recall, latency or token-reduction figures run on a harness they wrote. Cross-vendor comparisons come from the challenger's own blog. The numbers may well be right; not one of them is evidence in the sense that word usually implies.
+
+## Where it landed
+
+The synthesis had two live bets to inform, and it moved both.
+
+Using an HRMS as a coarse permission layer got stronger and more specific at the same time. Workday's post-acquisition traction with Sana is a working validation of the shape. Sana's own documentation is also where I found the failure mode: shared integrations do not auto-mirror source ACLs. So the design rule is not "use the HRMS for permissions" but "layer HRMS role gating above document ACLs, never in place of them", which is a rule I would not have written from first principles.
+
+The regulated-industry lane looks wider than expected, for an unglamorous reason. Only four of the ten gateways can genuinely run air-gapped. That single column eliminates most of the field for a bank before any conversation about retrieval quality begins.
+
+And one finding arrived pointing straight at a build-versus-buy decision. Supermemory, a plausible substrate to build on, is shipping a feature called Company Brain — visible in commits from the same week as the research. A dependency that is becoming a competitor is still a usable dependency, but only with that fact written down next to it.
+
+## What I'd do differently
+
+**I should have fixed the template before the fan-out, not after.** The reports were produced in parallel, and the enterprise-search set came back with different section headings from the company-brain set. Nothing was lost, but merging them into one comparable table was an afternoon of reconciliation I had bought with an hour of impatience.
+
+**Confidence should have been three ordered values from the start.** It began as prose caveats at the end of each report, which meant the synthesis could not filter on it, and the grades had to be recovered by reading. The whole point of the grade is that it can be sorted; a caveat in a closing paragraph cannot.
+
+**Point-in-time data needs an expiry, not a date.** Every figure here is stamped July 2026, which is honest and insufficient. Half of these rows have a natural half-life of about a quarter. The next version of this should record, per row, what would have to change for the row to be wrong — the Work IQ row already says twelve months, and it is the only one that tells you when to come back.

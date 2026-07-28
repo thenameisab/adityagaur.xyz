@@ -1,0 +1,110 @@
+import FounderMode from "./artifacts/FounderMode";
+
+export const meta = {
+  slug: "crm-dashboard",
+  title: "A CRM compiled to a single HTML file",
+  kicker: "Revenue dashboard",
+  summary:
+    "A pipeline dashboard that started as one static file with the data baked in, and whose most useful view audits the pipeline's integrity instead of reporting its size.",
+  role: "Solo — product, ETL, frontend",
+  timeframe: "2026 — February to July",
+  stack: ["Python", "Vanilla JS", "Zoho CRM API", "Neon Postgres", "Cloudflare Pages"],
+  status: "shipped",
+  order: 11,
+};
+
+## Three questions between meetings
+
+Leadership needs pipeline answers between meetings: what's closing this quarter, what changed since last week, which number do we say in the room. The CRM has all of it and answers none of it quickly: the data is spread across deals, timelines and owner views, behind a login, arranged for salespeople doing data entry rather than founders doing arithmetic.
+
+The first version of the fix was almost aggressively primitive: a Python script pulls every deal and its full change history from the CRM, computes everything worth knowing, and bakes the result into a single self-contained HTML file, data inlined as a JSON literal, styles and script inlined beside it. No runtime backend, no database, no API call after load. Cloudflare Pages serves the file; Cloudflare Access decides who can see it, which bought an auth wall with zero auth code.
+
+For a pipeline of a few hundred deals read by a handful of people, that model is close to unbeatable: zero infrastructure, instant loads, trivially auditable output, and it survives an outage of everything except the CDN. The interesting parts of this project are the two places the model earned an upgrade — and the view that has nothing to do with reporting at all.
+
+<Stat
+  items={[
+    { value: "1", label: "HTML file, originally — data baked in" },
+    { value: "3.9 MB → 110 KB", label: "page weight, after the split" },
+    { value: "20 min → 90 s", label: "full refresh, after parallelizing one endpoint" },
+    { value: "1,675", label: "commits" },
+  ]}
+/>
+
+## Founder Mode: an audit instrument, not a report
+
+Every pipeline dashboard reports the total. The number is only as honest as the rows under it — and rows drift in specific, detectable ways. A deal quietly revised down late in the quarter. A close date that has slipped three times. A deal that moved *backward* a stage. A number that has sat untouched all the way into legal review.
+
+Founder Mode is a separate view that walks every deal's change timeline and runs seven detectors over it. The design premise is an inversion worth stating: in a late-stage deal, an amount that has *never been revised* is more suspicious than one that has. Somebody negotiating validates the number; a number nobody touched is a placeholder wearing a stage label.
+
+<Figure
+  label="Figure 1"
+  caption="Five of the seven detectors, over a synthetic pipeline. Switch them on one at a time — with everything off, this is an ordinary pipeline view, and it looks fine."
+  source="Detector logic follows the production payload builder: a ₹1 epsilon on amount changes, slippage from the second forward push, index-checked regressions. Deals are synthetic; amounts are indexed, not currency."
+>
+  <FounderMode />
+</Figure>
+
+The details in the logic are where the timeline work pays off. Amount changes carry the *stage the deal was in when the number moved*, reconstructed by walking the timeline with a rolling stage variable, because a revision during negotiation is business and a revision the week before quarter-end is a finding. Slippage needs two forward pushes before it counts; one reschedule is life. And the roll-up number the detectors feed, the total revised downward across the book, is the at-risk figure founders actually ask for, sitting above whatever the headline total says.
+
+Two per-deal detectors combine into a per-owner risk score with explicit weights (unvalidated late-stage counts triple, regressions and slippage double, zombies single), which is as close as the dashboard gets to scoring people, and it stays framed as *whose pipeline needs review*, not who's underperforming.
+
+## Two clicks from any number to its deals
+
+The stated rule: leadership must be able to drill from any aggregate into the underlying deals in two clicks. The implementation is deliberately dumb, which is why it's fast: at build time, every drillable number pre-materializes its deal list into a flat array, and every clickable surface stores one integer index into it. Click one: the number opens a modal listing exactly the deals it counts, with the count in the footer so the drill visibly reconciles. Click two: any deal links out to its CRM record, the source of truth, one more click deep, exactly at the boundary where the dashboard's authority should end.
+
+## The v2 split, and what each stage refuses to do
+
+The single-file model had one real weakness: the file was the database. Every refresh shipped 3.9 MB, history didn't exist, and one failing upstream API meant no new file at all. The v2 move was one sentence, *split fetch-and-store from serve, and put the auth wall in front*, and the shape of it is best described by what each stage declines to do.
+
+<Figure
+  label="Figure 2"
+  caption="The pipeline as shipped, stage by stage — each with its refusal, which is where the reliability actually lives."
+>
+<Stepper
+  label="Pipeline stages"
+  steps={[
+    {
+      name: "Fetch",
+      title: "The CRM, with one hot spot",
+      body: "Deals, timelines, leads, meetings, owners. The per-deal timeline endpoint is the critical path: sequential, a full run took twenty minutes; with twelve workers, ninety seconds. The review calls that thread pool the single highest-impact line in the project, and it is.",
+      output: { label: "The fix", code: "ThreadPoolExecutor(max_workers=12)\n# ~20 min → 60–90 s" },
+    },
+    {
+      name: "Ingest",
+      title: "Refuses to fail as a unit",
+      body: "Each source writes its own snapshot row to Postgres inside its own try/except. A marketing-API outage records one failed row while the CRM snapshot lands cleanly. The old model inverted this — any failure meant no file, so every source was a single point of failure for all of them.",
+      output: { label: "On failure", code: "write_snapshot(source, {},\n  ok=False, error=str(e))" },
+    },
+    {
+      name: "Serve",
+      title: "Refuses to serve broken data",
+      body: "The read API's view only returns snapshots marked ok, so a failed refresh leaves the last good data serving rather than an empty dashboard. Forcing a CRM failure in testing wrote one failed row while the API kept serving yesterday's snapshot — the exact behaviour the design wanted, verified rather than hoped.",
+      output: { label: "The view", code: "latest_snapshots:\n  … where ok = true" },
+    },
+    {
+      name: "Build",
+      title: "Refuses to ship a broken template",
+      body: "The frontend build injects nothing but placeholders now — the page fetches its data at load. If any placeholder survives to output, the build exits nonzero instead of deploying a page that half-works.",
+    },
+    {
+      name: "Digest",
+      title: "Refuses to publish money",
+      body: "A scheduled summary posts activity to the team — deals moved, meetings held. It never states revenue or pipeline value, by written rule: numbers with authority belong on the dashboard behind the access wall, not in a chat scrollback.",
+    },
+  ]}
+/>
+</Figure>
+
+The frontend didn't change in the split: the same vanilla-JS app now boots from six fetches instead of an inlined literal — and the page went from 3.9 MB to 110 KB. The refresh schedule tells its own small story about docs versus reality: the documentation says hourly, a later doc says seven times a day, and the workflow actually runs three times a day, timed to Indian office hours. Each number was true when written. The code is the only one that's true now.
+
+## Success was defined, not measured
+
+The written success criterion is one sentence: *leadership doesn't open Zoho anymore for routine pipeline questions — the number on the dashboard is the number they cite in the room.* I can't tell you whether that happened, and the repo is honest about why: there's no instrumentation, no view counts, no alert if the dashboard goes stale. The architecture review flagged observability as absent, and it still is. The dashboard that audits the pipeline's honesty cannot yet audit its own usage, which is the kind of sentence that belongs on the page rather than in a drawer.
+
+## What I'd do differently
+
+**Tests first, as the review said and I didn't do.** The improvement list had a test harness at item eight of nine, with a note that it should really be item zero because every other change becomes safer once it exists. It was never built, and 1,675 commits landed on a system whose regressions were caught by looking. The one contract that *was* verified — the resilience of the snapshot layer — was verified manually, once.
+
+**Enforce Founder Mode at the API, not the keyboard.** The view is gated by a keyboard shortcut, an interim measure with role-based access written up and scoped, including the sentence that matters: UI hiding alone is not security. The scoped design puts the check in the API. It's still a shortcut today, and anyone past the access wall can fetch the founder payload directly.
+
+**Delete what the docs say was deleted.** The decommission list from the v2 design is only half-executed: the README still names an entry point that no longer exists, and credentials the review flagged as sprawl are still in the tree. A migration isn't done when the new path works; it's done when the old path is gone, and this repo is a working demonstration of the difference.

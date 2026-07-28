@@ -1,0 +1,231 @@
+.root {
+  display: block;
+}
+
+/* ── Filters ── */
+
+.controls {
+  padding: var(--space-5) var(--space-6);
+  border-block-end: var(--bd-subtle);
+}
+
+.filter {
+  border: none;
+}
+
+.filter + .filter {
+  margin-block-start: var(--space-4);
+}
+
+.legend {
+  padding: 0;
+  color: var(--text-muted);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-block-start: var(--space-2);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: var(--bdw) solid transparent;
+  border-radius: var(--bdrs-full);
+  color: var(--text-muted);
+  font-size: var(--fz-body-4);
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
+}
+
+.pill:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.pill[aria-pressed="true"] {
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border-color: var(--border-strong);
+}
+
+.pillCount {
+  color: var(--text-faint);
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+}
+
+.pill[aria-pressed="true"] .pillCount {
+  color: var(--text-muted);
+}
+
+.tally {
+  margin-block-start: var(--space-4);
+  color: var(--text-faint);
+  font-family: var(--ff-mono);
+}
+
+/* ── Map and detail ── */
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+}
+
+@media (max-width: 56.25em) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  border-inline-end: var(--bd-subtle);
+}
+
+@media (max-width: 56.25em) {
+  .map {
+    border-inline-end: none;
+    border-block-end: var(--bd-subtle);
+  }
+}
+
+.group + .group {
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-6);
+  border-block-start: var(--bd-subtle);
+}
+
+.groupName {
+  color: var(--text-secondary);
+}
+
+.groupBlurb {
+  margin-block-start: var(--space-1);
+  max-inline-size: 52ch;
+  color: var(--text-faint);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-start: var(--space-3);
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background: var(--bg-raised);
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-sm);
+  color: var(--text-secondary);
+  text-align: start;
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
+}
+
+.chip:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.chip[aria-pressed="true"] {
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border-color: var(--accent);
+}
+
+/* The confidence dot. Never the only carrier of the grade — the detail panel
+   always states it in words. */
+.dot {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: var(--bdrs-full);
+  background: var(--text-faint);
+}
+
+.dot[data-confidence="high"] {
+  background: var(--accent);
+}
+
+.dot[data-confidence="medium"] {
+  background: var(--text-muted);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+.dot[data-confidence="low"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+.empty {
+  color: var(--text-muted);
+}
+
+/* ── Detail card ── */
+
+.detail {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.detailName {
+  color: var(--text-primary);
+}
+
+.detailArchetype {
+  margin-block-start: var(--space-1);
+  color: var(--text-faint);
+  font-family: var(--ff-mono);
+}
+
+.rows {
+  margin-block-start: var(--space-5);
+}
+
+.row + .row {
+  margin-block-start: var(--space-4);
+}
+
+.key {
+  color: var(--text-faint);
+}
+
+.value {
+  margin-block-start: var(--space-1);
+  color: var(--text-secondary);
+}
+
+.grade {
+  margin-block-start: var(--space-5);
+  padding: var(--space-4);
+  background: var(--bg-raised);
+  border: var(--bd-subtle);
+  border-inline-start: 2px solid var(--border-strong);
+  border-radius: var(--bdrs-sm);
+}
+
+.grade[data-confidence="high"] {
+  border-inline-start-color: var(--accent);
+}
+
+.gradeLabel {
+  display: block;
+  color: var(--text-muted);
+}
+
+.gradeBody {
+  margin-block-start: var(--space-2);
+  color: var(--text-secondary);
+}

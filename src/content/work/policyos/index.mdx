@@ -1,0 +1,120 @@
+import ImpactSim from "./artifacts/ImpactSim";
+
+export const meta = {
+  slug: "policyos",
+  title: "PolicyOS: a prototype that became the spec",
+  kicker: "BFSI prototype",
+  summary:
+    "A policy-management prototype for banks where every trust-critical decision was moved out of the model and into architecture, which is why there's no confidence score in the codebase.",
+  role: "Solo — product, prototype, PRD",
+  timeframe: "2026 — June to July",
+  stack: ["Vanilla JS", "Zero dependencies", "6 LLM providers", "Static hosting"],
+  status: "prototype",
+  order: 9,
+};
+
+## Same question, different person, different answer
+
+A staff member asks the assistant for the personal-loan policy and gets it. They ask what a colleague earns and get *not permitted*. An admin asks the same two questions and gets two answers. That's the entire product in one interaction, and it's the moat to validate against the horizontal players, because a general-purpose company assistant that can't do this can't be sold to a bank.
+
+PolicyOS is the policy-management product; the prototype's job was to prove the permission-faithful version of it was worth building. It had one month, one constraint that shaped everything (it had to *run*, live, at a URL a prospect could click), and a decision budget spent almost entirely on a single question: what is the model allowed to be wrong about?
+
+<Stat
+  items={[
+    { value: "8,067", label: "lines, zero dependencies, no build step" },
+    { value: "15", label: "views registered on a three-line module system" },
+    { value: "5", label: "personas, each seeing a different product" },
+    { value: "11", label: "models across 6 providers, none preselected" },
+  ]}
+/>
+
+## No framework, and no framework rationale either
+
+There is no comment in the codebase explaining why it's vanilla JS, and I'm not going to invent one retroactively. The argument is in the structure. The module system is three lines: a views object and a register function. Every view is a pure function from state to an HTML string. There is no package manifest, no lockfile, no build; deployment is pointing a static host at the folder.
+
+What that bought was the thing the month actually needed: the PRD links to the prototype as its own spec. *Open this to see the target UI* is a sentence a document can only say when the prototype deploys anywhere instantly and breaks for no environmental reason. The roadmap treated "prototype link frozen" as a hard milestone, which inverts the usual order: the prototype came first, and the document was written to describe it.
+
+In place of a test framework there's a 258-line headless harness that stubs a minimal DOM, loads every view, and renders each one for every persona — the cross-product that matters for a product whose thesis is "the answer changes by persona."
+
+## Where the model is allowed to be wrong
+
+The prototype connects to eleven models across six providers, bring-your-own-key, none preselected. And nowhere in the codebase is there a confidence score, an output validator, or a retry-on-malformed. That absence is the design.
+
+<Figure
+  label="Figure 1"
+  caption="Three hard walls, one soft surface. The gate is architectural, not statistical."
+>
+  <Switcher
+    label="Trust boundaries"
+    panels={[
+      {
+        label: "Scope",
+        title: "The model can't leak what it never received",
+        body: "Permission filtering happens before the prompt, not after the answer. The context builder assembles only the policies the signed-in persona may see, then tells the model how many others exist and that they are out of scope. A hallucinating model still cannot reveal an out-of-scope policy, because that text was never in its window.",
+        items: [
+          { marker: "→", label: "The prompt's one rule", detail: "answer only from the context; if something is absent, say the user is not permitted to see it — never guess" },
+          { marker: "→", label: "The product claim", detail: "log in as staff and the model literally can't answer about a policy they're not on" },
+        ],
+      },
+      {
+        label: "Arithmetic",
+        title: "Numbers come from deterministic code",
+        body: "Every quantitative claim — approval rates, NPA projections, who flips under a rule change — comes from the simulator, which is plain arithmetic over a labelled test cohort. The model is never asked to compute anything, so it cannot be confidently wrong about a number a bank would act on.",
+      },
+      {
+        label: "Authority",
+        title: "A human always decides",
+        body: "Everything terminal routes to maker–checker. A simulated policy change becomes a pending change request, not an applied edit. The regulatory reviewer downloads the revised policy PDF to sign through their own approval workflow — deliberately not an in-app approval, because the tool refusing to own the final yes is what lets a compliance team adopt it.",
+      },
+      {
+        label: "Prose",
+        title: "The one surface left to the model",
+        body: "Wording, summaries, and the trailing source-citation line the UI scrapes into chips. If the model formats sources wrong, chips don't render and nothing else degrades. The blast radius of a bad completion is cosmetic — which is the whole point of the other three walls.",
+      },
+    ]}
+  />
+</Figure>
+
+There's also a third state between demo and live that turned out to be a sales feature: picking a model persists and shows in the header *without* a key. A prospect can see their preferred provider in the chrome during a demo; adding a key upgrades the same choice to live answers. Separating *chosen* from *keyed* cost one boolean and removed a whole category of demo awkwardness.
+
+## Citations correct by construction
+
+The prototype's answers cite pages, *clause 3.2, page 2*, with a chip that opens the document at that page, clause highlighted. The honest engineering behind that is an inversion worth stating plainly: **there are no real PDFs in the prototype.** Getting from a real document to a reliable page number needs a parsing pipeline the month didn't have. So the prototype goes the other way: it *synthesizes* a paginated document from the policy's own structured data, which means every page number is correct by construction, because the pagination and the citation come from the same source.
+
+<Note term="Anchor, not page">
+A citation carries a semantic anchor (a fact key, a rule string, a clause id) rather than a page number. The viewer resolves which synthesized page contains that anchor at open time. If the anchor can't be found, the viewer degrades to the parameters page rather than a dead link, and if the anchor isn't on the page being shown, the highlight is suppressed rather than misapplied. Wrong-but-plausible is treated as worse than absent.
+</Note>
+
+The header comment in that file says exactly what it is (*no real PDFs in the prototype; we synthesize a paginated document from a policy's own content*), and that sentence is why the trick is honest. Real ingestion is scoped for the build phase. The prototype's job was to prove the citation *experience*, and it proved it without pretending to a parsing capability that didn't exist.
+
+## The simulator: evidence you attach to a change request
+
+The most sellable idea in the prototype is small: before a bank changes a credit-policy threshold, show them who flips. The simulator re-runs a policy's eligibility rules over a fixed 220-applicant test cohort with ground-truth default labels, under both the live and the proposed parameters, and reports the delta on the book.
+
+<Figure
+  label="Figure 2"
+  caption="The personal-loan policy's real baseline thresholds. Tighten the CIBIL floor and watch approval fall, projected NPA fall, and the flip count climb."
+  source="Same eligibility engine and metrics as the prototype's sim.js. The 220-applicant cohort is regenerated synthetically with the same distribution shape and deterministic labels — none of the original rows. Projections model the test cohort, not a live book."
+>
+  <ImpactSim />
+</Figure>
+
+The design detail I'd defend hardest is the propose button's existence condition: it only renders when the change actually reclassifies someone. A rule tweak that moves nobody produces no change request, because a request with no impact attached is noise in an approver's queue. When it does render, the simulated deltas get written into the request's rationale automatically — the simulation *is* the evidence, filed where the approval will happen.
+
+Scope was cut to fit the month, on purpose: five shared knobs across the four credit policies, not fully custom per-policy variables. The other five policies get an explainer instead of a broken form. The roadmap's phrase for this was *build it cleanly, separate from the half-baked old test bed*, a small sentence that is most of what I believe about prototypes.
+
+## What the prototype changed, and what this page can't show
+
+Three reversals are traceable from document to code, which is the prototype-as-spec workflow paying for itself. A two-edition packaging model was defined, then retired to a single version with connectors parked behind no-op stubs. A standalone people directory was built, then explicitly disowned in the docs and merged into an access-centric view. And compensation answers — the flagship demo of permission-faithful retrieval — were removed entirely, one line: visible to no one. The docs still use salary as the example; the code overruled them. When a document and a running program disagree, the program is the one telling the truth.
+
+One gap runs the other way, and it's the sharpest lesson here. The audit log was a phase-one, top-priority feature (*audit is also the compliance sell*) and it was never built in the app. Then a later standalone demo made an append-only audit ledger its most prominent surface. The demo prototyped the missing feature the product never got, which says something uncomfortable about demos: they get built for what the audience in the room needs to see, not for what the roadmap says comes first.
+
+And what this page can't show: the prototype itself. Its seed data is not synthetic — it carries a real org chart, real email addresses, and internal material through to the deployment docs. Embedding it would publish all of that. The simulator above is the porting compromise: the same engine, a regenerated cohort, and a page that states the substitution instead of hiding it.
+
+## What I'd do differently
+
+**Seed data deserves the same discipline as code.** Using the real directory made every demo instantly legible internally, and it welded the prototype shut for any external use — this page included. A generator producing a fictional org with stable ids would have cost an afternoon and made the artifact publishable forever.
+
+**The abstain path deserved a gate, not a prompt.** The deny behaviour (*say the user is not permitted, never guess*) rides on a prompt instruction. The context filtering makes real leaks structurally impossible, but the polite refusal itself is unverified model behaviour. One post-check, that an answer must be a refusal whenever the context said "none in scope", would have converted the last soft wall into a hard one.
+
+**Build the audit log when the roadmap says to.** It was ranked correctly, deferred anyway, and then needed urgently by the demo that came later. Features that exist to create trust are the worst possible candidates for deferral, because by the time you need them the absence is the story.
