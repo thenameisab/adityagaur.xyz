@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BrandMark } from "@/components/Brand";
 import Icon from "@/components/Icon";
 import Toc from "@/components/Toc";
 import { workEntries } from "@/content/work/registry";
@@ -78,11 +79,24 @@ export default async function WorkEntryPage({
     ],
   };
 
-  const meta: { key: string; value: string; wide?: boolean }[] = [
+  const meta: { key: string; value: React.ReactNode; wide?: boolean }[] = [
     { key: "Role", value: entry.role },
     { key: "Timeframe", value: entry.timeframe },
     { key: "Status", value: entry.status },
-    { key: "Stack", value: entry.stack.join(" · "), wide: true },
+    {
+      key: "Stack",
+      // Still the same interpuncted line, still the same strings — each item
+      // just picks up its logo where the registry has one. Version suffixes are
+      // handled by the lookup, so "Next.js 16" resolves and keeps its "16".
+      value: entry.stack.map((item, i) => (
+        <span key={item} className={styles.stackItem}>
+          {i > 0 ? <span className={styles.stackSep}>·</span> : null}
+          <BrandMark name={item} size={16} />
+          {item}
+        </span>
+      )),
+      wide: true,
+    },
   ];
 
   return (

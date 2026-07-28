@@ -1,4 +1,5 @@
 import type { MDXComponents } from "mdx/types";
+import Brand from "@/components/Brand";
 import Figure from "@/components/artifacts/Figure";
 import Note from "@/components/artifacts/Note";
 import Stat from "@/components/artifacts/Stat";
@@ -17,6 +18,7 @@ import Switcher from "@/components/artifacts/Switcher";
  * own MDX file, so they only ship on the page that uses them.
  */
 const components: MDXComponents = {
+  Brand,
   Figure,
   Note,
   Stat,

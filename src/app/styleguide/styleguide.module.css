@@ -186,6 +186,28 @@
   border-radius: var(--bdrs-sm);
 }
 
+/* ── Brands ──────────────────────────────────────────────────────── */
+
+/* One mark set on all three grounds. The tile is a fixed cream regardless of
+   theme — the point of this row is to prove that reads on every ground, since
+   about a third of the logos logo.dev returns are dark marks on transparent and
+   would vanish on the dark and ember themes without it. */
+.brandGrounds {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+}
+
+.brandGround {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-sm);
+}
+
 /* ── Buttons ─────────────────────────────────────────────────────── */
 
 .btnPrimary,
