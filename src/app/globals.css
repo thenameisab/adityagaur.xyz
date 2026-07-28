@@ -684,6 +684,12 @@ body {
   font-size: var(--fz-body-2);
   line-height: var(--lh-normal);
   font-weight: var(--fw-regular);
+  /* Inherited everywhere, but only EB Garamond carries a dlig table, so in
+     practice this turns on the Th/ct/st/ck joins wherever the display face
+     renders and is a no-op in the sans and mono. Declared once here rather
+     than on each type role that sets --ff-display: the feature belongs to
+     the face, not the role. */
+  font-variant-ligatures: discretionary-ligatures;
 }
 
 a { color: inherit; text-decoration: none; }

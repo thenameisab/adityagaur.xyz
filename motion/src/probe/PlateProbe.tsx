@@ -1,5 +1,5 @@
 import { Easing, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
-import { loadFont as loadDisplay } from "@remotion/google-fonts/InstrumentSerif";
+import { loadFont as loadDisplay } from "@remotion/google-fonts/EBGaramond";
 import { loadFont as loadSans } from "@remotion/google-fonts/Geist";
 import { loadFont as loadMono } from "@remotion/google-fonts/GeistMono";
 import { easeOut, ember, ink, lts } from "../lib/tokens";
@@ -9,7 +9,7 @@ import { easeOut, ember, ink, lts } from "../lib/tokens";
  *
  * It exists to answer one question before any artifact work starts: does the
  * site's visual language survive being rendered as video? Three things get
- * tested — the real type stack (Instrument Serif / Geist / Geist Mono), ember on
+ * tested — the real type stack (EB Garamond / Geist / Geist Mono), ember on
  * ink at video gamma, and --ease-out driving frame-based motion instead of CSS.
  *
  * Delete once that question is settled.

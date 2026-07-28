@@ -9,8 +9,10 @@
  *   a dependency.
  *
  *   System B — the typographic arrow. 22×19, FILLED (fill="currentColor", no
- *   stroke), drawn to sit on the text baseline and to match Instrument Serif's
- *   stem weight at 1em. It is a glyph, not a UI control.
+ *   stroke), drawn to sit on the text baseline and to match the display
+ *   serif's stem weight at 1em. It is a glyph, not a UI control. Originally
+ *   drawn against Instrument Serif; EB Garamond's stems are close but not
+ *   identical — re-check before redrawing anything.
  *
  * Nine icons. A tenth requires justification.
  */
