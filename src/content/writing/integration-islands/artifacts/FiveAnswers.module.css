@@ -69,11 +69,17 @@
   color: var(--text-faint);
 }
 
-/* The selected island's own definition of "customer". */
+/* The selected island's own definition of "customer".
+   A hairline above it, not a 2px accent bar down its left. The bar was on the ban
+   list: it read as a decorative rail rather than as structure, and on a kraft
+   plate it would have been a third pass in an ink nobody loaded. The rule does
+   the same separating job and costs one pixel. `min-block-size` stays — it is
+   what stops the plate reflowing as the reader moves between islands with
+   different definition lengths. */
 .detail {
   margin-block-start: var(--space-5);
-  padding-inline-start: var(--space-5);
-  border-inline-start: 2px solid var(--accent-dim);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--bd-subtle);
   min-block-size: 4.5rem;
 }
 
