@@ -11,7 +11,6 @@
 import { buildWorkEntries, type EntryModule } from "@/lib/content";
 
 import * as loam from "./loam/index.mdx";
-import * as companyBrain from "./company-brain/index.mdx";
 import * as outreachSequencer from "./outreach-sequencer/index.mdx";
 import * as wealthlens from "./wealthlens/index.mdx";
 import * as internalWiki from "./internal-wiki/index.mdx";
@@ -22,7 +21,6 @@ import * as crmDashboard from "./crm-dashboard/index.mdx";
 
 const modules: Record<string, EntryModule> = {
   loam: loam as EntryModule,
-  "company-brain": companyBrain as EntryModule,
   "outreach-sequencer": outreachSequencer as EntryModule,
   wealthlens: wealthlens as EntryModule,
   "internal-wiki": internalWiki as EntryModule,

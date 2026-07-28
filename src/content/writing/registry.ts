@@ -6,9 +6,11 @@
 import { buildWritingEntries, type EntryModule } from "@/lib/content";
 
 import * as integrationIslands from "./integration-islands/index.mdx";
+import * as companyBrain from "./company-brain/index.mdx";
 
 const modules: Record<string, EntryModule> = {
   "integration-islands": integrationIslands as EntryModule,
+  "company-brain": companyBrain as EntryModule,
 };
 
 export const writingEntries = buildWritingEntries(modules);

@@ -6,10 +6,9 @@ export const meta = {
   kicker: "Market research",
   summary:
     "Forty-one products across six archetypes, researched in parallel, with a confidence grade on every headline number and the unverifiable ones left visible.",
-  role: "Solo — research design, agent orchestration, synthesis",
-  timeframe: "July 2026",
-  stack: ["Claude Code", "Parallel research agents", "GitHub API", "Markdown"],
-  status: "research",
+  dek: "Forty-one products, six archetypes, and a confidence grade on every headline number. Set the bar to High and half the market map goes grey.",
+  published: "2026-07-22",
+  readingMinutes: 11,
   order: 2,
 };
 
@@ -207,3 +206,7 @@ And one finding arrived pointing straight at a build-versus-buy decision. Superm
 **Confidence should have been three ordered values from the start.** It began as prose caveats at the end of each report, which meant the synthesis could not filter on it, and the grades had to be recovered by reading. The whole point of the grade is that it can be sorted; a caveat in a closing paragraph cannot.
 
 **Point-in-time data needs an expiry, not a date.** Every figure here is stamped July 2026, which is honest and insufficient. Half of these rows have a natural half-life of about a quarter. The next version of this should record, per row, what would have to change for the row to be wrong — the Work IQ row already says twelve months, and it is the only one that tells you when to come back.
+
+## How this was made
+
+Research pass of 22 July 2026. Solo work: research design, agent orchestration, synthesis. Forty-one products were researched in parallel by agents running in <Brand name="Claude Code" />, each against the same template, with star counts re-verified live against the <Brand name="GitHub" /> API and every report written to Markdown so the synthesis worked over text rather than over recollection.
