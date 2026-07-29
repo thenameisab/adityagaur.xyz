@@ -4,13 +4,17 @@ import { RegisterProvider } from "@/components/finlog/Register";
 import ChapterRail from "@/components/finlog/ChapterRail";
 import Chapter from "@/components/finlog/Chapter";
 import Marginalia from "@/components/finlog/Marginalia";
-import ArtifactSlot from "@/components/finlog/ArtifactSlot";
 import Reconciliation from "@/components/finlog/Reconciliation";
 import RegisterToggle from "@/components/finlog/RegisterToggle";
 import Worksheet from "@/components/finlog/Worksheet";
 import DeriveFinalize from "@/components/finlog/DeriveFinalize";
 import EffectiveDates from "@/components/finlog/EffectiveDates";
 import GapRegister from "@/components/finlog/GapRegister";
+import { ReadingProvider } from "@/components/finlog/Reading";
+import RateResolver from "@/components/finlog/RateResolver";
+import PricingModels from "@/components/finlog/PricingModels";
+import LeakDetector from "@/components/finlog/LeakDetector";
+import YourInvoice from "@/components/finlog/YourInvoice";
 
 export const meta = {
   slug: "billing-platform",
@@ -30,6 +34,8 @@ export const meta = {
 <FinlogDefs />
 
 <RegisterProvider>
+
+<ReadingProvider>
 
 <ChapterRail />
 
@@ -86,7 +92,7 @@ And then there's a fourth outcome that isn't really a rung at all: the call matc
 
 <Stamp label="NOT BILLED" sig="absent" /> — billable, priced at ₹0.00, invoiced by nobody. It is the single most important state this engine can be in, because a wrong number pages somebody eventually. A *missing* number does not page anybody, ever, on its own. Chapter 007 is what happens when this state accumulates quietly for long enough to become a real leak instead of a rounding error.
 
-<ArtifactSlot code="A2" name="Pricing a single call" description="Walk a single API call down the precedence chain live — sandbox, bundle, negotiated rate, catalog, or the unresolved fall-through." />
+<RateResolver />
 
 </Chapter>
 
@@ -108,7 +114,7 @@ The word "slab" didn't exist in this system's vocabulary until it needed a secon
 
 Four models, one settlement view, because a client on a bundle this month and a negotiated flat rate next month should never have to appear in a different report depending on which pricing engine happened to price their period.
 
-<ArtifactSlot code="A3" name="The four models" description="The four curves live — including the slab drop, plotted against the same axis tier is plotted against, at the same threshold." />
+<PricingModels />
 
 </Chapter>
 
@@ -158,7 +164,7 @@ The second is sandbox drift, and it's a lifecycle problem rather than a pricing 
 
 The third is the one with no floor at all. Vendor API codes get retired, duplicated under a new name, or renamed upstream without notice, and usage keeps arriving tagged with whatever code the caller last knew. A rate gap at least tells you what it's missing. A dead-code hit doesn't resolve to anything. It's not underpriced, it's *unrecognized*, which is why the catalog has its own reconciliation pass: one transaction merges duplicate codes onto their survivor across five child tables, deactivates retired codes that still have live data attached rather than deleting them outright, and upserts the canonical name and its known aliases so the next hit resolves correctly the first time.
 
-<ArtifactSlot code="A5" name="The three leaks" description="The three leak classes live against seeded usage — rate gaps priced, sandbox transitions dated, catalog drift resolved or flagged unresolved." />
+<LeakDetector />
 
 Three vessels. Two of them hold a level you can read and act on. The third has no floor, which is the honest way to draw "we don't yet know how much this is costing us" — not as a number, as a shape with nothing underneath it.
 
@@ -198,8 +204,10 @@ That's the invoice. It was correct in chapter 002 and it is correct here, becaus
 
 What I'd build differently, with the whole system in front of me rather than three years into it: the sandbox lifecycle and the leak-dismissal lifecycle are the same shape (an effective-dated transition with a state that can't be un-acknowledged retroactively), and they were built eighteen months apart as two separate features before I noticed. One generalized primitive, built once, would have made chapter 007's three leak classes and chapter 004's sandbox transitions the same code path instead of two implementations that happen to agree. That's the honest cost of learning a domain by building it: the right abstraction is usually visible only after you've built its two separate cases and can finally see they were one.
 
-<ArtifactSlot code="A7" name="Your invoice" description="A closing statement, built live from this session's own reading — every chapter you actually visited, itemized the way an invoice itemizes a month." />
+<YourInvoice />
 
 </Chapter>
+
+</ReadingProvider>
 
 </RegisterProvider>
