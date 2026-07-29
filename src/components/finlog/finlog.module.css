@@ -233,15 +233,34 @@
   }
 }
 
+/* LABEL OVER VALUE, for the same reason `.railFigures` is — and this is that bug
+ * a second time, in the component written to fix it.
+ *
+ * Side by side, a row needs the label column plus an unbreakable 12-character
+ * figure on one line: 116px + 32px + 232px = 380px of content at 200% text zoom on
+ * a 390px viewport, against a 310px prose track. Both figures crossed the right
+ * edge — ₹1,23,847.49 by 30px, ₹1,16,065.23 by 85px — which at chapter 008, where
+ * the prose says "Watch it now" and these two numbers ARE the payoff, is once
+ * again the one moment the essay asks to be looked at being the one moment it
+ * cannot be read. The rail clipped them to `₹18` against `₹17`; here they simply
+ * left the screen.
+ *
+ * Stacked rather than wrapped. `flex-wrap: wrap` also takes the page back to zero
+ * overflow, but `gap` on this row is both axes, so a wrapped value would sit
+ * space-4 below its own label and only space-2 above the next pair — the grouping
+ * inverts and each figure reads as belonging to the label beneath it, which on a
+ * two-row reconciliation is worse than the overflow. Stacked, pair spacing is one
+ * property and there is nothing to invert.
+ *
+ * Both figures also keep the same left edge, so the digits still line up column
+ * for column — which is the comparison this whole `<dl>` exists to support. */
 .reconciliationRow {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .reconciliationRow + .reconciliationRow {
-  margin-block-start: var(--space-2);
+  margin-block-start: var(--space-4);
 }
 
 .reconciliationLabel {
@@ -812,6 +831,17 @@
    than adding a fourth colour for "selected". */
 .toggle {
   display: inline-flex;
+  /* WRAPS. Three options on one unbreakable line is 443px of control at 200% text
+     zoom on a 390px viewport, against a 310px prose track — 93px past the right
+     edge, and it was the outermost offender on the page. The widest single option
+     is 167px, so the track has room for any one of them and wrapping is the whole
+     fix: nothing has to shrink and no text is ever clipped.
+
+     Inert in `.railToggle`, which is `flex-direction: column` and unbounded in
+     block size (the rail scrolls rather than compressing its items), so there is
+     no cross axis to wrap onto — verified pixel-identical there with and without
+     this line. */
+  flex-wrap: wrap;
   border: var(--bd-subtle);
   border-radius: var(--bdrs-sm);
   padding: 2px;
