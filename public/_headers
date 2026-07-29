@@ -1,0 +1,17 @@
+# Cloudflare Pages response headers.
+#
+# THE OG CARD HAS NO FILE EXTENSION, AND WITHOUT THIS IT IS NOT AN IMAGE.
+# Next's `opengraph-image` file convention exports to `out/work/<slug>/opengraph-image`
+# — no `.png` — because the route's content type normally comes from the response
+# Next itself would serve. A static host has only the filename to go on, so an
+# extensionless file is served as `application/octet-stream`, and every scraper
+# (Facebook, X, LinkedIn, Slack) rejects a non-`image/*` og:image and falls back
+# to no card at all. The build looks completely correct in `out/` either way,
+# which is exactly why this is written down rather than discovered later.
+#
+# `:slug` is Cloudflare Pages' named placeholder — it matches one path segment,
+# so this reaches every work entry's card without touching the HTML pages beside
+# them (a bare `/work/*` would set Content-Type on those too).
+/work/:slug/opengraph-image
+  Content-Type: image/png
+  Cache-Control: public, max-age=3600
