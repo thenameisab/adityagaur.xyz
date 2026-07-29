@@ -17,7 +17,10 @@ import styles from "./Stamp.module.css";
  */
 export const STAMPS = [
   { label: "DRAFT", sig: "estimated", means: "recomputed from live usage every time it is opened" },
-  { label: "FINALIZED", sig: "settled", means: "frozen into statement_lines, never recomputed" },
+  // "never recomputed" rather than naming the storage it is frozen into: this
+  // string renders to a reader on /styleguide, and a table name is exactly the
+  // kind of internal identifier the entry was scrubbed of.
+  { label: "FINALIZED", sig: "settled", means: "snapshotted at finalize, never recomputed" },
   { label: "ZERO P0s", sig: "settled", means: "nineteen gaps, four causes, no surface mis-bills" },
   { label: "NOT BILLED", sig: "absent", means: "billable, priced at zero, invoiced by nobody" },
 ] as const;

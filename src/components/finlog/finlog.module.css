@@ -277,6 +277,534 @@
   margin-inline: auto;
 }
 
+/* ── The artifacts ──
+   Four of the eight, all static, all rendered from one baked data module. What
+   lives here is layout only: every ink, rule, ground and signal comes from
+   globals.css §15 through a data attribute, so an artifact cannot invent a
+   colour or a border weight of its own. If a rule below sets a colour, it is
+   reading a token that re-resolves per register — none of them name a value.
+
+   THE ONE INVARIANT ALL FOUR SHARE: every figure sits inside a `[data-money]`
+   band. On paper that is the page's grammar (ruling carries prose, clean stock
+   carries figures); in Console it is a contrast requirement, because a figure
+   landing on a grid line measures 4.10:1 for the red and 3.86:1 for faint. The
+   band paints the register's own --bg over the texture, which is why one
+   declaration covers both registers. */
+
+.artifact {
+  margin-block: var(--space-10);
+}
+
+.artifactLabel {
+  margin-block-end: var(--space-3);
+}
+
+.artifactCaption {
+  margin-block-start: var(--space-4);
+  /* The caption is the one place an artifact speaks in the essay's voice rather
+     than the instrument's, so it takes the prose measure rather than the sheet's
+     full width — a 90-character caption under a table reads as table chrome. */
+  max-inline-size: 54ch;
+}
+
+/* The sheet. Every artifact is one, because every artifact here is a document:
+   a worksheet, an invoice, a schedule, a register. The padding is what makes it
+   a sheet rather than a bare table — the same argument --paper-margin makes at
+   chapter scale, one level down. */
+.sheet {
+  padding: var(--space-5);
+}
+
+/* On a phone the sheet's own inset is competing with the paper margin outside it
+   and the money column inside it. The worksheet's two remaining columns needed
+   281px against 268px available — the last 13px of that gap is this padding, and a
+   sheet is allowed a narrower gutter on a narrow page. Applies to all four
+   artifacts, which all want the same thing at this size. */
+@media (max-width: 47.999em) {
+  .sheet {
+    padding: var(--space-4) var(--space-3);
+  }
+}
+
+.sheetHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-block-end: var(--space-4);
+  padding-block-end: var(--space-3);
+  border-block-end: var(--bdw) solid var(--border-default);
+}
+
+.sheetFigure {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-block-start: var(--space-4);
+}
+
+.sheetFigure > * {
+  margin: 0;
+}
+
+/* Wide instruments scroll inside their own frame rather than shrinking below
+   legibility. `[data-scrollx]` (globals.css §10) supplies the edge fades; it
+   deliberately does not set overflow, so each container declares its own. */
+.tableScroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* ── A1 · the settlement worksheet ── */
+
+.worksheet {
+  inline-size: 100%;
+  border-collapse: collapse;
+  /* A money column is read down, not across, so the figure column is fixed to
+     its content and the interface name absorbs the slack. */
+  table-layout: auto;
+}
+
+/* PADDING ON BOTH INLINE SIDES, and the reason is a defect the source could not
+   show. With the end-padding only and `padding-inline-end: 0` on the right-
+   aligned columns below, two adjacent right-aligned figure columns met with
+   exactly zero space between them — the call count and the rate rendered as one
+   run of digits ("5,5781.3952"), which on a money worksheet is not a spacing
+   nit, it is a wrong number. Both sides are padded and only the outer edges are
+   flushed, so no two columns can ever touch. */
+.worksheet :is(th, td) {
+  text-align: start;
+  /* space-3, not space-4, and the 4px matters. At space-4 the five columns'
+     combined minimum width exceeded the money band, the table overflowed its own
+     scroller, and every amount in the column rendered clipped to its first digit
+     — "₹3", "₹1" — with the settlement cut mid-figure. A money column that is
+     cut off is worse than no money column, and it was invisible in the source
+     both times: once when the padding was missing and once when it was too
+     generous. */
+  padding: var(--space-2) var(--space-3);
+  vertical-align: baseline;
+  /* A hairline is a line item — device one, doing the most literal version of
+     its job anywhere on the page. */
+  border-block-end: var(--bdw) solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.worksheet :is(th, td):first-child {
+  padding-inline-start: 0;
+}
+
+.worksheet :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.worksheet th {
+  font-weight: inherit;
+}
+
+/* THREE COLUMNS MAY WRAP, TWO MAY NOT. The two that may not are the ones a
+   reader compares down the column — the call count and the amount — and a figure
+   broken across two lines cannot be compared to the one above it. Everything
+   else wraps, which is what keeps the table's minimum width under the band's at
+   the essay's measure instead of overflowing into a clipped money column. */
+.worksheet tbody th,
+.worksheet :is(th, td):nth-child(2),
+.worksheet :is(th, td):nth-child(4) {
+  white-space: normal;
+}
+
+.worksheet tbody th {
+  min-inline-size: 11ch;
+}
+
+/* The narrow form's second line: hidden while the table has room for its own
+   model and rate columns.
+ *
+ * `text-transform: none` because one of these sits inside the settlement row's
+ * header, which carries the eyebrow role — and inheriting its uppercase rendered
+ * the call count as "45,190 CALLS" beside nine lowercase siblings. Tracking comes
+ * off with it for the same reason. */
+.worksheetNarrow {
+  display: none;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Below 48em the worksheet drops to TWO columns — what it is, and what it cost —
+   with the model, the rate and the call count moving under the name. Which is how
+   a narrow statement has always printed: a description block and an amount.
+ *
+ * Measured, in two passes. Five columns need 553px of minimum width. A 390px
+ * phone leaves 268px inside the paper margin and the sheet's own padding, so the
+ * Amount column sat outside the frame and the settlement — the one figure the
+ * artifact exists to state — was unreadable until the reader swiped a table they
+ * had no reason to think was scrollable. Three columns still needed 357px and
+ * were still clipped; the first fix looked like a fix and was not, which is
+ * exactly why this is verified at a phone width rather than reasoned about. Two
+ * columns need about 190px and fit with room to spare.
+ *
+ * The name's min-inline-size comes off here too: at 11ch it was itself a floor
+ * under the table's minimum width, and at this size the name should simply wrap. */
+@media (max-width: 47.999em) {
+  .worksheet :is(th, td):nth-child(2),
+  .worksheet :is(th, td):nth-child(3),
+  .worksheet :is(th, td):nth-child(4) {
+    display: none;
+  }
+
+  .worksheet tbody th {
+    min-inline-size: 0;
+  }
+
+  .worksheet :is(th, td) {
+    padding-inline: var(--space-2);
+  }
+
+  .worksheetNarrow {
+    display: block;
+    margin-block-start: var(--space-1);
+  }
+
+  /* THE SETTLEMENT STACKS, label over figure. Two columns fit at 282px against
+     268px available and were still 14px over, and the single widest thing in the
+     table is this figure — it is set at the largest figure role on the page,
+     because it is the number the whole artifact exists to state. Shrinking it to
+     fit was the wrong trade. Stacking it gives it the sheet's full width instead,
+     which is also how a statement prints its total on a narrow page: the label on
+     one line, the amount under it, the double rule beneath both. Same fix, and the
+     same reason, as the reconciliation rail's figures. */
+  .worksheet tfoot tr,
+  .worksheet tfoot :is(th, td) {
+    display: block;
+    padding-inline: 0;
+    text-align: start;
+  }
+}
+
+/* Figures right-align so the decimal points stack. This is the entire reason a
+   money column is set in the mono. */
+.worksheet :is(th, td):last-child,
+.worksheet :is(th, td):nth-child(3),
+.worksheet :is(th, td):nth-child(4) {
+  text-align: end;
+}
+
+.worksheet tfoot :is(th, td) {
+  padding-block-start: var(--space-3);
+  /* The row carries [data-rule="double"] — globals.css §15's mark for a TOTAL.
+     The cell-level hairline would fight it, so it comes off here. */
+  border-block-end: none;
+}
+
+/* The volume-priced row, on hover only — Ledger permits feedback, not motion,
+   and this is the row the caption is about. */
+.worksheet tbody tr:hover {
+  background-color: var(--bg-hover);
+}
+
+/* ── A0 · derive and finalize ── */
+
+/* Two sheets of one invoice. In flow, not stacked out of it: the carbon offset
+   is drawn by [data-carbon]'s own pseudo-element (globals.css §15), so the
+   layering is a property of the top sheet rather than of this container, and a
+   narrow viewport gets two complete sheets instead of two overlapping ones. */
+.carbonSet {
+  display: grid;
+  gap: var(--space-6);
+}
+
+/* The lower sheet is the one being superseded, so it takes the recessive
+   treatment: a dashed edge, which is already the page's shape for "this is not
+   the settled thing" — the same device the unpriced state uses. */
+.carbonUnder {
+  border: var(--bdw) dashed var(--border-subtle);
+}
+
+.carbonTop {
+  border: var(--bdw) solid var(--border-strong);
+  /* The offset sheet [data-carbon] paints sits 8px down and right, so the set
+     needs that much clearance below it or the next block crops the carbon. */
+  margin-block-end: var(--space-3);
+}
+
+/* ── A4 · the effective-dated pattern ── */
+
+/* One grid, shared by the drawing and every label in it. This is what makes the
+   text-zoom risk structural rather than maintained: the SVG spans the three
+   period columns, so it is exactly as wide as they are at any zoom, and no
+   coordinate inside it has to know anything about the type around it. */
+/* NO COLUMN GAP, and this is the whole alignment guarantee rather than a
+   styling choice. With a 16px column gap the three columns are not thirds of the
+   grid's width — each is (W − 32) / 3 — so the drawing's dividers at a third and
+   two thirds of its viewBox landed 5px inside the period boundaries they exist
+   to mark. Measured: divider at 541, column edge at 546. A boundary line that is
+   nearly on the boundary is worse than no line, because the reader trusts it.
+   Column-gap 0 makes each column exactly a third, so the two dividers land on
+   the two edges by construction, at any width and any zoom. Separation between
+   columns comes from cell padding instead, which moves type without moving
+   geometry. */
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2) 0;
+  align-items: baseline;
+}
+
+.timeline > p {
+  padding-inline-end: var(--space-4);
+}
+
+/* Three adjacent hairlines with no gap between them read as one ruled header
+   line across the schedule, which is what a schedule's header is. */
+.timelinePeriod {
+  margin: 0;
+  padding-block-end: var(--space-2);
+  border-block-end: var(--bdw) solid var(--border-default);
+}
+
+.timelineSvg {
+  grid-column: 1 / -1;
+  inline-size: 100%;
+  /* Fixed block-size with a stretched viewBox: the drawing's job is to divide
+     the columns and show two spans, and a height that grew with the columns
+     would turn a hairline schedule into a chart. */
+  block-size: 2.875rem;
+  color: var(--text-faint);
+}
+
+.timelineCell {
+  margin: 0;
+}
+
+.timelineWhy {
+  /* The only cell allowed to wrap to two lines, and it usually does. */
+  margin-block-start: var(--space-1);
+}
+
+/* The dated facts — one per lane, in the column that lane begins in. Extra space
+   above separates them from the drawing they label; extra below separates the
+   facts (what was written down, and when) from the answers (what each period was
+   therefore charged). */
+.timelineFact {
+  margin-block: var(--space-2) var(--space-4);
+}
+
+.timelineFactOn {
+  display: block;
+  color: var(--text-faint);
+}
+
+/* THE THREE COLUMNS SURVIVE A PHONE; THE FIGURE GIVES WAY INSTEAD. At 390px each
+   period column is 95px and this figure at the figure-2 role measures 96 — so it
+   spilled out of its own column and over the ₹0.00 beside it. The alternative was
+   stacking the periods, which would have cost the drawing: three spans across
+   three side-by-side periods is the whole artifact, and it has no meaning in one
+   column. A figure one role smaller on a phone costs nothing by comparison. */
+@media (max-width: 47.999em) {
+  .timeline > p {
+    padding-inline-end: var(--space-2);
+  }
+
+  .timelineBilled {
+    font-size: var(--fz-body-4);
+  }
+}
+
+.datedSubjects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  margin: var(--space-6) 0 0;
+  padding-block-end: var(--space-4);
+}
+
+.datedSubject > dt,
+.datedSubject > dd {
+  margin: 0;
+}
+
+/* ── A6 · the gap register ── */
+
+.causeFilter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-end: var(--space-4);
+}
+
+/* Composed off the toggle above rather than restyled: same box, same borders,
+   same --dur-instant feedback, same [data-active] carrying the register's own
+   accent instead of a fourth colour for "selected". A filter and a mode control
+   are the same kind of object. */
+.cause {
+  appearance: none;
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-xs);
+  background: none;
+  color: var(--text-muted);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  text-align: start;
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
+}
+
+.cause:hover {
+  color: var(--text-primary);
+}
+
+.cause[data-active] {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+  color: var(--accent);
+}
+
+.causeMechanism {
+  margin-block: 0 var(--space-5);
+  max-inline-size: 62ch;
+}
+
+.register {
+  inline-size: 100%;
+  border-collapse: collapse;
+  text-align: start;
+}
+
+.register caption {
+  text-align: start;
+  padding-block-end: var(--space-3);
+}
+
+/* THE LINE-HEIGHT IS ON THE CELL, NOT ONLY ON THE SPAN INSIDE IT — and this was
+   a real defect, not a precaution. A cell's line boxes are at least as tall as
+   its own strut, so a `td` inheriting the prose leading (1.75 at the lede size,
+   31.5px) held every line of a 14px type-body-4 span 31.5px apart no matter what
+   line-height the span itself declared. Nineteen rows of double-spaced findings,
+   from a rule that looks correct in the component: the class was on the span, and
+   the span was never what set the leading. Matched to --lh-medium so the cell and
+   the role agree.
+
+   The worksheet above never showed this because its type classes sit on the cells
+   themselves, which is the same fix stated as an authoring habit. */
+.register :is(th, td) {
+  text-align: start;
+  vertical-align: baseline;
+  line-height: var(--lh-medium);
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  border-block-end: var(--bdw) solid var(--border-subtle);
+}
+
+.register th {
+  font-weight: inherit;
+}
+
+.register tbody th {
+  min-inline-size: 14ch;
+}
+
+.register td:last-child {
+  text-align: end;
+  padding-inline-end: 0;
+  white-space: nowrap;
+}
+
+.registerElement {
+  display: block;
+  margin-block-start: var(--space-1);
+}
+
+/* The two rows that carry figures. A grid of label/value pairs rather than three
+   more table columns, because seventeen of nineteen rows would leave those
+   columns empty — and an empty money column reads as a zero, which is the exact
+   failure this whole chapter is about. */
+.registerFigures {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+  gap: var(--space-1) var(--space-3);
+  margin-block-start: var(--space-3);
+  /* Its own leading, for the same strut reason as the cell above: these are
+     12px figures inside a 14px cell, and without this each pair would sit on a
+     14px line box. */
+  line-height: var(--lh-fine, 1.2);
+}
+
+/* On a phone the register's own minimums fought each other: a 14ch floor under the
+   surface column plus the column padding put the table at 327px against 284px
+   available, so the severity column — one glyph wide and the fastest thing on the
+   table to read — sat outside the frame. The floor comes off and the padding
+   tightens; min-content on three text columns then fits with room, and the rows
+   simply get taller, which a register on a phone should. */
+/* The severity's own label, for the stacked form only. */
+.sevLabel {
+  display: none;
+}
+
+/* THE ROWS STACK ON A PHONE. Three text columns did technically fit once their
+   minimums came off — 284px against 284px — but "fits" and "reads" are different
+   claims: the surface column landed at about a hundred pixels and set its
+   description five words tall beside a divergence paragraph three times its
+   height. A register row is one finding, so at this width it becomes one block:
+   what the surface is, what diverged, how bad. The column headers go with the
+   columns, which is why the severity grows a label of its own. */
+@media (max-width: 47.999em) {
+  .register thead {
+    display: none;
+  }
+
+  .register tbody tr {
+    display: block;
+    padding-block: var(--space-4);
+    border-block-end: var(--bdw) solid var(--border-subtle);
+  }
+
+  .register tbody :is(th, td) {
+    display: block;
+    padding: 0;
+    border-block-end: none;
+    min-inline-size: 0;
+  }
+
+  .register tbody td {
+    margin-block-start: var(--space-2);
+  }
+
+  .register tbody td:last-child {
+    text-align: start;
+    color: var(--text-faint);
+  }
+
+  .sevLabel {
+    display: inline;
+  }
+}
+
+.cleared {
+  margin-block-start: var(--space-6);
+  padding-block-end: var(--space-4);
+}
+
+.clearedList {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+}
+
+.clearedList > li {
+  /* Opts out of `.prose li`'s inherited indent (globals.css) — these carry a
+     rule as their marker rather than a dot, and the dot is already suppressed
+     for any classed list inside prose. */
+  padding-inline-start: var(--space-4);
+  border-inline-start: var(--bdw) solid var(--border-subtle);
+}
+
+.clearedList > li + li {
+  margin-block-start: var(--space-2);
+}
+
 /* ── The register toggle ──
    A three-position segmented control. `data-active` carries the same signal
    `[data-sig="settled"]` would (this control IS in a register, always
