@@ -362,6 +362,14 @@
   flex-wrap: wrap;
   gap: var(--space-2) var(--space-4);
   margin-block-start: var(--space-4);
+  /* The headline figure is one unbreakable run — no space, no hyphen — so at
+     extreme text zoom it can be wider than the sheet has to give it, same as
+     the worksheet's own money column. The worksheet's answer was a scroller,
+     not a shrink, because a clipped or broken money figure is worse than a
+     sideways swipe; this row gets the same device rather than forcing the
+     whole page to scroll to fit one figure. */
+  max-inline-size: 100%;
+  overflow-x: auto;
 }
 
 .sheetFigure > * {
@@ -528,8 +536,15 @@
    is drawn by [data-carbon]'s own pseudo-element (globals.css §15), so the
    layering is a property of the top sheet rather than of this container, and a
    narrow viewport gets two complete sheets instead of two overlapping ones. */
+/* `minmax(0, 1fr)`, not the bare `1fr` an implicit grid defaults to: an
+   auto-sized track's minimum is its content's min-content width, and a money
+   figure is a single unbreakable run, so at 200% text zoom the track grew past
+   the viewport instead of yielding to it — the page scrolled sideways, not the
+   sheet. `0` as the floor is what lets the track take the container's actual
+   width and leave any remainder inside the sheet, where a nowrap figure can. */
 .carbonSet {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6);
 }
 
