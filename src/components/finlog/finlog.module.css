@@ -1,0 +1,269 @@
+/*
+ * The three page-LAYOUT devices globals.css §15 left for this branch: the
+ * marginalia column, the chapter thresholds, and the reconciliation rail —
+ * plus the chrome that composes them (the register toggle, artifact
+ * placeholders). Everything register-BEHAVIOUR (the rule, the ruled ground,
+ * the signal vocabulary, the stamp, the void, the register edge, the motion
+ * guard) already lives in globals.css and is only referenced here through data
+ * attributes, per that file's own note.
+ *
+ * The shared reference point for every side-column measurement below is
+ * `--measure-prose` (68ch) — the actual rendered width of `.prose`, which is
+ * narrower than the `.entry` grid's reserved `--maw-prose` (44rem) track. Using
+ * the narrower number keeps the rail and the marginalia from ever landing
+ * under running TEXT, which is the thing that actually has to stay clear —
+ * the extra slack between 68ch and 44rem is real but unclaimed space.
+ */
+
+/* ── The chapter ── */
+
+.chapter {
+  padding-block: var(--space-fluid-md);
+}
+
+/* Every chapter carries `data-edge` (globals.css §15) rather than a plain
+   divider between siblings: the device's whole point is "material changed
+   here," and that is exactly as true between two chapters as it is between
+   the site's chrome and the first/last one. The generous block padding above
+   means each pair of hairlines reads as one chapter closing and the next
+   opening, not as a single shared rule. */
+
+/* ── The threshold ──
+   No `h2` in the MDX source (so the empty Toc rail stays empty, per §4's "no
+   h2s"), and no `data-rule="double"` here either — that mark is reserved for a
+   figure that bills, and a chapter title is not one. A single hairline is a
+   line item, which is all a threshold is. */
+.threshold {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-5);
+  padding-block-end: var(--space-6);
+  margin-block-end: var(--space-8);
+}
+
+.thresholdMark {
+  flex: none;
+  color: var(--text-faint);
+}
+
+.thresholdText {
+  min-inline-size: 0;
+}
+
+.thresholdLine {
+  color: var(--text-faint);
+  margin-block-end: var(--space-1);
+}
+
+.thresholdEyebrow {
+  margin-block-end: var(--space-2);
+}
+
+.thresholdTitle {
+  margin: 0;
+}
+
+.chapterBody {
+  position: relative; /* anchors .marginalia at 80em+ */
+}
+
+/* `.prose > * + *` (globals.css) only reaches DIRECT children, and every
+   chapter's paragraphs sit one level deeper, inside this div — so the
+   between-block rhythm has to be restated at this level once. Margins still
+   collapse against a component's own explicit margin-block (Marginalia,
+   ArtifactSlot), so nothing here fights those; it only supplies the gap
+   between two plain paragraphs, which have none of their own. */
+.chapterBody > * + * {
+  margin-block-start: var(--space-5);
+}
+
+/* ── Marginalia — the second voice ──
+   Below 80em: an inline callout, in reading order, exactly where it was
+   authored — the plan's own fallback ("collapses under the main column on
+   mobile, where it becomes inline asides"). At 80em+: pulled into the right
+   gutter, vertically at its own static position (only the inline axis is
+   overridden), so two notes in one chapter still land beside the lines they
+   annotate rather than stacking at the chapter's top. */
+.marginalia {
+  margin-block: var(--space-6);
+  padding-inline-start: var(--space-5);
+  border-inline-start: var(--bdw) solid var(--border-default);
+}
+
+.marginaliaLabel {
+  margin-block-end: var(--space-1);
+}
+
+.marginaliaBody {
+  font-family: var(--ff-display);
+  font-style: italic;
+}
+
+@media (min-width: 80em) {
+  .marginalia {
+    --bleed: clamp(0px, calc((100vw - var(--gutter) * 2 - var(--measure-prose)) / 2), 10rem);
+    position: absolute;
+    inset-inline-start: 100%;
+    inset-block-start: auto;
+    inline-size: max(0px, calc(var(--bleed) - var(--space-6)));
+    margin-block: 0;
+    margin-inline-start: var(--space-6);
+    padding-inline-start: var(--space-4);
+  }
+}
+
+/* ── The artifact placeholder ──
+   `[data-void]` (globals.css §15) already supplies the dashed edge — the same
+   shape the page uses for "billable and nobody has invoiced it yet" — so this
+   file only adds the box's internal layout. */
+.artifactSlot {
+  padding: var(--space-8) var(--space-5);
+  margin-block: var(--space-8);
+  text-align: center;
+}
+
+.artifactCode {
+  color: var(--text-faint);
+  margin-block-end: var(--space-2);
+}
+
+.artifactName {
+  color: var(--text-secondary);
+  margin-block-end: var(--space-1);
+}
+
+.artifactDesc {
+  max-inline-size: 32rem;
+  margin-inline: auto;
+}
+
+/* ── The register toggle ──
+   A three-position segmented control. `data-active` carries the same signal
+   `[data-sig="settled"]` would (this control IS in a register, always
+   Console — see ChapterRail), so it composes with the existing ink rather
+   than adding a fourth colour for "selected". */
+.toggle {
+  display: inline-flex;
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-sm);
+  padding: 2px;
+  gap: 2px;
+}
+
+.toggleOption {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--bdrs-xs);
+  cursor: pointer;
+  transition: color var(--dur-instant) var(--ease-out), background-color var(--dur-instant) var(--ease-out);
+}
+
+.toggleOption:hover {
+  color: var(--text-primary);
+}
+
+.toggleOption[data-active] {
+  background: var(--bg-hover);
+  color: var(--accent);
+}
+
+/* ── The rail ──
+   The reconciliation rail (§5.4 item 4) and the chapter nav §5.2 introduces
+   the toggle inside both live here, as one sticky instrument. Hidden below
+   80em on purpose: the register toggle still reaches every reader (it is
+   also rendered inline in chapter 002), and the mark nav / running totals are
+   a desktop enhancement rather than information found nowhere else on the
+   page — every figure the rail states is also stated in running prose at the
+   chapter that earns it. */
+.rail {
+  display: none;
+}
+
+@media (min-width: 80em) {
+  .rail {
+    /* Distance from the viewport edge to the `.entry` grid's centred prose
+       track (§5 layout primitives: three columns, `1fr min(--maw-prose,100%)
+       1fr` — the gutter cancels out of the middle column's own left edge). */
+    --track-left: calc((100vw - var(--maw-prose)) / 2);
+    --bleed: clamp(0px, calc(var(--track-left) - var(--gutter)), 10rem);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    /* `fixed`, not `sticky` — this sits inside `.prose` flow as the first
+       chapter's preceding sibling, and a sticky element still reserves its
+       own height in that flow (it only detaches for positioning, not for
+       layout), which pushed every chapter down by the rail's own height.
+       `fixed` removes it from flow entirely, which a viewport-pinned
+       instrument panel wants anyway. */
+    position: fixed;
+    inset-block-start: calc(var(--header-h) + var(--space-6));
+    inset-inline-start: calc(var(--track-left) - var(--bleed));
+    inline-size: max(0px, calc(var(--bleed) - var(--space-6)));
+    max-block-size: calc(100dvh - var(--header-h) - var(--space-12));
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding: var(--space-4);
+    border-radius: var(--bdrs-md);
+    background: var(--bg-raised);
+  }
+}
+
+.railToggle {
+  flex-direction: column;
+  align-self: stretch;
+}
+.railToggle .toggleOption {
+  text-align: center;
+}
+
+.railMarks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.railMarkLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1);
+  border-radius: var(--bdrs-xs);
+  color: var(--text-faint);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+.railMarkLink:hover {
+  color: var(--text-secondary);
+}
+.railMarkLink[data-active] {
+  color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.railFigures {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-3);
+  row-gap: var(--space-1);
+  margin: 0;
+  padding-block-start: var(--space-4);
+  border-block-start: var(--bd-subtle);
+}
+
+.railFigureLabel {
+  grid-column: 1;
+  align-self: center;
+  margin: 0;
+}
+
+.railFigureValue {
+  grid-column: 2;
+  justify-self: end;
+  margin: 0;
+}
