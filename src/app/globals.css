@@ -191,6 +191,15 @@ ol[class] { list-style: none; }
   --console-card: #1c2226;
   --console-hover: #232a2e;
 
+  /* Console's ground texture, the counterpart to --rule-feint. Derived the same
+     way that one was, but the constraint bites in the opposite direction: here
+     the darkest line on which the register's red still clears AA (#1d2327)
+     measures 1.09:1 against the panel and so cannot be seen at all. Visibility
+     wins and the figure is protected by clean ground instead — see the gridded
+     ground in §15. 1.21:1 against the panel, which is a texture rather than a
+     second surface. */
+  --grid-feint: #242b2f;
+
   --phosphor: #4ade9b; /* live, computing, settled — 16.27:1 on the ground */
   --amber: #f0b03c;    /* estimated, provisional — 9.91:1 */
 
@@ -830,6 +839,12 @@ ol[class] { list-style: none; }
   --border-default: #333c41;
   --border-strong: #56676d; /* 3.21:1 — the only border carrying a 3:1 duty */
 
+  /* The vertical rule that divides a money column, re-resolved for emitted light.
+     The :root value is a light blue-grey chosen against paper and would read as a
+     bright stripe here. No type ever sits on it, so it takes --border-default's
+     value rather than the grid's fainter one. */
+  --rule-column: #333c41;
+
   /* Phosphor IS the console's accent. Unlike Ledger's reservation above, this is
      no conflict: a console's interactive affordances and its live state are the
      same idea, which is exactly what a phosphor screen looks like. */
@@ -907,12 +922,19 @@ ol[class] { list-style: none; }
     --rule-feint: var(--paper);
   }
 
+  /* Console's grid goes the same way and for the same reason: it is the one thing
+     in this register that exists purely to look like an instrument, its two
+     failing roles (red 4.10, faint 3.86) both fail only where a line lands, and
+     setting the line to the chapter's own ground paints panel-on-panel so the
+     texture disappears with no second rule. Red then has clean panel at 4.96:1
+     and the data-money obligation the device imposes lifts with it. */
   .theme-console {
     --text-muted: #bdc5c8;
     --text-faint: #94a4ab;
     --border-subtle: #333c41;
     --border-default: #56676d;
     --border-strong: #728890;
+    --grid-feint: var(--console-panel);
   }
 }
 
@@ -1763,6 +1785,17 @@ hr {
   border-block-end: 3px double var(--border-strong);
 }
 
+/* Both registers now carry a ground texture, and both are pitched off the body
+   line box, so the pitch is declared once here rather than inside either device.
+   DERIVED, not typed: --fz-body-1 × --lh-loose is 31.5px, which is the line box
+   of the role register prose is set in. Type a literal and the texture drifts off
+   the text the first time the type scale moves. Consumers outside this section
+   read it too — finlog.module.css quantises its block rhythm to it, so a chapter's
+   spacing is a whole number of rules in both registers. */
+:is(.theme-ledger, .theme-console) {
+  --rule-pitch: calc(var(--fz-body-1) * var(--lh-loose));
+}
+
 /* ── The ruled ground ──
    Real ruled paper: the baseline ruling, at the pitch of the register's own body
    line box, so prose sits ON the rules rather than near them. One gradient, and
@@ -1789,9 +1822,32 @@ hr {
    `prefers-contrast: more` the ruling is removed rather than darkened — see the
    note in §3 for why the obvious direction is the wrong one — and faint recovers
    its full 7.64:1. Unlike the plate's screen, nothing here animates, so there is
-   no state of this device that can push a ratio below what is written above. */
-.theme-ledger [data-ruled] {
-  --rule-pitch: calc(var(--fz-body-1) * var(--lh-loose));
+   no state of this device that can push a ratio below what is written above.
+
+   THE RULING IS PAINTED PER PARAGRAPH, NOT ON THE CONTAINER, and that is the
+   whole of what makes it land on the baseline. A single gradient on the block
+   holding the prose only stays in phase while every box above it is an exact
+   multiple of the pitch, and the moment one is not — an inter-block margin, an
+   artifact placeholder, an aside — every paragraph below it straddles the rules
+   by a different amount. Measured on the container version: paragraph one at
+   phase 0, then 20, 8.5, 28.5, 17. The reader watches the grid work and then
+   fail, which is worse than no ruling at all. Painted on the paragraph, the
+   phase is exact by construction and no vertical quantisation is owed anywhere
+   else on the page. What falls out of it is also correct: stamps, figures and
+   asides then sit on clean paper, which is the grammar [data-money] below
+   already establishes — ruling carries PROSE, clean stock carries FIGURES.
+
+   --rule-phase is the number the page owed, and it is measured, not chosen: it
+   cannot be derived in CSS because it depends on the font's ascent, which CSS
+   cannot read. At --fz-body-1 in Geist the first line box puts its baseline
+   22.25px down (ascent 18, descent 5, half-leading 4.25), while the gradient
+   draws its rule at the bottom of the 31.5px band — 9.25px BELOW the baseline,
+   floating in the interline gap rather than under the text. -8.25px brings the
+   rule to 1px under the baseline, which is where ink on ruled paper actually
+   sits: grazed by descenders, never crossing the x-height. Re-measure this if
+   the body face or --lh-loose ever changes. */
+.theme-ledger [data-ruled] > p {
+  --rule-phase: -8.25px;
   background-image: repeating-linear-gradient(
     to bottom,
     transparent 0,
@@ -1802,13 +1858,63 @@ hr {
   background-position: 0 var(--rule-phase, 0px);
 }
 
-/* The money band. A figure that BILLS gets clean paper behind it — which is the
+/* ── The gridded ground ──
+   Console's counterpart, and the device that finally makes the register a
+   MATERIAL rather than a colour cast. The seam note below records that
+   --console-bg and --ink-950 are 1.00:1 and that no darker ground fixes it.
+   Lifting the chapter to the panel instead of the ground is the direction with
+   headroom, but it only buys 1.09:1 on its own — nowhere near a material change.
+   What reads is the texture: a dashboard's own grid, at 1.21:1 against the panel.
+
+   Both pitches are derived from the same --rule-pitch the ruling uses, so the two
+   registers share one vertical rhythm and a reader flipping the toggle sees the
+   ground change without the type moving. Rows at the pitch, columns at four
+   times it, because a console divides into columns and a sheet of paper does not.
+
+   THE MEASUREMENT THIS DEVICE OWES, on the same terms as the ruling above.
+   Coverage is 3.94% of the panel and costs 1.01:1 averaged. Worst case, a stroke
+   landing on a grid line: primary 12.34, secondary 8.20, phosphor 8.36, amber
+   7.51, muted 5.58 — then red 4.10 and faint 3.86, both under AA. Faint is the
+   same exception the ruling already carries (BUILD-BRIEF §3.1 forbids body text
+   in faint, and the threshold's mark sits outside the gridded band). Red is the
+   real constraint and it is NOT solved by lightening the grid: the darkest line
+   on this hue where red clears AA is #1d2327, which measures 1.09:1 against the
+   panel and is therefore invisible — it would buy the ratio by deleting the
+   device. It is solved the way paper already solves it. A figure that bills gets
+   clean ground, via [data-money], which is why that device is no longer scoped
+   to Ledger. The rule for authors is one line: a figure in Console carries
+   data-money, exactly as it does on paper. */
+.theme-console [data-gridded] {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--rule-pitch) - 1px),
+      var(--grid-feint) calc(var(--rule-pitch) - 1px),
+      var(--grid-feint) var(--rule-pitch)
+    ),
+    repeating-linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(var(--rule-pitch) * 4 - 1px),
+      var(--grid-feint) calc(var(--rule-pitch) * 4 - 1px),
+      var(--grid-feint) calc(var(--rule-pitch) * 4)
+    );
+  background-position: 0 var(--rule-phase, -8.25px);
+}
+
+/* The money band. A figure that BILLS gets clean ground behind it — which is the
    thesis expressed as a background, and also the reason the faint constraint above
-   costs nothing. The band paints --bg over the ruling rather than switching it
-   off, because the ruling is on an ancestor and a descendant cannot un-paint it.
+   costs nothing. The band paints --bg over the texture rather than switching it
+   off, because the texture is on an ancestor and a descendant cannot un-paint it.
    The column rules are vertical, which is the one place the plan's darker
-   #c9d3dc belongs: no type ever sits on a column rule. */
-.theme-ledger [data-money] {
+   #c9d3dc belongs: no type ever sits on a column rule.
+
+   NOT SCOPED TO LEDGER any more. Console grew a ground of its own above, so it
+   has the same problem paper had, and "a figure gets clean stock" was never a
+   property of paper — it is the page's thesis about figures. --bg and
+   --rule-column both re-resolve per register, so one declaration covers both. */
+:is(.theme-ledger, .theme-console) [data-money] {
   background-color: var(--bg);
   border-inline: var(--bdw) solid var(--rule-column);
 }

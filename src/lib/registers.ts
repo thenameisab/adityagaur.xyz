@@ -48,6 +48,13 @@ export const AMBER = "#f0b03c";
  *  it is 3.13:1 on paper. */
 export const CONSOLE_RED = "#d76760";
 
+/** Console's ground texture, the counterpart to RULE_FEINT. Derived on the same
+ *  principle and stopped by the opposite constraint: the darkest line on this hue
+ *  where CONSOLE_RED still clears AA is #1d2327, which is 1.09:1 against the panel
+ *  and therefore invisible. Visibility wins at 1.21:1 and the figure is protected
+ *  by clean ground via [data-money] instead — see globals.css §15. */
+export const GRID_FEINT = "#242b2f";
+
 /** The site's own empirical floor, set by theme-dark's --text-faint. Higher than
  *  the 4.5 in `contrastTargets`, and it is the number that actually binds. */
 export const FLOOR = 4.91;
@@ -140,9 +147,10 @@ export const surfaces: Record<RegisterName, { label: string; hex: string; note?:
   ],
   console: [
     { label: "--bg", hex: CONSOLE_BG, note: "the ground" },
-    { label: "--bg-raised", hex: CONSOLE_PANEL, note: "the panel — dense rows" },
+    { label: "--bg-raised", hex: CONSOLE_PANEL, note: "the panel — a chapter, dense rows" },
     { label: "--bg-card", hex: CONSOLE_CARD },
     { label: "--bg-hover", hex: CONSOLE_HOVER },
+    { label: "grid line", hex: GRID_FEINT, note: "over the panel, under all prose — not opt-in" },
   ],
 };
 

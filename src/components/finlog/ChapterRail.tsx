@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MARKS } from "./Defs";
+import { MARKS, type MarkLine } from "./Defs";
+import { CHECKPOINTS, isDiverged } from "./checkpoints";
 import Mark from "./Mark";
 import RegisterToggle from "./RegisterToggle";
 import styles from "./finlog.module.css";
@@ -19,26 +20,14 @@ import styles from "./finlog.module.css";
  * chrome, not prose, and a live readout that is "always one query behind the
  * truth" is Console's own definition.
  *
- * `invoice` and `dashboard` are identical from 002 through 007 — the reader
- * stops noticing the rail agrees with itself — and diverge at 008 by exactly
- * the ₹74,939.32 chapter 008 accounts for, then close again once 009 finalizes
- * the correction. 001 has no figure: the manual month-end predates either
- * number existing.
+ * The two running figures live in checkpoints.ts rather than here, because this
+ * is no longer their only surface: the rail does not render below 80em, so the
+ * divergence at 008 is also stated inline by <Reconciliation> at that chapter.
+ * One table, two presentations.
  */
-const CHECKPOINTS: Record<string, { invoice: string; dashboard: string } | null> = {
-  "001": null,
-  "002": { invoice: "₹18,67,839.32", dashboard: "₹18,67,839.32" },
-  "003": { invoice: "₹18,67,839.32", dashboard: "₹18,67,839.32" },
-  "004": { invoice: "₹18,67,839.32", dashboard: "₹18,67,839.32" },
-  "005": { invoice: "₹18,67,839.32", dashboard: "₹18,67,839.32" },
-  "006": { invoice: "₹18,67,839.32", dashboard: "₹18,67,839.32" },
-  "007": { invoice: "₹18,67,839.32", dashboard: "₹18,67,839.32" },
-  "008": { invoice: "₹18,67,839.32", dashboard: "₹17,92,900.00" },
-  "009": { invoice: "₹18,67,839.32", dashboard: "₹18,67,839.32" },
-};
 
 export default function ChapterRail() {
-  const [active, setActive] = useState("001");
+  const [active, setActive] = useState<MarkLine>("001");
 
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>("[data-finlog-chapter]"));
@@ -50,7 +39,7 @@ export default function ChapterRail() {
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
         const line = visible[0]?.target.getAttribute("data-finlog-chapter");
-        if (line) setActive(line);
+        if (line) setActive(line as MarkLine);
       },
       // A chapter counts as "current" once it has cleared the top tenth of the
       // viewport and while it still owns the top third — the same zone a
@@ -63,7 +52,7 @@ export default function ChapterRail() {
   }, []);
 
   const checkpoint = CHECKPOINTS[active] ?? null;
-  const diverged = checkpoint !== null && checkpoint.invoice !== checkpoint.dashboard;
+  const diverged = isDiverged(checkpoint);
 
   return (
     <div className={`theme-console ${styles.rail}`}>
@@ -77,8 +66,15 @@ export default function ChapterRail() {
               className={styles.railMarkLink}
               aria-current={m.line === active ? "true" : undefined}
               data-active={m.line === active || undefined}
+              /* The chapter title lives here rather than in the mark's <title>.
+                 With the line number now visible, a titled mark would make the
+                 accessible name "001 001 — Seventy-seven sheets"; the mark goes
+                 back to being decorative, which is what it is once text is
+                 carrying the meaning. */
+              aria-label={`${m.line} — ${m.label}`}
             >
-              <Mark line={m.line} size="rail" title={`${m.line} — ${m.label}`} />
+              <span className={`${styles.railMarkLine} type-figure-3`}>{m.line}</span>
+              <Mark line={m.line} size="rail" className={styles.railMarkIcon} />
             </a>
           </li>
         ))}

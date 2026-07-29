@@ -3,10 +3,15 @@
 import { REGISTER_ORDER, useRegisterOverride } from "./Register";
 import styles from "./finlog.module.css";
 
+/* "Auto", not "Default". The middle position clears the override and lets each
+   chapter render in the register §4 assigns it — so it is a behaviour, not a
+   preference, and this control's whole argument is that it is not a colour-scheme
+   picker. "Default" named it as the setting you get when you have not chosen,
+   which is the one reading the page is trying to displace. */
 const LABEL: Record<"ledger" | "console" | "default", string> = {
   ledger: "Ledger",
   console: "Console",
-  default: "Default",
+  default: "Auto",
 };
 
 /**

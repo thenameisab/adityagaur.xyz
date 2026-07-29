@@ -46,9 +46,14 @@ export default function Chapter({ line, eyebrow, title, defaultRegister, childre
       {...(swapping ? { "data-swapping": "" } : {})}
     >
       <header className={styles.threshold} data-rule>
-        <Mark line={line} size="full" className={styles.thresholdMark} />
-        <div className={styles.thresholdText}>
+        {/* Mark and line number above the text, all three on the prose's own left
+            edge. Previously a flex row, which indented the whole text column 84px
+            past the body copy — see .threshold in the module. */}
+        <div className={styles.thresholdSign}>
+          <Mark line={line} size="full" className={styles.thresholdMark} />
           <p className={`${styles.thresholdLine} type-figure-2`}>{line}</p>
+        </div>
+        <div className={styles.thresholdText}>
           <p className={`${styles.thresholdEyebrow} type-eyebrow-2 text-muted`}>{eyebrow}</p>
           {/* `role="heading"` rather than a literal `<h2>`: globals.css's
               `.prose h2` rule (display-3 size, space-12 top margin) is a
@@ -64,13 +69,17 @@ export default function Chapter({ line, eyebrow, title, defaultRegister, childre
           </p>
         </div>
       </header>
-      {/* `[data-ruled]` (globals.css §15) needs a THEME-LEDGER ANCESTOR, not the
-          same element — putting it here rather than on the section itself is
-          what makes the selector match, and it also keeps the ruled ground to
-          the body copy, leaving the threshold on clean paper. */}
+      {/* `[data-ruled]` / `[data-gridded]` (globals.css §15) need a THEME-LEDGER or
+          THEME-CONSOLE ANCESTOR, not the same element — putting them here rather
+          than on the section itself is what makes the selectors match, and it also
+          keeps the ground to the body copy, leaving the threshold clean.
+
+          Both registers now carry a ground, which is what makes the register a
+          material rather than a colour cast: Ledger gets baseline ruling under its
+          prose, Console gets the panel's grid under the whole band. */}
       <div
         className={styles.chapterBody}
-        {...(register === "ledger" ? { "data-ruled": "" } : {})}
+        {...(register === "ledger" ? { "data-ruled": "" } : { "data-gridded": "" })}
       >
         {children}
       </div>
