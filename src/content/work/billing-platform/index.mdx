@@ -7,6 +7,10 @@ import Marginalia from "@/components/finlog/Marginalia";
 import ArtifactSlot from "@/components/finlog/ArtifactSlot";
 import Reconciliation from "@/components/finlog/Reconciliation";
 import RegisterToggle from "@/components/finlog/RegisterToggle";
+import Worksheet from "@/components/finlog/Worksheet";
+import DeriveFinalize from "@/components/finlog/DeriveFinalize";
+import EffectiveDates from "@/components/finlog/EffectiveDates";
+import GapRegister from "@/components/finlog/GapRegister";
 
 export const meta = {
   slug: "billing-platform",
@@ -41,7 +45,7 @@ The fourth question is the interesting one, and it's worth saying precisely why 
 
 That gap is where the billing platform starts. Not "build a billing dashboard." There was already a dashboard, and it's one of the nineteen surfaces this page eventually audits against its own author's work. The actual brief was narrower and harder: stop treating "what we bill" and "what we show" as the same computation wearing two different fonts, because they had quietly become two different systems that happened to agree often enough that nobody had checked whether they had to.
 
-<ArtifactSlot code="A1" name="The month-end pipeline" description="The seventy-seven sheets, live — one row per (client, API), reduced to the single settlement this chapter argues a spreadsheet can't reliably produce." />
+<Worksheet />
 
 </Chapter>
 
@@ -62,7 +66,7 @@ Which is why this page has two reading modes rather than one. Ledger is the invo
 
 <RegisterToggle />
 
-<ArtifactSlot code="A0" name="Derive and finalize" description="The bigger version of the control above — derive and finalize as one state machine, scrubbed live rather than told." />
+<DeriveFinalize />
 
 <Marginalia label="Product decision">
 
@@ -118,7 +122,7 @@ Invoice numbers come from a table of their own, not from an auto-incrementing co
 
 <span data-rule="double" style={{ display: "inline-block", paddingBlockEnd: "0.1em" }}>Adjustments are rows, never edits.</span> You cannot make a finalized invoice retroactively say something different. You can only append a new, dated, visible correction beside it — the same discipline the derive/finalize split enforces at the invoice level, pushed one layer down to the line level. It costs an extra table. It buys an invoice that can be fully reconstructed from its own history, which is the actual definition of an audit trail, as opposed to a change log that happens to exist.
 
-<ArtifactSlot code="A4" name="The effective-dated pattern" description="The full table map — the effective-dated pattern traced across rates, sandbox state, and client tiers as one recurring shape, not twenty-three separate designs." />
+<EffectiveDates />
 
 </Chapter>
 
@@ -170,7 +174,7 @@ Watch it now.
 
 <Reconciliation line="008" />
 
-Slab's window-pooling (the same whole-volume mechanic from chapter 004 that reprices an entire month once a threshold is crossed) was being read by one dashboard surface using the *wrong window boundary*, off by a few hours at the edge of a billing period. Not a wrong formula. A boundary condition, in exactly the kind of pricing model complex enough that a boundary condition can hide behind a plausible-looking number for months. The invoice was never wrong — it was never reading that surface. The dashboard was reading its own approximation of the invoice's logic, and the approximation had a seam.
+The gap is one line, and it is the whole-volume line from chapter 004. Whole-volume pricing resolves on the period's *total*, which means it has no correct value on any single day of that period — the rate isn't known until the month is. So a surface that builds its number by summing days has nothing to put in that line, and what it puts there instead is zero. Not a wrong formula, and not a boundary condition. A number that does not exist at the granularity the surface insisted on reading it at, rendered as a confident nought and then added into a total. The invoice was never wrong — it prices the period, once, the way the contract says. The dashboard was reading its own approximation of the invoice's logic, and the approximation had a seam exactly where the model refuses to be daily.
 
 <Stamp label="ZERO P0s" sig="settled" impact /> — nineteen surfaces, four distinct root causes across all of them, and not one instance of a customer being billed the wrong amount. Every gap this audit found was a *display* gap: a number an operator looked at that didn't match the number that actually went out. That's a real problem (a dashboard an operator can't trust is a dashboard they eventually stop consulting, which defeats the entire point of having one), but it is categorically not the same problem as an invoice being wrong, and conflating the two is exactly the failure mode this whole page has been arguing against since chapter 002.
 
@@ -180,7 +184,7 @@ Publishing this chapter in row-level detail means publishing bugs in my own ship
 
 </Marginalia>
 
-<ArtifactSlot code="A6" name="The gap register" description="All 19 surfaces, their reconciliation status, and the four root causes — including the slab window-pooling gap this chapter describes, at row level." />
+<GapRegister />
 
 </Chapter>
 
@@ -188,7 +192,7 @@ Publishing this chapter in row-level detail means publishing bugs in my own ship
 
 Nine chapters, and the rail beside them has been running one client's month the whole time: agreeing with itself, then visibly not, then agreeing again once chapter 008's fix lands. That's not a demo account. It's every account this engine has ever closed out, compressed into one number you've been watching without being told to.
 
-<span className="type-figure-1" data-money data-rule="double">₹18,67,839.32</span>
+<span className="type-figure-1" data-money data-rule="double">₹1,23,847.49</span>
 
 That's the invoice. It was correct in chapter 002 and it is correct here, because it was never the number in question — the dashboard was. Closing this page's own argument with a settled figure rather than a diagram is the point: a billing system's job is not to be interesting to look at. It's to produce this number, the same way, every time, and to be honest the one time in nineteen it briefly wasn't showing it correctly somewhere else.
 

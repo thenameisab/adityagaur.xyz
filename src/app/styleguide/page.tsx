@@ -5,6 +5,10 @@ import Fingerprint, { hexCells } from "@/components/artifacts/Fingerprint";
 import FinlogDefs, { MARKS } from "@/components/finlog/Defs";
 import Mark, { FinlogArrow } from "@/components/finlog/Mark";
 import Stamp, { STAMPS } from "@/components/finlog/Stamp";
+import Worksheet from "@/components/finlog/Worksheet";
+import DeriveFinalize from "@/components/finlog/DeriveFinalize";
+import EffectiveDates from "@/components/finlog/EffectiveDates";
+import GapRegister from "@/components/finlog/GapRegister";
 import InkCredit from "@/components/artifacts/InkCredit";
 import Status from "@/components/artifacts/Status";
 import { allBrands } from "@/lib/brands";
@@ -88,9 +92,9 @@ const TYPE_ROLES = [
   ["type-ui-1", "UI 1"],
   ["type-ui-2", "UI 2 — default UI size"],
   ["type-caption-1", "Caption 1 — mono"],
-  ["type-figure-1", "Figure 1 — ₹6,26,053.97"],
-  ["type-figure-2", "Figure 2 — ₹7,00,993.29"],
-  ["type-figure-3", "Figure 3 — ₹74,939.32"],
+  ["type-figure-1", "Figure 1 — ₹1,23,847.49"],
+  ["type-figure-2", "Figure 2 — ₹1,16,065.23"],
+  ["type-figure-3", "Figure 3 — ₹7,782.26"],
 ] as const;
 
 const SPACE_STEPS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40];
@@ -686,7 +690,7 @@ export default function Styleguide() {
       <Section
         id="finlog"
         title="The registers — Ledger and Console"
-        note="FinLog's page-scoped design language, not a sixth site theme. Billing has two kinds of number, so the page has two registers: Ledger is the number that bills, Console is the number that displays, and the light/dark control is the argument rather than a preference. Every value below is computed from src/lib/registers.ts with the site's own WCAG math."
+        note="The billing-platform entry's page-scoped design language, not a sixth site theme. Billing has two kinds of number, so the page has two registers: Ledger is the number that bills, Console is the number that displays, and the light/dark control is the argument rather than a preference. Every value below is computed from src/lib/registers.ts with the site's own WCAG math."
       >
         <div className="stack stack--l">
           {/* ── House targets, per register ── */}
@@ -955,19 +959,19 @@ export default function Styleguide() {
                       <div className="repel" data-rule>
                         <span className="type-figure-3 text-muted">Line item</span>
                         <span className="type-figure-2" data-sig="settled">
-                          ₹7,00,993.29
+                          ₹1,23,847.49
                         </span>
                       </div>
                       <div className="repel" data-rule>
                         <span className="type-figure-3 text-muted">Adjustment</span>
                         <span className="type-figure-2" data-sig="loss">
-                          −₹74,939.32
+                          −₹7,782.26
                         </span>
                       </div>
                       <div className="repel" data-rule="double">
                         <span className="type-figure-3 text-muted">Total</span>
                         <span className="type-figure-1" data-sig="settled">
-                          ₹6,26,053.97
+                          ₹1,16,065.23
                         </span>
                       </div>
                     </div>
@@ -1158,7 +1162,7 @@ export default function Styleguide() {
                   <div className="stack stack--s">
                     <p className="type-eyebrow-3 text-muted">.theme-{name}</p>
                     <p className="type-figure-2 text-primary">
-                      ₹7,00,993.29 <FinlogArrow /> ₹6,26,053.97
+                      ₹1,23,847.49 <FinlogArrow /> ₹1,16,065.23
                     </p>
                     <p className="type-body-3 text-secondary">
                       Beside the site&rsquo;s own arrow <Icon name="arrow-right" />{" "}
@@ -1174,6 +1178,54 @@ export default function Styleguide() {
             </div>
           </div>
         </div>
+      </Section>
+
+      {/* ── The static artifacts ─────────────────────────────────────
+          Placed AFTER the marks section on purpose: two of these render a
+          <Stamp>, whose distress is a filter reference, and an unresolvable
+          `filter: url()` does not degrade to no filter — the element is not
+          rendered at all. FinlogDefs is emitted above, so following it
+          guarantees the reference resolves.
+
+          Each artifact appears in BOTH registers, which is what makes this a
+          regression surface rather than a gallery. Three things are being
+          asserted every time this page is looked at: that every figure sits on
+          clean ground in Console (the money band), that nothing in the Ledger
+          column moves, and that the tables reflow rather than clip when the
+          column is half the width the essay gives them. */}
+      <Section
+        id="finlog-artifacts"
+        title="The static artifacts"
+        note="Four of the entry's eight. Every figure in them was computed by the source build's own pricing engine over its own seeded data and baked in — see settlement.ts for the provenance and the scrub. Rendered here at roughly half the width the essay gives them, in both registers, because a money column that only works at one width is not finished."
+      >
+        <FinlogDefs />
+        <div className={styles.themeRow}>
+          {REGISTER_ORDER.map((name) => (
+            <div key={name} className={`theme-${name} ${styles.themeCard}`} data-edge>
+              <div className="stack stack--s">
+                <p className="type-eyebrow-3 text-muted">.theme-{name}</p>
+                {/* The chapter's own ground goes under them, because that is the
+                    condition they actually ship into: an artifact that only looks
+                    right on bare stock has not been tested against the register. */}
+                <div data-ruled data-gridded>
+                  <Worksheet />
+                  <DeriveFinalize />
+                  <EffectiveDates />
+                  <GapRegister />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="type-body-4 text-faint">
+          The Ledger column is the motion test, same as the devices block above:
+          §15&rsquo;s guard suppresses every animation inside .theme-ledger that is
+          not marked [data-ink], and the only [data-ink] here is the FINALIZED
+          stamp&rsquo;s impact. The gap register&rsquo;s filter is interactive in
+          both columns and animates in neither — its hover and focus feedback are
+          transitions, which the guard deliberately leaves alone, because a control
+          that does not answer the pointer is broken rather than still.
+        </p>
       </Section>
 
       {/* ── Type ─────────────────────────────────────────────────── */}
