@@ -16,6 +16,21 @@ import {
   type DrumsKey,
   type StockName,
 } from "@/lib/plates";
+import {
+  CROSS_REGISTER_RED,
+  FLOOR,
+  MATRIX_ROLES,
+  PAPER,
+  REGISTER_ORDER,
+  RULE_COVERAGE,
+  SEAM,
+  SIGNALS,
+  averagedGround,
+  clearsAA,
+  isMeasurable,
+  registers,
+  surfaces,
+} from "@/lib/registers";
 import { contrastTargets, ramps, themes, type ThemeName } from "@/lib/tokens";
 import styles from "./styleguide.module.css";
 
@@ -70,6 +85,9 @@ const TYPE_ROLES = [
   ["type-ui-1", "UI 1"],
   ["type-ui-2", "UI 2 — default UI size"],
   ["type-caption-1", "Caption 1 — mono"],
+  ["type-figure-1", "Figure 1 — ₹6,26,053.97"],
+  ["type-figure-2", "Figure 2 — ₹7,00,993.29"],
+  ["type-figure-3", "Figure 3 — ₹74,939.32"],
 ] as const;
 
 const SPACE_STEPS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40];
@@ -657,6 +675,368 @@ export default function Styleguide() {
                 );
               })}
             </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ── The FinLog registers ─────────────────────────────────── */}
+      <Section
+        id="finlog"
+        title="The registers — Ledger and Console"
+        note="FinLog's page-scoped design language, not a sixth site theme. Billing has two kinds of number, so the page has two registers: Ledger is the number that bills, Console is the number that displays, and the light/dark control is the argument rather than a preference. Every value below is computed from src/lib/registers.ts with the site's own WCAG math."
+      >
+        <div className="stack stack--l">
+          {/* ── House targets, per register ── */}
+          {REGISTER_ORDER.map((name) => {
+            const r = registers[name];
+            return (
+              <div key={name} className={styles.tableWrap} data-scrollx>
+                <h3 className="type-headline-4 text-primary">
+                  .theme-{name}{" "}
+                  <span className="type-caption-1 text-faint">on {r.bg}</span>
+                </h3>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th scope="col">Token</th>
+                      <th scope="col">Value</th>
+                      <th scope="col">Target</th>
+                      <th scope="col">Measured</th>
+                      <th scope="col">Result</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contrastTargets.map(({ token, target }) => {
+                      const fg = r[token];
+                      // --text-faint is held to the site's empirical 4.91 floor
+                      // rather than the 4.5 in tokens.ts, because that is the
+                      // number the plate ramp is measured against too.
+                      const bar = token === "text-faint" ? FLOOR : target;
+                      const ok = passes(fg, r.bg, bar);
+                      return (
+                        <tr key={token}>
+                          <th scope="row" className={styles.tokenCell}>
+                            <span
+                              className={styles.dot}
+                              style={{ background: fg, borderColor: r["border-strong"] }}
+                            />
+                            --{token}
+                          </th>
+                          <td className="type-caption-1">{fg}</td>
+                          <td className="type-caption-1">≥ {bar}:1</td>
+                          <td className="type-caption-1">{ratio(fg, r.bg)}</td>
+                          <td>
+                            <span
+                              data-result={ok ? "pass" : "fail"}
+                              className={styles.result}
+                            >
+                              {ok ? "PASS" : "FAIL"}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })}
+
+          {/* ── The role x surface matrix ──
+              The table the three site themes do not have, and the one that earns
+              its place: house targets are held against a register's own --bg, the
+              same standard every shipped theme actually holds. This says what
+              happens everywhere ELSE, so the combinations that fall under AA are
+              visible rather than surprising. */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">
+              Every role on every surface
+            </h3>
+            <p className="type-body-3 text-muted">
+              A hover surface is opt-in, so a role dipping under AA there is the
+              house condition — theme-dark&rsquo;s faint is 4.03:1 on its own
+              --bg-hover. The Ledger&rsquo;s ruling is different in kind: it sits
+              under all prose by default, which is where the plate&rsquo;s halftone
+              screen was, and it is the reason this table exists.
+            </p>
+            {REGISTER_ORDER.map((name) => (
+              <div key={name} className={styles.tableWrap} data-scrollx>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th scope="col">.theme-{name}</th>
+                      {surfaces[name].map((s) => (
+                        <th scope="col" key={s.label}>
+                          {s.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {MATRIX_ROLES.map((role) => (
+                      <tr key={role}>
+                        <th scope="row" className={styles.tokenCell}>
+                          <span
+                            className={styles.dot}
+                            style={{
+                              background: registers[name][role],
+                              borderColor: registers[name]["border-strong"],
+                            }}
+                          />
+                          --{role}
+                        </th>
+                        {surfaces[name].map((s) => {
+                          const fg = registers[name][role];
+                          const ok = clearsAA(fg, s.hex);
+                          return (
+                            <td key={s.label}>
+                              <span
+                                className={styles.result}
+                                data-result={ok ? "pass" : "fail"}
+                              >
+                                {ok ? ratio(fg, s.hex) : `${ratio(fg, s.hex)} — NO`}
+                              </span>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))}
+            <p className="type-body-4 text-faint">
+              Six cells fall under AA and each one is accounted for. On the{" "}
+              <strong>feint rule</strong> exactly one role fails — faint, at 4.44:1
+              — and it was already barred from body copy by BUILD-BRIEF §3.1, so
+              the rule is that faint sets marks and marks go on the unruled money
+              band. Under prefers-contrast: more the ruling is removed rather than
+              darkened and faint recovers 7.64:1. On the{" "}
+              <strong>column rule</strong> faint and loss both fail, and neither
+              can occur: a column rule is vertical and divides money columns, so no
+              type sits on one. On the Console&rsquo;s <strong>card and hover</strong>{" "}
+              surfaces faint fails and loss fails on hover — opt-in surfaces, the
+              same condition theme-dark ships, with one consequence worth carrying
+              into the artifacts: a row that lights on hover may not also be the
+              row holding a loss figure.
+            </p>
+            <p className="type-body-4 text-faint">
+              The ruling itself is nearly free averaged over its pitch — a 1px rule
+              at the 31.5px line box of --fz-body-1 × --lh-loose is{" "}
+              {(RULE_COVERAGE * 100).toFixed(2)}% coverage, giving {averagedGround()}{" "}
+              at {ratio(averagedGround(), PAPER)} off bare paper. The average is not
+              the worst case, which is why the matrix measures the rule as a
+              surface in its own right.
+            </p>
+          </div>
+
+          {/* ── The cross-register red ── */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">
+              One red, two values
+            </h3>
+            <p className="type-body-3 text-muted">
+              The plan wanted the ledger red to be the single colour surviving both
+              registers, which is the right idea and not achievable with one
+              literal: a pigment on paper and a phosphor on near-black are not the
+              same physical thing. Same hue, same saturation, two intensities — the
+              reader sees one red. Precedent is already in the file, where
+              .theme-ember ships --ember-700 for light grounds and --ember-400 for
+              dark.
+            </p>
+            <div className={styles.tableWrap} data-scrollx>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th scope="col">Value</th>
+                    <th scope="col">Surface</th>
+                    <th scope="col">Measured</th>
+                    <th scope="col">Verdict</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {CROSS_REGISTER_RED.map((row, i) => {
+                    const ok = clearsAA(row.hex, row.on);
+                    return (
+                      <tr key={i}>
+                        <th scope="row" className={styles.tokenCell}>
+                          <span
+                            className={styles.dot}
+                            style={{ background: row.hex, borderColor: row.on }}
+                          />
+                          {row.hex}
+                        </th>
+                        <td className="type-caption-1">{row.surface}</td>
+                        <td className="type-caption-1">{ratio(row.hex, row.on)}</td>
+                        <td>
+                          <span
+                            className={styles.result}
+                            data-result={ok ? "pass" : "fail"}
+                          >
+                            {row.verdict}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ── The seam ── */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">The seam</h3>
+            <p className="type-body-3 text-muted">
+              The header and footer stay .theme-dark, which is the whole borrowed
+              idea: the chrome does not change, only the space between it does.
+              Against the paper that boundary reads as a material change at{" "}
+              {ratio(SEAM.chrome, SEAM.ledger)}. Against the Console ground it is{" "}
+              {ratio(SEAM.chrome, SEAM.console)} — the same value in a different
+              hue direction, which reads as a colour cast rather than as two
+              materials. Darkening does not help: {SEAM.darkerAlternative} still
+              only reaches {ratio(SEAM.chrome, SEAM.darkerAlternative)} against
+              --ink-950. So the boundary is drawn with a hairline instead, which is
+              device one doing real work.
+            </p>
+          </div>
+
+          {/* ── The devices, live ──
+              Rendered without their page layout, which is the point: these are
+              the register behaviours, and if one of them only works inside the
+              finished page then it is layout and belongs in the page module. */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">
+              The devices, in both registers
+            </h3>
+            <p className="type-body-3 text-muted">
+              Four of the seven. The marginalia column, the chapter thresholds and
+              the reconciliation rail are page layout — they have no meaning
+              without chapters to sit between — and land with the prose branch.
+            </p>
+            <p className="type-body-3 text-muted">
+              Desaturate this block and note what happens, because it is deliberate
+              and a future pass should not &ldquo;fix&rdquo; it. Loss becomes the{" "}
+              <em>quietest</em> ink in both registers — 5.57:1 against paper where
+              settled is 15.97:1, and 5.41:1 on the ground where phosphor is
+              11.02:1. That inversion is what red ink actually is on paper: lighter
+              than black, and never the thing carrying the weight. So colour is the
+              third carrier here, not the first. A negative is carried by its{" "}
+              <em>sign</em>, every state is carried by its <em>label</em>, and
+              absent carries a dashed edge on top of both. Remove the colour
+              entirely and all four still read.
+            </p>
+            <div className={styles.themeRow}>
+              {REGISTER_ORDER.map((name) => (
+                <div
+                  key={name}
+                  className={`theme-${name} ${styles.themeCard}`}
+                  data-edge
+                >
+                  <div className="stack stack--s">
+                    <p className="type-eyebrow-3 text-muted">.theme-{name}</p>
+
+                    {/* The ruled ground carries prose; the money band does not. */}
+                    <div data-ruled>
+                      <p className="type-body-1 text-primary">
+                        Prose sits on the ruling, so the rules read as paper rather
+                        than as decoration.
+                      </p>
+                    </div>
+
+                    <div data-money className="stack stack--xs">
+                      <div className="repel" data-rule>
+                        <span className="type-figure-3 text-muted">Line item</span>
+                        <span className="type-figure-2" data-sig="settled">
+                          ₹7,00,993.29
+                        </span>
+                      </div>
+                      <div className="repel" data-rule>
+                        <span className="type-figure-3 text-muted">Adjustment</span>
+                        <span className="type-figure-2" data-sig="loss">
+                          −₹74,939.32
+                        </span>
+                      </div>
+                      <div className="repel" data-rule="double">
+                        <span className="type-figure-3 text-muted">Total</span>
+                        <span className="type-figure-1" data-sig="settled">
+                          ₹6,26,053.97
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Every state, with its label — the desaturation test. */}
+                    <div
+                      className="cluster"
+                      style={{ ["--cluster-space" as string]: "var(--space-2)" }}
+                    >
+                      {SIGNALS.map((s) => (
+                        <span
+                          key={s.token}
+                          className="type-stamp"
+                          data-stamp
+                          data-sig={s.token.replace("sig-", "")}
+                          {...(s.token === "sig-absent" ? { "data-void": "" } : {})}
+                        >
+                          {s.label}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div data-carbon className="stack stack--xs">
+                      <p className="type-stamp text-muted">Finalized over derived</p>
+                      <p className="type-figure-3 text-secondary">
+                        The carbon copy is Ledger only — a console has no second
+                        sheet.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="type-body-4 text-faint">
+              The Ledger card is also the motion test. Nothing in it animates,
+              because §15&rsquo;s guard suppresses every animation inside
+              .theme-ledger that is not marked [data-ink] — the two sanctioned
+              physical acts, a mark being set and a stamp landing. Transitions are
+              untouched, so hover and focus still answer the pointer.
+            </p>
+          </div>
+
+          {/* ── Signal reference ── */}
+          <div className={styles.tableWrap} data-scrollx>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th scope="col">Signal</th>
+                  <th scope="col">Means</th>
+                  <th scope="col">Ledger</th>
+                  <th scope="col">Console</th>
+                </tr>
+              </thead>
+              <tbody>
+                {SIGNALS.map((s) => (
+                  <tr key={s.token}>
+                    <th scope="row" className={styles.tokenCell}>
+                      --{s.token}
+                    </th>
+                    <td className="type-body-4">{s.meaning}</td>
+                    {REGISTER_ORDER.map((name) => (
+                      <td className="type-caption-1" key={name}>
+                        {isMeasurable(s.token) ? (
+                          <>
+                            {registers[name][s.token]}{" "}
+                            {ratio(registers[name][s.token], registers[name].bg)}
+                          </>
+                        ) : (
+                          "no fill — a dashed edge"
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </Section>
