@@ -139,6 +139,71 @@ ol[class] { list-style: none; }
   --stock-cream: #f4efe4;
   --stock-kraft: #eadfc8;
 
+  /* ── The register palette ──────────────────────────
+     FinLog's two registers (§15). Only .theme-ledger and .theme-console read
+     these. Nothing else on the site does, and nothing else should: this is a
+     page-scoped design language, not an eleventh plate.
+
+     LEDGER is pigment on paper. CONSOLE is light emitted from a screen. That
+     distinction is not decorative — it is why two of these values are the same
+     hue at two intensities, and why the two text ramps are built differently
+     (a mix for one, literals for the other; see §15). */
+
+  /* Accounting paper. The plan (FINLOG-PAGE-PLAN §5.2) proposed #f7f4ed and
+     described it as "warmer and yellower than the site's cream". It measured the
+     other way: yellowness (r+g)/2−b of 8.5 against --sand-050's 18.5, warmth
+     r−b of 10 against 22, and an identical 1.00:1 in luminance — a cooler hex at
+     the same value, which would have shipped a near-duplicate ground under a
+     comment that was false. This value is yellowness 22.5 / warmth 26, so it is
+     warmer and yellower than the site cream, which is what was wanted. Key ink
+     holds 15.97:1 on it. */
+  --paper: #f9f2df;
+  --paper-key: #1a1714; /* type. Warmer and a shade lighter than --riso-key. */
+
+  /* The second ink. Negatives and corrections ONLY — it is deliberately not the
+     Ledger's accent, see §15. */
+  --ledger-red: #b0342c;
+
+  /* Ledger paper is ruled twice, and the two rules are not the same weight,
+     because on real ledger paper they do different jobs. The FEINT rule is the
+     horizontal baseline ruling that prose sits on. The COLUMN rule is vertical
+     and divides money columns, so no type ever sits on it — which is why it
+     keeps the plan's original, darker value.
+
+     The feint rule is derived, not chosen: it is the darkest value on the column
+     rule's own hue (208° / S 21%) at which the ledger red still clears AA when a
+     stroke lands on it. A negative written on a ruled line is the most
+     characteristic mark this register has, so it sets the ruling's density.
+     The plan's #c9d3dc would have put that mark at 4.10:1.
+
+     0.5px was specified and is not used. A sub-pixel border either vanishes or
+     snaps to 1px depending on device pixel ratio, and --bdw is the only width
+     token. A rule lighter than one pixel of ink is achieved by lowering the ink,
+     not the width — which is also how a press does it. */
+  --rule-feint: #d5dce4;
+  --rule-column: #c9d3dc;
+
+  /* Console. Cool near-black, against the site's warm-on-warm rule above, and
+     that is the one deliberate violation this palette makes: a console is a
+     screen, and a screen is not warm. The cost is a seam, recorded in §15. */
+  --console-bg: #0e1113;
+  --console-panel: #161b1e;
+  --console-card: #1c2226;
+  --console-hover: #232a2e;
+
+  --phosphor: #4ade9b; /* live, computing, settled — 16.27:1 on the ground */
+  --amber: #f0b03c;    /* estimated, provisional — 9.91:1 */
+
+  /* The ledger red again, lifted. #b0342c is 5.57:1 on paper and 3.04:1 on the
+     console ground — under AA, so it cannot set a figure there. Same hue (3.5°
+     against 3.6°) and the same 60% saturation, raised until it clears the site's
+     4.91 floor on the PANEL, where a loss row actually sits: 5.41:1 on the
+     ground, 4.96:1 on the panel. On paper it is 3.13:1, so it is a Console value
+     by construction and can never be used in Ledger.
+     One hue, two values, is already the house pattern — .theme-ember ships
+     --ember-700 for light grounds and --ember-400 for dark. */
+  --console-red: #d76760;
+
   /* ── Typography ──────────────────────────────────── */
   --ff-display: var(--font-display), "Iowan Old Style", Georgia, serif;
   --ff-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
@@ -289,7 +354,9 @@ ol[class] { list-style: none; }
 .theme-dark,
 .theme-sand,
 .theme-ember,
-.theme-plate {
+.theme-plate,
+.theme-ledger,
+.theme-console {
   background-color: var(--bg);
   color: var(--text-primary);
   /* Re-resolved per theme, so the tap flash on a sand section is the sand
@@ -644,6 +711,148 @@ ol[class] { list-style: none; }
   color-scheme: light;
 }
 
+/* ── The two registers ──────────────────────────────────────────────────────
+   FinLog's page-scoped design language. Two themes rather than a new mechanism,
+   for exactly the reason the plate comment gives above: the §3 contract already
+   describes what these are, so every existing artifact keeps working the moment
+   its frame becomes .theme-ledger or .theme-console.
+
+   The idea, and it is the page's thesis made operable: billing has two kinds of
+   number, so the page has two registers. LEDGER is the number that BILLS —
+   settled, printed, immutable. CONSOLE is the number that DISPLAYS — fast,
+   dense, provisional. The light/dark control is therefore not a preference; it
+   is the argument, and §15 makes the two registers differ in BEHAVIOUR as well
+   as colour.
+
+   Ledger is the load default, because the invoice is the truth.
+
+   Two notes on how these were built, both of which are departures worth reading:
+
+   1. The ramps are built differently ON PURPOSE. Ledger's is
+      color-mix(--paper-key → --paper), because ink diluted on paper is a real
+      physical operation and the .theme-plate ramp already reads that way.
+      Console's is four literals on a cool axis, because emitted light at
+      different intensities is not a dilution of anything, and the hue lean has
+      to increase as the value drops or the dim end goes flat grey.
+   2. Both ramps are measured against their own --bg, which is the standard every
+      shipped theme actually holds — theme-dark's faint is 4.03:1 on its own
+      --bg-hover. /styleguide#finlog publishes the full role × surface matrix so
+      the combinations that fall under AA are visible rather than surprising. */
+
+.theme-ledger {
+  --bg: var(--paper);
+
+  /* Shallow on purpose. A second sheet of the same paper is still that paper, so
+     depth in this register comes from a rule, not from a tint — 1.06 / 1.10 /
+     1.18 off the ground, which is the same shallowness theme-sand ships. */
+  --bg-raised: color-mix(in srgb, var(--paper-key) 3%, var(--paper));
+  --bg-card: color-mix(in srgb, var(--paper-key) 5%, var(--paper));
+  --bg-hover: color-mix(in srgb, var(--paper-key) 8%, var(--paper));
+
+  /* 15.97 / 11.55 / 7.64 / 5.50 against the paper, so every role clears its
+     target with the same headroom the other four themes have. */
+  --text-primary: var(--paper-key);
+  --text-secondary: color-mix(in srgb, var(--paper-key) 88%, var(--paper));
+  --text-muted: color-mix(in srgb, var(--paper-key) 76%, var(--paper));
+  --text-faint: color-mix(in srgb, var(--paper-key) 66%, var(--paper));
+
+  /* Subtle is the column rule itself — 1.36:1, a hairline, and not expected to
+     clear 3:1, same as every other theme. Strong is key ink at full weight,
+     because a rule under a total is not a suggestion. */
+  --border-subtle: var(--rule-column);
+  --border-default: color-mix(in srgb, var(--paper-key) 32%, var(--paper));
+  --border-strong: var(--paper-key);
+
+  /* THE ACCENT IS KEY INK, and this is a decision rather than an omission.
+     --accent drives link underlines, focus rings, ::selection and the tap
+     highlight. The obvious candidate is the ledger red, and it is rejected:
+     FINLOG-PAGE-PLAN §5.2 reserves that ink for negatives and corrections only,
+     and a red underline on a page whose subject is money would read as a figure
+     in the red. BUILD-BRIEF §3.1 supplies the alternative — "emphasis comes from
+     contrast and scale, not hue" — and in this register the affordance is a rule,
+     which is what an underline already is. So the Ledger has no accent HUE, the
+     way a printed invoice has none, and the red stays where it means something.
+     --accent-hover holds at key for the same reason: a hover is carried by the
+     rule's weight, not by its colour. Nothing in the codebase reads
+     --accent-hover today, so this costs nothing either way. */
+  --accent: var(--paper-key);
+  --accent-hover: var(--paper-key);
+  --accent-dim: color-mix(in srgb, var(--paper-key) 22%, transparent);
+  --focus-ring: var(--paper-key);
+
+  --bg-btn-primary: var(--paper-key);
+  --text-btn-primary: var(--paper);
+  --bg-btn-primary-hover: color-mix(in srgb, var(--paper-key) 88%, var(--paper));
+
+  /* ── The signal vocabulary ──
+     Four states, fixed across both registers so a reader who learns one register
+     reads the other. Same discipline as the plate's --sig-* set: colour is never
+     the only carrier. Every figure carrying a signal also carries a label, and
+     --sig-absent additionally carries a dashed edge (§15), which is what makes
+     these survive greyscale and colour-vision deficiency.
+
+     One consequence is deliberate and a later pass should not "correct" it: in
+     greyscale LOSS is the QUIETEST of the four, in both registers — 5.57:1 on
+     paper where settled is 15.97, and 5.41:1 on the ground where phosphor is
+     11.02. Brightening it would wash the hue out to pink and buy nothing, and the
+     inversion is what red ink genuinely is on paper: lighter than black, and never
+     the ink carrying the weight. Which is why the ordering of carriers here is
+     sign first, label second, colour third. A negative is signed.
+
+     In Ledger these are pigments. Settled is key ink. Estimated is the pencil
+     annotation a provisional entry gets, in the ruling's own blue-grey family at
+     6.40:1. Loss is the red, 5.57:1. Absent is a void, never type — the
+     fall-through case in the resolution chain is billable at zero and reported
+     as revenue nobody invoiced, and the whole point is that it lights nothing. */
+  --sig-settled: var(--paper-key);
+  --sig-estimated: color-mix(in srgb, #3f4c59 92%, var(--paper));
+  --sig-loss: var(--ledger-red);
+  --sig-absent: color-mix(in srgb, var(--paper-key) 30%, transparent);
+
+  color-scheme: light;
+}
+
+.theme-console {
+  --bg: var(--console-bg);
+  --bg-raised: var(--console-panel);
+  --bg-card: var(--console-card);
+  --bg-hover: var(--console-hover);
+
+  /* 16.27 / 10.81 / 7.36 / 5.09 on the ground; 14.91 / 9.91 / 6.74 / 4.66 on the
+     panel, which is where the dense rows live and therefore the number that
+     matters most. Literals rather than a mix — see the note above. */
+  --text-primary: #eceeee;
+  --text-secondary: #bdc5c8;
+  --text-muted: #94a4ab;
+  --text-faint: #728890;
+
+  --border-subtle: #242b2f;
+  --border-default: #333c41;
+  --border-strong: #56676d; /* 3.21:1 — the only border carrying a 3:1 duty */
+
+  /* Phosphor IS the console's accent. Unlike Ledger's reservation above, this is
+     no conflict: a console's interactive affordances and its live state are the
+     same idea, which is exactly what a phosphor screen looks like. */
+  --accent: var(--phosphor);
+  --accent-hover: color-mix(in srgb, var(--phosphor) 82%, #ffffff);
+  --accent-dim: color-mix(in srgb, var(--phosphor) 26%, transparent);
+  --focus-ring: var(--phosphor);
+
+  /* Inverting on --text-primary rather than on phosphor, so the accent stays
+     reserved for state instead of also being the colour of every filled button. */
+  --bg-btn-primary: #eceeee;
+  --text-btn-primary: var(--console-bg);
+  --bg-btn-primary-hover: #ffffff;
+
+  /* The same four states, emitted rather than printed. */
+  --sig-settled: var(--phosphor);
+  --sig-estimated: var(--amber);
+  --sig-loss: var(--console-red);
+  --sig-absent: color-mix(in srgb, var(--text-faint) 34%, transparent);
+
+  color-scheme: dark;
+}
+
 /* prefers-contrast: more — raise text and border tokens one step. */
 @media (prefers-contrast: more) {
   .theme-dark {
@@ -675,6 +884,35 @@ ol[class] { list-style: none; }
     --text-faint: color-mix(in srgb, var(--riso-key) 76%, var(--stock-base));
     --border-subtle: color-mix(in srgb, var(--riso-key) 40%, var(--stock-base));
     --border-default: color-mix(in srgb, var(--riso-key) 55%, var(--stock-base));
+  }
+
+  /* Both registers step up. Secondary is left alone in each, matching the plate:
+     it is already over 10:1 and raising it would collapse the ramp's top half.
+
+     The Ledger's ruling is the interesting one, and the obvious move is wrong.
+     Darkening it so the reader can see it raises the TEXTURE and lowers the TYPE
+     — measured, faint would land at 4.56:1, worse than the 5.50:1 it has on bare
+     paper and under the site's 4.91 floor. The ruling is the one thing on this
+     page that exists purely to look like paper, and a reader asking for more
+     contrast is asking for less of exactly that. So it goes instead. §15 reads
+     --rule-feint, so setting it to the paper makes the gradient paint
+     paper-on-paper and the ground disappears with no second rule. Faint then
+     sits on clean paper at 7.64:1, and the register's one hard constraint —
+     faint may not sit on the ruling — disappears along with it. */
+  .theme-ledger {
+    --text-muted: color-mix(in srgb, var(--paper-key) 88%, var(--paper));
+    --text-faint: color-mix(in srgb, var(--paper-key) 76%, var(--paper));
+    --border-subtle: color-mix(in srgb, var(--paper-key) 32%, var(--paper));
+    --border-default: color-mix(in srgb, var(--paper-key) 55%, var(--paper));
+    --rule-feint: var(--paper);
+  }
+
+  .theme-console {
+    --text-muted: #bdc5c8;
+    --text-faint: #94a4ab;
+    --border-subtle: #333c41;
+    --border-default: #56676d;
+    --border-strong: #728890;
   }
 }
 
@@ -920,6 +1158,49 @@ hr {
   letter-spacing: var(--lts-wider);
   text-transform: uppercase;
 }
+
+/* The figure. Every number on a FinLog register is set in one of these, in both
+   registers, with no exceptions — a billing page whose figures do not align in a
+   column refutes its own thesis. Roles rather than a rule about which face to
+   use, for the same reason .type-stamp is a role: components apply a class and
+   never reach for a family.
+ *
+ * --ff-figure is the seam. It resolves to --ff-mono, and it exists so the page's
+ * figure face is one declaration away from being a different face than the site's
+ * captions, without anything else in the register having to change.
+ *
+ * WHY THERE IS NO `font-variant-numeric: tabular-nums` HERE, which the plan asked
+ * for. Two measurements, taken by dumping the shipped woff2s rather than assumed:
+ *
+ *   1. Geist Mono's GSUB is `ccmp dnom frac locl numr`. There is no `tnum` table,
+ *      so the declaration would substitute nothing. That is the same no-op the
+ *      site removed in PR #15 — `font-variant-ligatures: discretionary-ligatures`
+ *      against a family with no `dlig`. A rule that reads as intent and does
+ *      nothing is worse than no rule, so it stays out.
+ *   2. It would have nothing to do regardless. Every glyph in the face has an
+ *      advance of 600 (the sole exception is .notdef at 500, and 15 combining
+ *      marks at 0, which is correct). The face is monospaced by construction, so
+ *      figures are tabular without a feature, and so is every fallback in the
+ *      --ff-mono stack.
+ *
+ * The same dump settles the plan's other type item: FINLOG-PAGE-PLAN §5.3 asks
+ * for JetBrains Mono specifically for "slashed zero, disambiguated 1lI". Geist
+ * Mono's zero already has three contours — the third a 4-point parallelogram
+ * cutting both bowl strokes — so the slash is baked into the default outline and
+ * cannot be switched off, and `one`, `l` and `I` are three genuinely distinct
+ * outlines. Both halves of that rationale are already satisfied by a face the
+ * site loads. Adding a fourth family is now an identity decision rather than a
+ * legibility one — see the note on --ff-figure. */
+.type-figure-1,
+.type-figure-2,
+.type-figure-3 {
+  font-family: var(--ff-figure, var(--ff-mono));
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--lts-normal);
+}
+.type-figure-1 { font-size: var(--fz-headline-2); line-height: var(--lh-snug); }
+.type-figure-2 { font-size: var(--fz-body-2); line-height: var(--lh-fine); }
+.type-figure-3 { font-size: var(--fz-body-4); line-height: var(--lh-fine); }
 
 /* ─────────────────────────────────────────── 7. Color utilities ── */
 
@@ -1441,5 +1722,253 @@ hr {
   .theme-plate [data-slip-hover]:hover,
   .theme-plate [data-slip-hover]:focus-visible {
     translate: var(--slip-x, 0px) var(--slip-y, 0px);
+  }
+}
+
+/* ───────────────────────────────────── 15. The register devices ── */
+/* The graphic vocabulary of the two registers in §3. Keyed to data attributes and
+   scoped to a register class, for the same two reasons §13 and §14 give: artifacts
+   live in CSS Modules and an attribute selector is the one hook that survives
+   scoping, and nothing here should have any effect outside a register.
+ *
+ * FINLOG-PAGE-PLAN §5.4 lists seven devices. Four of them are register BEHAVIOUR
+ * and are here, along with the signal utilities, the seam edge, and the motion
+ * rule: the rule and the double rule, the ruled ground, the stamp, and the
+ * carbon-copy layering. The other three — the marginalia column, the chapter
+ * thresholds, and the reconciliation rail — are page LAYOUT: they have no meaning
+ * without chapters to sit between, and building them now would be speculative CSS
+ * with no consumer. They land with the prose branch, in finlog.module.css.
+ *
+ * Everything below is exercised live on /styleguide#finlog, which is the
+ * regression test in the same sense the ten plates rendered there are. */
+
+/* ── The rule ──
+   The primary graphic element of the whole page, and a piece of grammar rather
+   than decoration: a hairline is a LINE ITEM, a double rule is a TOTAL. The
+   double rule then becomes the recurring mark for "this is settled" — it appears
+   under every figure that bills and never under one that merely displays, so by
+   the audit chapter the reader has been trained on it without being told, and its
+   absence is legible.
+
+   `3px double` rather than two elements or a pseudo-element: CSS renders a double
+   border as 1px / 1px gap / 1px at that width, which is exactly a printer's
+   double rule, in one declaration and no extra DOM. Below 3px the two lines
+   collapse into one and the grammar is silently lost, so the width is not
+   arbitrary. */
+:is(.theme-ledger, .theme-console) [data-rule] {
+  border-block-end: var(--bdw) solid var(--border-default);
+}
+
+:is(.theme-ledger, .theme-console) [data-rule="double"] {
+  border-block-end: 3px double var(--border-strong);
+}
+
+/* ── The ruled ground ──
+   Real ruled paper: the baseline ruling, at the pitch of the register's own body
+   line box, so prose sits ON the rules rather than near them. One gradient, and
+   it sells the entire conceit.
+
+   The pitch is DERIVED, not typed: --fz-body-1 × --lh-loose is 31.5px, which is
+   the line box of the role Ledger prose is set in. Type a literal here and the
+   ruling drifts off the text the first time the type scale moves.
+
+   --rule-phase is how the page aligns the ruling to the baseline. It matters more
+   than it looks: a rule crossing the x-height cuts glyphs, and a rule at the
+   baseline is only grazed by descenders — which is what writing on ruled paper
+   actually looks like. The page owes this one number.
+
+   THE MEASUREMENT THIS DEVICE OWES, in the manner Plate.module.css owes one for
+   its screen: this is an overlay under all Ledger prose, so every ratio in the
+   register is really measured against paper-plus-ruling, not bare paper. Averaged
+   over the pitch a 1px rule at 31.5px is 3.17% coverage and costs 1.01:1 — but the
+   average is not the worst case. A stroke landing directly on the rule measures
+   primary 12.91, secondary 9.33, muted 6.17, red 4.50, faint 4.44. So faint is the
+   one role the ruled ground cannot carry, and it never had to: BUILD-BRIEF §3.1
+   already rules that body text may never use --text-faint, and faint's remaining
+   job is marks, which belong on the unruled band below. Under
+   `prefers-contrast: more` the ruling is removed rather than darkened — see the
+   note in §3 for why the obvious direction is the wrong one — and faint recovers
+   its full 7.64:1. Unlike the plate's screen, nothing here animates, so there is
+   no state of this device that can push a ratio below what is written above. */
+.theme-ledger [data-ruled] {
+  --rule-pitch: calc(var(--fz-body-1) * var(--lh-loose));
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--rule-pitch) - 1px),
+    var(--rule-feint) calc(var(--rule-pitch) - 1px),
+    var(--rule-feint) var(--rule-pitch)
+  );
+  background-position: 0 var(--rule-phase, 0px);
+}
+
+/* The money band. A figure that BILLS gets clean paper behind it — which is the
+   thesis expressed as a background, and also the reason the faint constraint above
+   costs nothing. The band paints --bg over the ruling rather than switching it
+   off, because the ruling is on an ancestor and a descendant cannot un-paint it.
+   The column rules are vertical, which is the one place the plan's darker
+   #c9d3dc belongs: no type ever sits on a column rule. */
+.theme-ledger [data-money] {
+  background-color: var(--bg);
+  border-inline: var(--bdw) solid var(--rule-column);
+}
+
+/* ── The signal vocabulary ──
+   Four states, the same four in both registers, resolving to pigment in Ledger and
+   to emitted light in Console. The tokens are on the theme classes in §3.
+
+   Colour is never the only carrier, exactly as the plate's state vocabulary
+   requires: a figure carrying a signal also carries a label, and absent carries a
+   shape as well — see [data-void]. Desaturate this section on /styleguide#finlog
+   and every state must still read. */
+:is(.theme-ledger, .theme-console) [data-sig="settled"] { color: var(--sig-settled); }
+:is(.theme-ledger, .theme-console) [data-sig="estimated"] { color: var(--sig-estimated); }
+:is(.theme-ledger, .theme-console) [data-sig="loss"] { color: var(--sig-loss); }
+:is(.theme-ledger, .theme-console) [data-sig="absent"] { color: var(--text-faint); }
+
+/* ── The stamp ──
+   Where riso's misregistration survives, repurposed honestly. A print plate is
+   not supposed to land crooked; a rubber stamp is. So the register keeps the
+   offset idea without keeping the argument that the page's thesis forbids.
+
+   This is the box and the crookedness only — the type comes from .type-stamp in
+   §6, and the ink from [data-sig] above, so a stamp composes out of three things
+   that already exist rather than redeclaring any of them. The distress mask lands
+   with the marks branch; it is one feTurbulence rendered once, never animated.
+
+   `rotate` rather than `transform`, for §14's reason: it composes with a transform
+   the caller may already be using instead of overwriting it. */
+:is(.theme-ledger, .theme-console) [data-stamp] {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  border: var(--bdw) solid currentColor;
+  border-radius: var(--bdrs-none);
+  rotate: var(--stamp-rotate, -2.5deg);
+}
+
+/* ── The void ──
+   Absent is the state that has to look like nothing, because that is the argument:
+   the fall-through case in the rate-resolution chain is billable, priced at zero,
+   and reported as revenue nobody invoiced. A wrong number pages somebody; a
+   MISSING number does not. So the void is a dashed edge over no fill — the shape
+   carrier that keeps "we have no figure" distinct from "the figure is small", and
+   the thing that makes the absent state survive a desaturation.
+ *
+ * DECLARED AFTER THE STAMP DELIBERATELY, and this is not cosmetic ordering. The
+ * two selectors have identical specificity, a NOT BILLED stamp is both a stamp and
+ * a void, and the stamp sets `border` as a shorthand — so with the blocks the
+ * other way round the solid edge won and the absent state lost the one carrier
+ * that is not colour. Caught by reading the computed style, not by reading the
+ * CSS. Same source-order rule as §14's interaction swipe. */
+:is(.theme-ledger, .theme-console) [data-void] {
+  border: var(--bdw) dashed var(--sig-absent);
+  border-radius: var(--bdrs-none);
+}
+
+/* ── The carbon copy ──
+   Derive versus finalize, as one image and no interaction: the finalized invoice
+   as an opaque top sheet with the live recomputation showing through beneath,
+   offset the way a carbon set is never quite square.
+
+   `isolation: isolate` is load-bearing here for the same reason it is on the
+   plate's ramp — it makes the host a stacking context, which is what puts a
+   z-index of -1 ABOVE the host's own background and BELOW its text. Without it
+   the sheet falls behind the paper and vanishes. */
+.theme-ledger [data-carbon] {
+  position: relative;
+  isolation: isolate;
+}
+
+.theme-ledger [data-carbon]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  translate: var(--carbon-x, 8px) var(--carbon-y, 8px);
+  background-color: var(--bg-raised);
+  border: var(--bd-subtle);
+}
+
+/* ── The register edge ──
+   The site's header and footer sit outside <main> and stay .theme-dark, which is
+   the whole point of the Tines approach this page borrows: the chrome does not
+   change, only the space between it does. That leaves one seam, and it is only a
+   problem in one direction. Against the paper the boundary is 16.99:1 and reads
+   as a material change. Against the Console ground it is 1.00:1 — --ink-950 and
+   --console-bg are the same value and differ only in hue direction, warm
+   18/16/14 against cool 14/17/19, which reads as a colour cast rather than as two
+   materials. It cannot be fixed by darkening: even #0a0d0f is still only 1.03:1
+   against --ink-950, because near-blacks have nowhere left to go.
+ *
+ * So it is drawn instead, with device one. A hairline declares the boundary that
+ * value cannot.
+ *
+ * BOTH SELECTORS ARE REQUIRED, and the first one is the one that matters. This
+ * device belongs on the register's OUTERMOST container, which is the element
+ * carrying the theme class — so the descendant form alone silently never matched,
+ * and the edge fell through to whatever border the host module had already set.
+ * Every other device here is authored inside a register and needs the descendant
+ * form only; this is the one that sits on the boundary itself. */
+:is(.theme-ledger, .theme-console)[data-edge],
+:is(.theme-ledger, .theme-console) [data-edge] {
+  border-block: var(--bdw) solid var(--border-strong);
+}
+
+/* ── Ledger is still ──
+   The motion rule from FINLOG-PAGE-PLAN §7.1, as a structural guard rather than a
+   convention: motion is permitted only where the product is genuinely computing.
+   A console is live and things really are arriving, so Console animates. A printed
+   invoice does not move. Ink dries.
+ *
+ * This is one rule doing both halves of the job. It suppresses every animation
+ * inside the Ledger register, including the site's own [data-reveal] entrances,
+ * which §7.3 forbids here anyway — at five thousand words a fade-in-on-scroll for
+ * prose is both hostile and the most recognisable slop pattern there is. And
+ * because a Console-only animation is authored under .theme-console, the same rule
+ * is what stops it running when the reader flips to Ledger. There is no second
+ * set of animations, only a rule about where they are allowed.
+ *
+ * It is safe against invisible content by construction, because §9's convention
+ * already guarantees elements are visible and correctly positioned by default and
+ * animation only removes an offset. Killing animation-name leaves the element at
+ * its natural state, which is the finished one.
+ *
+ * TRANSITIONS ARE DELIBERATELY NOT TOUCHED. Hover and focus feedback survives in
+ * both registers, because feedback is not motion — a control that does not answer
+ * the pointer is broken, not still.
+ *
+ * [data-ink] is the allowlist, and it is exactly two things, both defensible as
+ * physical acts rather than screen effects: a chapter mark drawing itself once (a
+ * mark being SET) and the FINALIZED stamp's impact (stamping is a physical act).
+ * The attribute goes on the element that animates, not on its container — an
+ * animation applies per element, so a mark's <path> needs it, not the <svg>. */
+.theme-ledger *:not([data-ink]) {
+  animation-name: none;
+}
+
+/* ── The register swap ──
+   Rule weights and type faces cannot tween, so the swap does not attempt a
+   material morph — it cross-dissolves ground and ink over --dur-fast and lets the
+   rules change under it.
+ *
+ * The plan expected a font swap at the midpoint and a preload of both type stacks
+ * to stop it flashing. Neither is needed any more: §5.3's resolution puts the same
+ * display serif, the same figure mono and the same UI sans in BOTH registers, so
+ * no face changes across the toggle. Only colour does, and colour interpolates.
+ *
+ * Gated on a transient attribute rather than applied at rest, because a permanent
+ * universal colour transition would also slow every hover to 180ms and contradict
+ * the --dur-instant feedback rule. The contract for the toggle: set [data-swapping]
+ * on the register root, flip the theme class, remove the attribute one --dur-fast
+ * later. Under reduced motion the attribute does nothing and the swap is instant,
+ * which is the correct behaviour rather than a degraded one. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-swapping],
+  [data-swapping] * {
+    transition:
+      background-color var(--dur-fast) var(--ease-out-soft),
+      border-color var(--dur-fast) var(--ease-out-soft),
+      color var(--dur-fast) var(--ease-out-soft);
   }
 }

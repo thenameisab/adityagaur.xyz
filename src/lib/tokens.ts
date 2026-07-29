@@ -37,7 +37,10 @@ export const ramps = {
 
 export type ThemeName = "dark" | "sand" | "ember";
 
-type ThemeColors = {
+// Exported so src/lib/registers.ts can extend it. The two FinLog registers hold
+// the same nine-key contract measured here, plus their own surfaces and signals,
+// which lets `contrastTargets` below drive their tables too.
+export type ThemeColors = {
   bg: string;
   "text-primary": string;
   "text-secondary": string;
