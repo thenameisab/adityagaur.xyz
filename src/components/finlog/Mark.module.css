@@ -1,0 +1,84 @@
+/* The chapter mark, and its one animation.
+   System C's geometry lives in Defs.tsx; this file is only size and motion. */
+
+.root {
+  display: block;
+  color: currentcolor;
+  flex: none;
+}
+
+/* 24px, not 20. Measured by setting all nine side by side and looking: below
+   about 24px the two densest marks stop resolving — 001's seventy-seven ticks and
+   006's two words both collapse into a smudge, because their internal features are
+   finer than a hairline can separate at that scale. The six sparse marks survive
+   down to about 16px. So the rail's mark is a secondary cue and the LINE NUMBER
+   has to be its primary one; a rail that leans on the mark alone would be
+   illegible for two of the nine chapters. */
+.rail {
+  inline-size: 24px;
+  block-size: 24px;
+}
+
+.full {
+  inline-size: 64px;
+  block-size: 64px;
+}
+
+/* A mark being set. The gesture is a line being drawn, not a box fading up —
+   §14's marker swipe is the same idea in the plate system, and the same argument
+   applies: this runs once as the mark enters and never again.
+ *
+ * WHY THIS IS A WIPE AND NOT A STROKE-DASH DRAW, which is the obvious way to
+ * animate a monoline mark and was the first implementation. Every path carried
+ * `pathLength="1"` so that `stroke-dasharray: 1` would be exactly one path-length
+ * and `stroke-dashoffset` could go 1 → 0, inheriting through the <use> into the
+ * symbol's shadow tree. It looked correct at 64px and it is broken: the computed
+ * dasharray is a device length (1px), and combined with `non-scaling-stroke` the
+ * dash pattern stops tracking the normalised path — so at any size above 64px
+ * every mark rendered as a dotted line instead of a solid one. Caught by setting
+ * the specimen sheet to 150px, not by reading the CSS.
+ *
+ * A clip wipe has none of that coupling, works at every size, needs no pathLength
+ * attribute on 30-odd paths, and is the same left-to-right hand gesture §14
+ * already uses. The dash approach is not recoverable while the system rule is
+ * `non-scaling-stroke`, and that rule is worth more than the effect.
+ *
+ * `animation-duration: auto` rather than --dur-slow, which is what the motion
+ * spec nominally asks for. On a scroll timeline a time-based duration is a
+ * fraction of the TIMELINE rather than of the range, so `500ms` snaps the whole
+ * animation into the first pixel of scroll — the trap globals.css §9 already
+ * documents at length. The range is the duration. */
+@keyframes mark-set {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .root {
+      animation-name: mark-set;
+      animation-duration: auto;
+      animation-timing-function: var(--ease-out);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 30%;
+    }
+  }
+}
+
+/* The arrow. In em, because it sits in a line of type — a mark is a drawing at a
+   fixed size, an arrow is a glyph and moves with its text. */
+.arrow {
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
+  color: currentcolor;
+  /* Same optical drop as Icon.module.css, for the same reason: the glyph's axis
+     sits above the text baseline and has to be pulled back down onto it. */
+  vertical-align: -0.12em;
+  flex: none;
+}

@@ -1,0 +1,47 @@
+/* The stamp's two additions: uneven ink, and the impact.
+
+   REQUIRES <FinlogDefs /> ON THE PAGE. The filter below references a definition
+   that lives there, and an unresolvable `filter: url()` is not a no-op — per CSS
+   Filter Effects the element is not rendered at all, so a stamp without the defs
+   would silently vanish rather than merely appearing crisp. That failure mode is
+   verified in /styleguide#finlog-marks, which renders the defs once for the whole
+   section. */
+
+.stamp {
+  /* Uneven ink. One feTurbulence displaced through feDisplacementMap, declared
+     once in Defs.tsx, rendered once here, never animated.
+
+     scale is 0.9px against 12px type, which is the number that needed care rather
+     than a default. The plate system learned the general form of this the hard
+     way: a texture whose feature size lands in the same range as the strokes of
+     12px mono type makes small type read as fuzzy rather than as textured. So the
+     displacement stays under a pixel and the noise stays fine-grained
+     (baseFrequency 0.82), which roughens the edge of the impression without
+     moving any letterform far enough to soften it. */
+  filter: url(#finlog-distress);
+}
+
+/* The impact. A stamp lands, it does not ease in — so this is the shortest
+   duration in the scale and it only ever scales down onto its resting size.
+
+   --dur-instant, not the 90ms the motion spec names. 90 and 100 are
+   indistinguishable at this amplitude, and the spec's own rule for this page is
+   "no new motion tokens" — so the nearest token wins and the scale stays intact.
+
+   `scale` as its own property rather than inside `transform`, because §15 already
+   puts a `rotate` on every stamp and a transform here would overwrite it. Same
+   composition problem §14's hover slip solves the same way. */
+@keyframes stamp-impact {
+  from {
+    scale: 1.06;
+  }
+  to {
+    scale: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stamp[data-impact] {
+    animation: stamp-impact var(--dur-instant) var(--ease-out) both;
+  }
+}

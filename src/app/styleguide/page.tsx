@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Brand, { BrandMark } from "@/components/Brand";
 import Icon, { type IconName } from "@/components/Icon";
 import Fingerprint, { hexCells } from "@/components/artifacts/Fingerprint";
+import FinlogDefs, { MARKS } from "@/components/finlog/Defs";
+import Mark, { FinlogArrow } from "@/components/finlog/Mark";
+import Stamp, { STAMPS } from "@/components/finlog/Stamp";
 import InkCredit from "@/components/artifacts/InkCredit";
 import Status from "@/components/artifacts/Status";
 import { allBrands } from "@/lib/brands";
@@ -1037,6 +1040,134 @@ export default function Styleguide() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      </Section>
+
+      {/* ── The FinLog marks ─────────────────────────────────────── */}
+      <Section
+        id="finlog-marks"
+        title="The register marks — System C"
+        note="Nine chapter marks, four stamps and two arrows. A third construction system alongside IconSprite's two, and its rule comes from the page rather than from icon convention: the mark is drawn in the page's own hairline. 64×64, stroke-width 1 with non-scaling-stroke, butt caps, miter joins."
+      >
+        {/* One set of defs for the whole section. The stamps below need it —
+            an unresolvable filter reference does not degrade to no filter. */}
+        <FinlogDefs />
+
+        <div className="stack stack--l">
+          {/* ── The nine marks, in both registers ── */}
+          <div className="stack stack--s">
+            <p className="type-body-3 text-muted">
+              Each mark is a miniature figure derived from its own chapter&rsquo;s
+              argument — geometry, not illustration. That is the device worth taking
+              from Tines&rsquo; era emblems and the illustration budget worth
+              refusing: nine small drawings pay for themselves four times over
+              across the thresholds, the rail, the Work index card and the OG image.
+            </p>
+            <div className={`theme-ledger ${styles.plateCard}`} data-edge>
+              <div className={styles.markGrid}>
+                {MARKS.map((m) => (
+                  <div key={m.line} className={styles.markCell}>
+                    <div className={styles.markPair}>
+                      <Mark line={m.line} size="full" />
+                      <Mark line={m.line} size="rail" />
+                    </div>
+                    <p className="type-figure-3 text-muted">{m.line}</p>
+                    <p className="type-body-4 text-primary">{m.label}</p>
+                    <p className="type-body-4 text-faint">{m.figure}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <p className="type-body-4 text-faint">
+              Each mark is shown at 64px beside 20px. Because the stroke does not
+              scale, both must read as exactly one hairline — if the small one looks
+              lighter, `vector-effect` is not applying and the rail entries will
+              disappear.
+            </p>
+          </div>
+
+          {/* ── The same nine on the dark register ── */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">The same nine, emitted</h3>
+            <p className="type-body-3 text-muted">
+              Marks take their colour from `currentColor` and nothing else, so they
+              cross registers without a second set. A mark that vanishes here is one
+              that hard-coded an ink.
+            </p>
+            <div className={`theme-console ${styles.plateCard}`} data-edge>
+              <div className={styles.markGrid}>
+                {MARKS.map((m) => (
+                  <div key={m.line} className={styles.markCell}>
+                    <Mark line={m.line} size="full" />
+                    <p className="type-figure-3 text-muted">{m.line}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ── The four stamps ── */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">Four stamps, one mask</h3>
+            <p className="type-body-3 text-muted">
+              The one place riso&rsquo;s misregistration survives onto this page,
+              repurposed honestly: a print plate is not supposed to land crooked and
+              a rubber stamp is. Each stamp is HTML text — selectable, readable in
+              DOM order — with the distress reaching it through CSS. One
+              feTurbulence, declared once, rendered once, never animated.
+            </p>
+            <div className={styles.themeRow}>
+              {REGISTER_ORDER.map((name) => (
+                <div key={name} className={`theme-${name} ${styles.themeCard}`} data-edge>
+                  <div className="stack stack--s">
+                    <p className="type-eyebrow-3 text-muted">.theme-{name}</p>
+                    {STAMPS.map((s) => (
+                      <div key={s.label} className="stack stack--xs">
+                        <div>
+                          <Stamp label={s.label} sig={s.sig} />
+                        </div>
+                        <p className="type-body-4 text-faint">{s.means}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── The arrows ── */}
+          <div className="stack stack--s">
+            <h3 className="type-headline-4 text-primary">Two arrows, at the mono&rsquo;s weight</h3>
+            <p className="type-body-3 text-muted">
+              Measured rather than matched by eye. Instrument Serif has a stem of 68
+              and a horizontal of 25.4 per 1000em — a contrast ratio of 2.7:1, which
+              is why IconSprite&rsquo;s arrow is a filled glyph with a tapering
+              shaft. Geist Mono is 84 and 84. A monospace has no contrast at all, so
+              its arrow is an untapered monoline stroke at the face&rsquo;s single
+              weight: 0.084em, which is 1.85 units in a viewBox of 22 to the em. The
+              construction difference is the face difference.
+            </p>
+            <div className={styles.themeRow}>
+              {REGISTER_ORDER.map((name) => (
+                <div key={name} className={`theme-${name} ${styles.themeCard}`} data-edge>
+                  <div className="stack stack--s">
+                    <p className="type-eyebrow-3 text-muted">.theme-{name}</p>
+                    <p className="type-figure-2 text-primary">
+                      ₹7,00,993.29 <FinlogArrow /> ₹6,26,053.97
+                    </p>
+                    <p className="type-body-3 text-secondary">
+                      Beside the site&rsquo;s own arrow <Icon name="arrow-right" />{" "}
+                      for comparison, which is drawn to the serif and is correct
+                      where the serif is.
+                    </p>
+                    <p className="type-figure-3 text-muted">
+                      Up-right <FinlogArrow dir="up-right" />
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </Section>

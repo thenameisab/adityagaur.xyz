@@ -344,3 +344,30 @@
   flex-wrap: wrap;
   gap: var(--space-3) var(--space-4);
 }
+
+/* ── The FinLog marks ────────────────────────────────────────────── */
+
+/* Nine cells, and the grid is the regression test: every mark has the same
+   8-unit margin inside a 64 box, so they must optically align in a row. One that
+   sits high or reads heavier than its neighbours is a drawing error, and it is
+   only visible when they are set together. */
+.markGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--space-6) var(--space-5);
+}
+
+.markCell {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+/* The rail size beside the full size, because non-scaling-stroke means the two
+   must be the SAME line weight at 20px and at 64px. If the small one looks
+   lighter, the vector-effect is not applying. */
+.markPair {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
