@@ -963,3 +963,717 @@
 .railFigureValue:not(:last-child) {
   margin-block-end: var(--space-3);
 }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   THE ENGINE ARTIFACTS — A2, A3, A5, A7.
+ *
+ * Four instruments that compute rather than report, and the reason they need very
+ * little CSS of their own: every one of them is a `.sheet` on a money band, and
+ * the four devices they lean on — `[data-money]`, `[data-sig]`, `[data-void]` and
+ * `[data-rule]` — were all settled in the register branch. What is new here is
+ * layout for a ladder, a plot, three vessels and a statement, plus exactly one
+ * animation (A5's row reveal) authored under `.theme-console` so the Ledger guard
+ * in globals.css §15 stops it structurally when the reader flips register.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* ── A2 · the resolution ladder ── */
+
+/* What is being priced, before the ladder runs. `auto-fit` rather than a fixed
+   four-up: at the essay's measure it lands as four, and on a phone it folds to
+   two without a breakpoint — the labels are short enough that the intermediate
+   three-up is not awkward. */
+.resolverInput {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-3) var(--space-4);
+  margin: 0 0 var(--space-5);
+  padding-block-end: var(--space-4);
+  border-block-end: var(--bd-subtle);
+}
+
+.resolverInput > div > dt {
+  margin-block-end: var(--space-1);
+}
+
+.resolverInput > div > dd {
+  margin: 0;
+}
+
+.chain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /* Numbered by the rung's own figure column, not by a marker: the number IS
+     content here ("resolved on rung 3 of 4"), and a list marker cannot be set in
+     the figure face or aligned to the money grid. */
+}
+
+/* One rung. A three-column grid — number, question, verdict — so the verdicts
+   line up down the right edge and the ladder reads as a checked sequence rather
+   than four paragraphs. `gap: 0` on the rows and padding on the cells, per the
+   alignment lesson A4 recorded: a column gap makes columns that are not the
+   fractions they claim to be. */
+.chainRung {
+  display: grid;
+  grid-template-columns: 2.5ch minmax(0, 1fr) auto;
+  gap: 0 var(--space-4);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-block-end: var(--bdw) solid var(--border-subtle);
+  /* Colour only — never position or size. A rung changing width as the walk
+     passes it would reflow the whole ladder mid-read. */
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    opacity var(--dur-instant) var(--ease-out);
+}
+
+/* The four states, and they are four rather than two because "checked and did
+   not apply" is not the same fact as "never ran". A rung below the answer keeps
+   full opacity and simply carries no verdict — it was not consulted, so nothing
+   about it has been decided. */
+.chainRung[data-state="pending"] {
+  color: var(--text-faint);
+}
+
+.chainRung[data-state="checking"],
+.chainRung[data-state="missed"] {
+  color: var(--text-faint);
+}
+
+.chainRung[data-state="resolved"] {
+  color: var(--text-primary);
+}
+
+.chainRungNo {
+  margin: 0;
+  color: var(--text-faint);
+}
+
+.chainRung[data-state="resolved"] .chainRungNo {
+  color: var(--sig-settled);
+}
+
+.chainRungBody {
+  min-inline-size: 0;
+}
+
+.chainQuestion {
+  margin: 0;
+}
+
+.chainOutcome {
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+}
+
+.chainVerdict {
+  margin: 0;
+  text-align: end;
+  color: var(--text-faint);
+}
+
+.chainRung[data-state="resolved"] .chainVerdict {
+  color: var(--sig-settled);
+}
+
+/* `[data-rule]` DRAWS A BOTTOM BORDER, not a top one — so each of these blocks
+   pads its END, and the rule reads as the line that CLOSES the block. Paired the
+   other way round (padding-block-start, which is what the first build wrote), the
+   rule lands tight against the block's last line with all the air above it: on
+   A2 that put a hairline hard under ₹7,782.26 and on A5 under the remedy's last
+   sentence. `.cleared` and `.datedSubjects` from the static branch already pair
+   it this way, and a rule under a total is the invoice grammar anyway. */
+.resolverAnswer {
+  margin-block-start: var(--space-5);
+  padding-block-end: var(--space-4);
+}
+
+/* The fall-through's answer slot. A void with a dashed edge rather than a ₹0.00
+   in the same face as a price — the shape is what keeps "nobody invoiced this"
+   distinct from "this cost nothing" in greyscale. */
+.resolverVoid {
+  padding: var(--space-4);
+}
+
+.resolverVoidNote {
+  margin: var(--space-2) 0 0;
+  max-inline-size: 54ch;
+}
+
+.chainNote {
+  margin: var(--space-4) 0 0;
+  max-inline-size: 62ch;
+}
+
+/* The census. One case is an anecdote; the partition is the claim. */
+.census {
+  margin-block-start: var(--space-5);
+  padding-block-end: var(--space-4);
+}
+
+.censusList {
+  margin: var(--space-3) 0 0;
+}
+
+.censusRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-2);
+  border-block-end: var(--bdw) solid var(--border-subtle);
+}
+
+.censusRow > dt,
+.censusRow > dd {
+  margin: 0;
+}
+
+.censusNote {
+  margin: var(--space-4) 0 0;
+  max-inline-size: 62ch;
+}
+
+/* ── A3 · the four models ── */
+
+.volumeControl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin-block-end: var(--space-5);
+}
+
+.volumeControl > label {
+  grid-column: 1 / -1;
+}
+
+/* A native range input, restyled only where the register demands it. Keyboard,
+   touch and screen-reader behaviour all come free and none of it is reimplemented
+   — which is also why there is no custom thumb geometry here worth the bytes. */
+.volumeSlider {
+  inline-size: 100%;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.volumeValue {
+  text-align: end;
+  color: var(--text-primary);
+}
+
+/* The plot. Geometry in SVG, every label in HTML, both in one grid — so a text
+   zoom moves the type and the drawing by the same amount instead of leaving
+   labels where 100% put them. */
+.plot {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0;
+  margin-block-end: var(--space-4);
+}
+
+.plotYAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-inline-end: var(--space-3);
+  /* Matches the drawing's own height so the two ends of the axis sit on the
+     drawing's top and bottom edges rather than near them. */
+  block-size: 20rem;
+}
+
+.plotYAxis > p {
+  margin: 0;
+}
+
+.plotSvg {
+  display: block;
+  inline-size: 100%;
+  block-size: 20rem;
+  color: var(--border-strong);
+}
+
+/* Positioned from the geometry's own scale rather than distributed — see the
+   note at the render site. `space-between` put every interior label at the wrong
+   volume. */
+.plotXAxis {
+  grid-column: 2;
+  position: relative;
+  block-size: 1.5em;
+  padding-block-start: var(--space-2);
+}
+
+.plotXLabel {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-start: calc(var(--at, 0) * 1%);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.plotXLabel[data-anchor="mid"] {
+  transform: translateX(-50%);
+}
+
+.plotXLabel[data-anchor="end"] {
+  transform: translateX(-100%);
+}
+
+/* The three curves, distinguished by ink weight rather than by three hues: the
+   register reserves colour for state, and a chart that invents a palette for
+   series would be the one place on the page where colour means "which" instead of
+   "what happened". Flat is the faintest because it is the model nobody argues
+   about; whole-volume carries the register's own settled ink because it is the
+   one the chapter is actually about. */
+.plotFlat {
+  stroke: var(--border-strong);
+  opacity: 0.55;
+}
+
+.plotTier {
+  stroke: var(--text-muted);
+}
+
+.plotSlab {
+  stroke: var(--sig-settled);
+}
+
+/* THE FALL. The one mark on the plot that is not a rate, so it is the one drawn
+   in the loss ink — a vertical step from the last value of one bracket to the
+   first of the next, which is what a jump discontinuity is. */
+.plotFall {
+  stroke: var(--sig-loss);
+}
+
+.plotThreshold {
+  stroke: var(--border-subtle);
+}
+
+/* Where the reader is. No transition, per §7.2 item 4: direct manipulation is
+   1:1, and a tweened marker reads as lag rather than smoothness. */
+.plotMarker {
+  stroke: var(--accent);
+}
+
+/* The three answers, as a money column — the figures ARE the comparison, so they
+   are measured as one column and align on their decimal. */
+.modelReadout {
+  margin: 0 0 var(--space-4);
+}
+
+.modelRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0 var(--space-4);
+  padding-block: var(--space-3);
+  border-block-end: var(--bdw) solid var(--border-subtle);
+}
+
+.modelName {
+  margin: 0;
+  min-inline-size: 0;
+}
+
+/* The rate under the model's name. A block, so the name stays the row's first
+   line and the rate reads as its annotation — and `text-transform: none` because
+   this can sit inside a cell carrying an eyebrow role, which is the inheritance
+   that once rendered a call count as "45,190 CALLS". */
+.modelRate {
+  display: block;
+  margin-block-start: var(--space-1);
+  text-transform: none;
+  letter-spacing: var(--lts-normal);
+}
+
+.modelValue {
+  margin: 0;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.plotVerdict {
+  margin: 0 0 var(--space-4);
+  max-inline-size: 62ch;
+}
+
+.fallNote {
+  margin-block-start: var(--space-4);
+  padding-block-end: var(--space-4);
+}
+
+.fallNote > p:last-child {
+  margin: var(--space-2) 0 0;
+  max-inline-size: 62ch;
+}
+
+.bundlePanel {
+  margin-block-start: var(--space-5);
+  padding-block-end: var(--space-4);
+}
+
+.bundlePanel > p {
+  max-inline-size: 62ch;
+}
+
+.bundleMembers {
+  margin: var(--space-4) 0 0;
+}
+
+.bundleMember {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 0 var(--space-4);
+  padding-block: var(--space-2);
+  border-block-end: var(--bdw) solid var(--border-subtle);
+}
+
+.bundleMember > dt,
+.bundleMember > dd {
+  margin: 0;
+}
+
+.bundleMember > dd {
+  text-align: end;
+  white-space: nowrap;
+}
+
+/* ── A5 · the three leaks ── */
+
+.vessels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-block-end: var(--space-5);
+}
+
+/* The vessel IS the control, so there is no separate strip of buttons competing
+   with the three shapes the chapter's closing image is about. Composed off
+   `.cause` — same box, same borders, same --dur-instant feedback, same
+   [data-active] — because a filter and a toggle are the same kind of object. */
+.vesselCell {
+  appearance: none;
+  display: grid;
+  gap: var(--space-2);
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-xs);
+  background: none;
+  color: var(--text-muted);
+  padding: var(--space-3);
+  cursor: pointer;
+  text-align: start;
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out),
+    border-color var(--dur-instant) var(--ease-out);
+}
+
+.vesselCell:hover {
+  color: var(--text-primary);
+}
+
+.vesselCell[data-active] {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+/* Squarer and narrower than the cell it sits in. The first build let the vessel
+   fill the cell's full width, which at the essay's measure is 185px against 72px
+   tall — a wide flat box reads as a panel, not as something holding a level. */
+.vessel {
+  display: block;
+  inline-size: min(100%, 6rem);
+  block-size: 6rem;
+  color: var(--border-strong);
+}
+
+.vesselFill {
+  /* The one filled area in the artifact set, and the exception is argued at the
+     render site: a level is an area, so this is the single place a paint says
+     what a hairline cannot. */
+  fill: color-mix(in srgb, var(--sig-loss) 20%, transparent);
+}
+
+.vesselLevel {
+  stroke: var(--sig-loss);
+}
+
+/* The floorless class carries no loss ink, because loss ink is for a figure and
+   it has none. Faint is the register's own "absent". */
+.vesselCell[data-void] .vesselLevel {
+  stroke: var(--text-faint);
+}
+
+.vesselName,
+.vesselFigure,
+.vesselFloor {
+  display: block;
+}
+
+.leakBody {
+  margin-block-start: var(--space-4);
+}
+
+.leakRows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.leakRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 var(--space-4);
+  padding-block: var(--space-3);
+  border-block-end: var(--bdw) solid var(--border-subtle);
+}
+
+.leakSubject {
+  margin: 0;
+}
+
+.leakDetail {
+  grid-column: 1;
+  margin: var(--space-1) 0 0;
+}
+
+.leakCalls {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.leakMore {
+  margin: var(--space-3) 0 0;
+  max-inline-size: 62ch;
+}
+
+.leakRemedy {
+  margin-block-start: var(--space-4);
+  padding-block-end: var(--space-4);
+}
+
+.leakRemedy > p {
+  max-inline-size: 62ch;
+}
+
+.leakRemedy > p + p {
+  margin-block-start: var(--space-2);
+}
+
+.leakStamp {
+  margin: var(--space-3) 0 0;
+}
+
+/* The row reveal — §7.2 item 5: 160ms, 40ms stagger, capped at 8 rows.
+ *
+ * AUTHORED UNDER .theme-console, which is the whole enforcement mechanism. There
+ * is no Ledger variant to suppress and no media query duplicating the rule:
+ * globals.css §15's `.theme-ledger *:not([data-ink])` kills animation-name, so
+ * flipping the register stops this structurally rather than by convention. Under
+ * reduced motion the rows are simply present, which is the finished state — the
+ * keyframe only removes an offset, per §9's convention.
+ *
+ * `:global()` IS LOAD-BEARING AND ITS ABSENCE IS SILENT. The register themes are
+ * global classes; written bare in a CSS module, `.theme-console` is hashed to a
+ * local name that exists on no element, so the rule compiles, ships, matches
+ * nothing, and the rows simply appear without animating. Nothing warns — the
+ * defect is a computed `animation-name: none` on an element that looks correct
+ * in the source and correct on screen. `.chapter` above already carries the same
+ * `:global()` for the same reason. */
+@media (prefers-reduced-motion: no-preference) {
+  :global(.theme-console) .leakRow {
+    animation: leak-in 160ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+}
+
+@keyframes leak-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── A7 · the session statement ── */
+
+/* Zero-height, zero-margin, no box. It exists only to be observed, and anything
+   it contributed to layout would push every chapter apart by its own height —
+   the same class of bug the rail's `position: sticky` turned out to be. */
+.readSentinel {
+  block-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.statement {
+  inline-size: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.statement caption {
+  text-align: start;
+  padding-block-end: var(--space-3);
+}
+
+/* Both inline sides padded, only the outer edges flushed — the worksheet's
+   lesson, and it applies for the same reason: two adjacent right-aligned columns
+   with end-padding only meet at zero and render two figures as one run of
+   digits. */
+.statement :is(th, td) {
+  text-align: start;
+  padding: var(--space-2) var(--space-3);
+  vertical-align: baseline;
+  border-block-end: var(--bdw) solid var(--border-subtle);
+}
+
+.statement :is(th, td):first-child {
+  padding-inline-start: 0;
+}
+
+.statement :is(th, td):last-child {
+  padding-inline-end: 0;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.statement th {
+  font-weight: inherit;
+}
+
+.statement tbody th {
+  white-space: nowrap;
+}
+
+/* A line not yet reached. Dimmed, never hidden: the statement's shape — nine
+   lines, some open — is the gate's whole content, and a statement that showed
+   only what was closed could not show what closing it would take. */
+.statement tr[data-unread] {
+  color: var(--text-faint);
+}
+
+.statementPending {
+  display: block;
+  margin-block-start: var(--space-1);
+  text-transform: none;
+  letter-spacing: var(--lts-normal);
+}
+
+.statement tfoot :is(th, td) {
+  padding-block-start: var(--space-4);
+  border-block-end: 0;
+}
+
+.statementNote {
+  margin: var(--space-4) 0 0;
+  max-inline-size: 62ch;
+}
+
+/* Both money tables on this page needed a real narrow form, and in both cases the
+   first attempt still clipped the figure that mattered. Measured at 390px: the
+   statement's three columns need the description to wrap and the Words header to
+   go, at which point the figure grows its own rendered label (`.sevLabel`, shared
+   with the register) because the column header is no longer there to name it. */
+@media (max-width: 47.999em) {
+  .statement thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .statement :is(th, td) {
+    white-space: normal;
+  }
+
+  .statement :is(th, td):last-child {
+    white-space: nowrap;
+  }
+
+  .vessels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chainRung {
+    grid-template-columns: 2.5ch minmax(0, 1fr);
+  }
+
+  /* The verdict moves under the question rather than off the row, because "no"
+     against a rung is the ladder's entire content at any width. */
+  .chainVerdict {
+    grid-column: 2;
+    text-align: start;
+    margin-block-start: var(--space-1);
+  }
+
+  .plot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* THE TWO ENDPOINT LABELS GO, and this is a text-zoom fix rather than a
+     phone-layout one. Four labels of eight mono characters need about 256px at
+     the body size and about 512px at a 200% text zoom, against a track that is
+     260px wide on a 390px viewport — so at 200% the axis printed "2,00,000" and
+     "3,00,000" on top of each other. Measured, not guessed: the collision is
+     invisible at 100% at the same width, where the pair clears by 21px.
+
+     The endpoints are the right ones to drop because they are the only labels
+     restated elsewhere — the slider's own output names the volume the reader has
+     chosen, and the caption names both thresholds in words. The thresholds are
+     the axis's actual content and they stay at every width and every zoom. */
+  .plotXLabel[data-anchor="start"],
+  .plotXLabel[data-anchor="end"] {
+    display: none;
+  }
+
+  .plotYAxis {
+    flex-direction: row;
+    align-items: baseline;
+    block-size: auto;
+    padding-inline-end: 0;
+    padding-block-end: var(--space-2);
+    /* Reversed, so the axis reads low-to-high left-to-right once it is a row
+       rather than a column. */
+    flex-direction: row-reverse;
+  }
+
+  .plotXAxis {
+    grid-column: 1;
+  }
+
+  .bundleMember {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .bundleMember > dd:last-child {
+    grid-column: 2;
+  }
+}
+
+/* The visually-hidden live region A2 announces its resolution through. The walk
+   is the artifact's content and it is invisible to a screen reader as geometry —
+   without this, four buttons appear to do nothing. */
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

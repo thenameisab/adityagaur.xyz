@@ -1,8 +1,10 @@
 "use client";
 
+import { useRef } from "react";
 import type { RegisterName } from "@/lib/registers";
 import type { MarkLine } from "./Defs";
 import Mark from "./Mark";
+import { useChapterReading } from "./Reading";
 import { useChapterRegister } from "./Register";
 import styles from "./finlog.module.css";
 
@@ -36,6 +38,14 @@ type Props = {
  */
 export default function Chapter({ line, eyebrow, title, defaultRegister, children }: Props) {
   const { register, swapping } = useChapterRegister(defaultRegister);
+
+  // The chapter's half of the reading session chapter 009 closes out: measure
+  // this body's prose, and report when the reader reaches the end sentinel below
+  // it. See Reading.tsx for why the sentinel is at the end rather than a
+  // threshold on the section.
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const endRef = useRef<HTMLDivElement>(null);
+  useChapterReading(line, title, bodyRef, endRef);
 
   return (
     <section
@@ -78,11 +88,17 @@ export default function Chapter({ line, eyebrow, title, defaultRegister, childre
           material rather than a colour cast: Ledger gets baseline ruling under its
           prose, Console gets the panel's grid under the whole band. */}
       <div
+        ref={bodyRef}
         className={styles.chapterBody}
         {...(register === "ledger" ? { "data-ruled": "" } : { "data-gridded": "" })}
       >
         {children}
       </div>
+      {/* The end-of-chapter sentinel. OUTSIDE chapterBody on purpose: that
+          element's `> * + *` spacing rule and its `> p` ruled-ground rule both
+          reach direct children, and a zero-height marker has no business
+          collecting either. */}
+      <div ref={endRef} className={styles.readSentinel} aria-hidden="true" />
     </section>
   );
 }
