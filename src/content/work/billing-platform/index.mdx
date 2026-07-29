@@ -1,0 +1,201 @@
+import FinlogDefs from "@/components/finlog/Defs";
+import Stamp from "@/components/finlog/Stamp";
+import { RegisterProvider } from "@/components/finlog/Register";
+import ChapterRail from "@/components/finlog/ChapterRail";
+import Chapter from "@/components/finlog/Chapter";
+import Marginalia from "@/components/finlog/Marginalia";
+import ArtifactSlot from "@/components/finlog/ArtifactSlot";
+import Reconciliation from "@/components/finlog/Reconciliation";
+import RegisterToggle from "@/components/finlog/RegisterToggle";
+
+export const meta = {
+  slug: "billing-platform",
+  title: "The billing platform",
+  kicker: "Revenue engine",
+  summary:
+    "A billing system built on one split — the number that bills is never the number that merely displays — and the audit of my own dashboard that proved the invoice had been right the whole time.",
+  role: "Solo — product, engineering, revenue operations",
+  timeframe: "2024 — 2026",
+  stack: ["PostgreSQL", "Node.js", "TypeScript", "React"],
+  status: "prototype",
+  outcome:
+    "Reconciled 19 revenue surfaces against the billing engine itself — four root causes, zero P0s, no surface ever mis-billed a customer.",
+  order: 2,
+};
+
+<FinlogDefs />
+
+<RegisterProvider>
+
+<ChapterRail />
+
+<Chapter line="001" eyebrow="The manual month-end" title="Seventy-seven sheets" defaultRegister="ledger">
+
+Once a month, someone opened a spreadsheet per client, per API, and started multiplying. Usage times rate, minus the sandbox rows, minus whatever had been verbally agreed and never written down, equals an invoice. There were, on a bad month, seventy-seven of these sheets, and the work of closing the books was the work of not losing track of seventy-seven separate arguments with yourself about whether a number was right.
+
+It usually was. That's the part worth sitting with, because "usually" is not a word that belongs anywhere near an invoice. A spreadsheet does not fail loudly. It fails by quietly agreeing with whatever you typed into it, and the only check on that agreement is a person, on the last Friday of the month, tired, cross-referencing a rate card against a CSV export and hoping the two still describe the same product.
+
+Four questions came out of watching that process happen a few times. What did we actually bill this client last month. What did that revenue cost us to serve. Which of these customers is unprofitable once you net the two. And a fourth, which a spreadsheet cannot answer even in principle: what are we serving right now and not charging for at all.
+
+The fourth question is the interesting one, and it's worth saying precisely why a spreadsheet can't touch it. A missing row and a nonexistent row look identical. If an API call went out, hit production, cost real infrastructure, and was never priced, there is no line item anywhere that fails to reconcile. There is simply an absence, and an absence doesn't raise your hand. You can audit every number in a workbook and still miss the customer who isn't in it.
+
+That gap is where the billing platform starts. Not "build a billing dashboard." There was already a dashboard, and it's one of the nineteen surfaces this page eventually audits against its own author's work. The actual brief was narrower and harder: stop treating "what we bill" and "what we show" as the same computation wearing two different fonts, because they had quietly become two different systems that happened to agree often enough that nobody had checked whether they had to.
+
+<ArtifactSlot code="A1" name="The month-end pipeline" description="The seventy-seven sheets, live — one row per (client, API), reduced to the single settlement this chapter argues a spreadsheet can't reliably produce." />
+
+</Chapter>
+
+<Chapter line="002" eyebrow="The founding split" title="One number bills, the rest display" defaultRegister="ledger">
+
+Here is the decision everything else in this system is downstream of. A draft invoice is not a cached answer. It's recomputed from live usage every single time someone opens it. Rates change, sandbox windows close, a leak gets priced retroactively for the current period, and the draft simply reflects whatever is true right now. It has an opinion, and the opinion is allowed to be wrong for an hour, because nobody has been charged yet.
+
+The moment an invoice is finalized, that stops. The computed lines are snapshotted into storage of their own and never recomputed again, ever, for any reason, because the customer has now seen the number. You can fix the pricing engine the next day and it will not reach backward and silently change what was already sent. If something was wrong, the correction is a new, visible row, not an edit to history.
+
+<div className="cluster" style={{ gap: "var(--space-3)" }}>
+  <Stamp label="DRAFT" sig="estimated" />
+  <Stamp label="FINALIZED" sig="settled" />
+</div>
+
+That's the whole split, and it's also the operable form of this page's argument: before finalize, the number *displays*. After finalize, it *bills*. Everything downstream (the dashboard, the margin view, the leak detector) is describing the first kind of number, and it is allowed to be provisional in a way an invoice never is.
+
+Which is why this page has two reading modes rather than one. Ledger is the invoice: settled, printed, done. Nothing on it moves, because ink dries. Console is the dashboard: fast, dense, and always exactly one query behind the truth it's approximating. The toggle below doesn't pick a color scheme. It picks which of the two numbers you're looking at, and you can leave it on Default and let each chapter show you the register the thing being discussed actually lives in.
+
+<RegisterToggle />
+
+<ArtifactSlot code="A0" name="Derive and finalize" description="The bigger version of the control above — derive and finalize as one state machine, scrubbed live rather than told." />
+
+<Marginalia label="Product decision">
+
+The obvious version of this system recomputes on read and stops there — every dashboard I'd used up to that point worked this way. Finalize-as-snapshot was the harder call to make early, because it means building a second storage path (draft state, frozen state) before you have a single paying customer to justify it. I built it anyway, on the theory that the alternative (recomputing history and hoping nobody notices the invoice changed retroactively) is not a feature you can add later without a very uncomfortable conversation.
+
+</Marginalia>
+
+</Chapter>
+
+<Chapter line="003" eyebrow="One request, priced" title="Resolving a single call" defaultRegister="console">
+
+An API call comes in. Something has to decide, in well under a millisecond and with no room to shrug, exactly what that call costs. The answer is a chain, checked in a fixed order, where the first rung that applies wins and every rung after it is never consulted.
+
+Is this client sandboxed for this specific API, as of today. If yes, the call is free, full stop, and nothing below this line runs. Is this call covered by a bundle the client has already paid for. If yes, it's covered, and the bundle's own accounting absorbs it. Does this client have a negotiated rate for this API. If yes, that rate applies. Falling through all three rungs lands on the catalog's base price for whatever plan the client is on.
+
+And then there's a fourth outcome that isn't really a rung at all: the call matches nothing. No sandbox flag, no bundle, no negotiated rate — and no catalog entry, because the API code is new, or misspelled upstream, or was retired last quarter and something is still calling it. That call is priced at zero and logged as unresolved, which is a very different fact from "priced at zero because it's free." One is a decision. The other is a gap with a price tag of nothing, sitting in the revenue you never collected and never noticed you hadn't.
+
+<Stamp label="NOT BILLED" sig="absent" /> — billable, priced at ₹0.00, invoiced by nobody. It is the single most important state this engine can be in, because a wrong number pages somebody eventually. A *missing* number does not page anybody, ever, on its own. Chapter 007 is what happens when this state accumulates quietly for long enough to become a real leak instead of a rounding error.
+
+<ArtifactSlot code="A2" name="Pricing a single call" description="Walk a single API call down the precedence chain live — sandbox, bundle, negotiated rate, catalog, or the unresolved fall-through." />
+
+</Chapter>
+
+<Chapter line="004" eyebrow="The four ways to charge for a byte" title="Four models, one view" defaultRegister="console">
+
+Flat pricing is one number times one count, and it's the model everyone assumes is the whole problem — it isn't, it's the one nobody argues about. Tier pricing charges a different rate per unit *within each band* the usage crosses, the way income tax brackets work: the first ten thousand calls at one rate, the next forty thousand at a lower one, and so on, so the marginal rate steps down but every unit already billed keeps its own band's price.
+
+Slab is the one that breaks people's intuition on the first try, including mine. Whole-volume pricing doesn't price each band separately. It looks at the *total* for the period, finds which slab that total lands in, and reprices every single unit at that slab's rate. Cross a threshold late in the month and the rate applied to units one through ten thousand can retroactively drop, because the whole month is being priced as one block, not as a running meter.
+
+That has a genuinely strange consequence, and it's the reason slab gets its own curve in every chart of this system rather than being folded into tier: total revenue can *fall* at the exact moment usage crosses a slab boundary, before climbing again past it. Not flatten — fall. A customer who uses slightly more can be billed slightly less, for one specific slab crossing, and that is not a bug to be smoothed out. It's what whole-volume pricing *is*, contractually, and a pricing engine that can't render that drop hasn't actually implemented the model. It's implemented tier with slab's name on it.
+
+Bundle is the fourth: a fixed allotment of calls across one or more APIs for a flat fee, consumed first, with overage falling through to whichever of the other three models governs what's left.
+
+<Marginalia label="Migration note">
+
+The word "slab" didn't exist in this system's vocabulary until it needed a second whole-volume-adjacent name to disambiguate from what the industry calls "tier." Getting that relabelling right (without breaking a single existing invoice) is its own story, and it's the next chapter.
+
+</Marginalia>
+
+Four models, one settlement view, because a client on a bundle this month and a negotiated flat rate next month should never have to appear in a different report depending on which pricing engine happened to price their period.
+
+<ArtifactSlot code="A3" name="The four models" description="The four curves live — including the slab drop, plotted against the same axis tier is plotted against, at the same threshold." />
+
+</Chapter>
+
+<Chapter line="005" eyebrow="Twenty-three tables, one pattern" title="The schema" defaultRegister="ledger">
+
+Twenty-three tables sounds like a lot until you notice most of them are the same idea, applied to a different subject: nothing in this schema is ever *updated* in place if updating it in place would mean the past quietly changes shape. Rates, sandbox flags, client tiers: all of it is effective-dated, which means every row carries the date range it was true for, and asking "what rate applied on the 14th" is a query against history, not a lookup against the current value with your fingers crossed that nothing's changed since.
+
+That single pattern is what lets a draft invoice for last month get recomputed today and still land on exactly the number it would have shown last month, because every input it reads resolves against the date being billed, not the date the query happens to run.
+
+Invoice numbers come from a table of their own, not from an auto-incrementing column, and the distinction is not pedantic. An invoice number is a legal artifact. A gap in the sequence has to mean something happened (a voided draft, an audit trail entry), and a reused number can never happen, so the sequence is allocated transactionally as its own concern rather than trusted to whatever the database's counter does under concurrent writes.
+
+<span data-rule="double" style={{ display: "inline-block", paddingBlockEnd: "0.1em" }}>Adjustments are rows, never edits.</span> You cannot make a finalized invoice retroactively say something different. You can only append a new, dated, visible correction beside it — the same discipline the derive/finalize split enforces at the invoice level, pushed one layer down to the line level. It costs an extra table. It buys an invoice that can be fully reconstructed from its own history, which is the actual definition of an audit trail, as opposed to a change log that happens to exist.
+
+<ArtifactSlot code="A4" name="The effective-dated pattern" description="The full table map — the effective-dated pattern traced across rates, sandbox state, and client tiers as one recurring shape, not twenty-three separate designs." />
+
+</Chapter>
+
+<Chapter line="006" eyebrow="Two migrations, one lesson" title="Naming as infrastructure" defaultRegister="ledger">
+
+Two migrations in this schema do no computation at all. They exist purely to fix what things are *called*, and they are, without much competition, the best product-management artifacts in the whole codebase — because a vocabulary correction that has to run as a migration is a vocabulary correction that has been taken seriously enough to be treated as infrastructure rather than a message asking everyone to please start saying it differently.
+
+<Marginalia label="The first one">
+
+Before whole-volume pricing existed, "slab" was the only volume model in the system, and it computed what the industry actually calls *graduated* revenue. Once true whole-volume pricing needed to ship, "slab" had to stop meaning graduated first, or the new model would have no correct name available. Every existing row got relabelled slab → tier: revenue-neutral, the arithmetic untouched, one shot, no dry-run needed because nothing about what any invoice owed changed. Only what the model computing it was called.
+
+</Marginalia>
+
+The lesson underneath both: UI vocabulary and schema vocabulary are allowed to diverge, on purpose, permanently. A user should never have to know that the row backing "Group" is still, at the storage layer, a client. Pretending otherwise is how naming debt turns into rename debt, which is strictly worse.
+
+<Marginalia label="The second one">
+
+Clients became Accounts, and Accounts became Groups, in every label a user sees. The tables underneath were deliberately left alone. Renaming twenty-three tables to chase a label somebody wanted changed is how you turn a one-afternoon UX fix into a multi-week migration with its own risk of breaking every foreign key reference in the codebase. Update order matters, too, so the outgoing label never collides with the incoming one mid-flight.
+
+</Marginalia>
+
+The same discipline shows up one level down in what a leak is *allowed to become*. A leak is a (client, API) pair with usage on days that had no price in effect: call it a rate that should have existed and didn't. Once you price it going forward, the historical hits are still unpriced, and they always will be, because they're in the past and the past doesn't take new invoices. So the system grew a third state beyond "wrong" and "fixed": *acknowledged*. Dismissing a leak suppresses only its historical classification. A pair still leaking today can never be dismissed, no matter how thoroughly its history was acknowledged. The product had to learn the difference between a problem that's solved and a problem that's simply no longer actionable, and refuse to let the second one impersonate the first.
+
+</Chapter>
+
+<Chapter line="007" eyebrow="Three ways revenue goes missing" title="What leaks" defaultRegister="console">
+
+A leak, in this system, is any usage that generated cost and generated no invoice line to cover it. There are three distinct shapes that takes, and they are not equally dangerous, which is the entire reason they're modeled as three states instead of one severity flag.
+
+The first is a rate gap: usage on days with no price in effect for that (client, API) pair. It has a floor: you can see exactly what accrued and price it, even retroactively, even if the fix arrives late.
+
+The second is sandbox drift, and it's a lifecycle problem rather than a pricing one. Sandbox began as a single bit on the client record: on or off, for the whole account. The actual request that came in was narrower: an existing *paying* customer wanted to trial one *new* API without being billed for that API specifically, while everything else on their account kept billing normally. A single flag can't express "free for this one thing, billed for everything else," so sandbox became two effective-dated rows per (client, API) pair — one opening the trial, one closing it at the go-live date — and billing begins exactly on go-live, with nothing retroactive charged for the trial window. The lifecycle transition isn't a feature bolted onto sandbox. It *is* sandbox, correctly understood.
+
+The third is the one with no floor at all. Vendor API codes get retired, duplicated under a new name, or renamed upstream without notice, and usage keeps arriving tagged with whatever code the caller last knew. A rate gap at least tells you what it's missing. A dead-code hit doesn't resolve to anything. It's not underpriced, it's *unrecognized*, which is why the catalog has its own reconciliation pass: one transaction merges duplicate codes onto their survivor across five child tables, deactivates retired codes that still have live data attached rather than deleting them outright, and upserts the canonical name and its known aliases so the next hit resolves correctly the first time.
+
+<ArtifactSlot code="A5" name="The three leaks" description="The three leak classes live against seeded usage — rate gaps priced, sandbox transitions dated, catalog drift resolved or flagged unresolved." />
+
+Three vessels. Two of them hold a level you can read and act on. The third has no floor, which is the honest way to draw "we don't yet know how much this is costing us" — not as a number, as a shape with nothing underneath it.
+
+</Chapter>
+
+<Chapter line="008" eyebrow="Proving my own dashboard" title="Auditing the dashboard against the invoice" defaultRegister="ledger">
+
+Everything up to here has been the engine that produces the number that bills. This chapter is about the *other* number (the one on the dashboard, the one an operator actually looks at day to day) and whether it has been telling the truth.
+
+So I built a gap register: nineteen separate revenue surfaces across the product, each one reconciled line by line against the billing engine itself, treated as the one oracle every other number owes an explanation to. Nineteen surfaces is a lot of places for a dashboard to quietly diverge from the thing it's summarizing, and for four thousand words this page's own reconciliation rail has shown you exactly that — the invoice figure and the dashboard figure, agreeing, chapter after chapter, closely enough that you'd stopped checking.
+
+Watch it now.
+
+<Reconciliation line="008" />
+
+Slab's window-pooling (the same whole-volume mechanic from chapter 004 that reprices an entire month once a threshold is crossed) was being read by one dashboard surface using the *wrong window boundary*, off by a few hours at the edge of a billing period. Not a wrong formula. A boundary condition, in exactly the kind of pricing model complex enough that a boundary condition can hide behind a plausible-looking number for months. The invoice was never wrong — it was never reading that surface. The dashboard was reading its own approximation of the invoice's logic, and the approximation had a seam.
+
+<Stamp label="ZERO P0s" sig="settled" impact /> — nineteen surfaces, four distinct root causes across all of them, and not one instance of a customer being billed the wrong amount. Every gap this audit found was a *display* gap: a number an operator looked at that didn't match the number that actually went out. That's a real problem (a dashboard an operator can't trust is a dashboard they eventually stop consulting, which defeats the entire point of having one), but it is categorically not the same problem as an invoice being wrong, and conflating the two is exactly the failure mode this whole page has been arguing against since chapter 002.
+
+<Marginalia label="A call I made, not a call I discovered">
+
+Publishing this chapter in row-level detail means publishing bugs in my own shipped dashboard, under my own name, in public. I decided that's a net positive rather than a liability: the difference between *claiming* a system is rigorous and actually *demonstrating* the audit that makes it so is most of what this page exists to show. The headline underneath all four root causes is the one that matters: billing was never wrong.
+
+</Marginalia>
+
+<ArtifactSlot code="A6" name="The gap register" description="All 19 surfaces, their reconciliation status, and the four root causes — including the slab window-pooling gap this chapter describes, at row level." />
+
+</Chapter>
+
+<Chapter line="009" eyebrow="The reader's own client, closed out" title="Your invoice" defaultRegister="ledger">
+
+Nine chapters, and the rail beside them has been running one client's month the whole time: agreeing with itself, then visibly not, then agreeing again once chapter 008's fix lands. That's not a demo account. It's every account this engine has ever closed out, compressed into one number you've been watching without being told to.
+
+<span className="type-figure-1" data-money data-rule="double">₹18,67,839.32</span>
+
+That's the invoice. It was correct in chapter 002 and it is correct here, because it was never the number in question — the dashboard was. Closing this page's own argument with a settled figure rather than a diagram is the point: a billing system's job is not to be interesting to look at. It's to produce this number, the same way, every time, and to be honest the one time in nineteen it briefly wasn't showing it correctly somewhere else.
+
+What I'd build differently, with the whole system in front of me rather than three years into it: the sandbox lifecycle and the leak-dismissal lifecycle are the same shape (an effective-dated transition with a state that can't be un-acknowledged retroactively), and they were built eighteen months apart as two separate features before I noticed. One generalized primitive, built once, would have made chapter 007's three leak classes and chapter 004's sandbox transitions the same code path instead of two implementations that happen to agree. That's the honest cost of learning a domain by building it: the right abstraction is usually visible only after you've built its two separate cases and can finally see they were one.
+
+<ArtifactSlot code="A7" name="Your invoice" description="A closing statement, built live from this session's own reading — every chapter you actually visited, itemized the way an invoice itemizes a month." />
+
+</Chapter>
+
+</RegisterProvider>

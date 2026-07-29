@@ -1,0 +1,437 @@
+/*
+ * The three page-LAYOUT devices globals.css §15 left for this branch: the
+ * marginalia column, the chapter thresholds, and the reconciliation rail —
+ * plus the chrome that composes them (the register toggle, artifact
+ * placeholders). Everything register-BEHAVIOUR (the rule, the ruled ground,
+ * the signal vocabulary, the stamp, the void, the register edge, the motion
+ * guard) already lives in globals.css and is only referenced here through data
+ * attributes, per that file's own note.
+ *
+ * The shared reference point for every side-column measurement below is
+ * `--measure-prose` (68ch) — the actual rendered width of `.prose`, which is
+ * narrower than the `.entry` grid's reserved `--maw-prose` (44rem) track. Using
+ * the narrower number keeps the rail and the marginalia from ever landing
+ * under running TEXT, which is the thing that actually has to stay clear —
+ * the extra slack between 68ch and 44rem is real but unclaimed space.
+ */
+
+/* ── The chapter ── */
+
+/* --paper-margin is the sheet's own margin: the distance from the trim to the
+   text block. It was missing entirely, so the section box and the prose column
+   measured the same 704px at the same x and every line ran into the cut edge on
+   both sides — which is the single reason the Ledger register read as a pasted-in
+   rectangle rather than as a sheet of paper. Paper has margins; that is most of
+   what makes it look like paper.
+ *
+ * It is padding on the CHAPTER, so the threshold and the body share one spine,
+ * and the ruled/gridded grounds still reach the trim because each textured box
+ * cancels the margin back out below. */
+.chapter {
+  --paper-margin: clamp(1.5rem, 2.6vw, 2.75rem);
+  padding-block: var(--space-fluid-md);
+  padding-inline: var(--paper-margin);
+}
+
+/* Console is a MATERIAL here, not a colour cast. globals.css §15 records why the
+   register edge had to be drawn rather than valued: --console-bg and the chrome's
+   --ink-950 are 1.00:1, and no darker ground exists to fix it. So the chapter goes
+   UP to the panel, which is the direction with headroom, and takes the gridded
+   ground with it — the lift alone is 1.09:1 and invisible, the grid on top of it
+   is what the eye actually reads. The dark ground then survives only in the gap
+   between chapters, so a run of Console chapters reads as panels racked in a
+   frame instead of as one undifferentiated dark page. */
+:global(.theme-console).chapter {
+  background-color: var(--bg-raised);
+}
+
+/* Below the rail's breakpoint the sheet runs to the screen edge and the gutter
+   becomes the paper's own margin rather than dead space beside it. This is what
+   keeps the measure intact while still giving mobile a real margin: the text block
+   stays exactly the width it was, and the paper grows outward under it. Not done
+   at 80em+ because the bleed there is already spoken for by the rail on one side
+   and the marginalia on the other. */
+@media (max-width: 79.999em) {
+  .chapter {
+    margin-inline: calc(-1 * var(--gutter));
+    --paper-margin: var(--gutter);
+  }
+}
+
+/* Every chapter carries `data-edge` (globals.css §15) rather than a plain
+   divider between siblings: the device's whole point is "material changed
+   here," and that is exactly as true between two chapters as it is between
+   the site's chrome and the first/last one. The generous block padding above
+   means each pair of hairlines reads as one chapter closing and the next
+   opening, not as a single shared rule. */
+
+/* ── The threshold ──
+   No `h2` in the MDX source (so the empty Toc rail stays empty, per §4's "no
+   h2s"), and no `data-rule="double"` here either — that mark is reserved for a
+   figure that bills, and a chapter title is not one. A single hairline is a
+   line item, which is all a threshold is. */
+/* ONE SPINE. This was a flex row — mark, then a text column — with the result
+   that the line number, the eyebrow and the title all began 84px to the right of
+   the body copy below them (measured: threshold text at x 372, prose at x 288),
+   so every chapter opened with three competing left edges and no vertical
+   alignment anywhere. On a narrow viewport the same gap pushed the eyebrow and
+   the title into the right trim. The mark moves above the text instead of beside
+   it, and everything in the threshold now starts exactly where the prose starts.
+ *
+ * Hanging the mark into the paper margin was the other candidate and it does not
+ * fit: the margin is ~44px at its widest and the mark is 64px by construction
+ * (System C draws every mark on a 64px field), so it would have to shrink below
+ * the ~24px floor where the two dense marks stop resolving. */
+.threshold {
+  display: block;
+  padding-block-end: var(--space-6);
+  margin-block-end: var(--space-8);
+}
+
+/* The mark and the line number are one unit: the chapter's sign and its name.
+   Pairing them also settles the old problem of two labels of near-equal weight
+   (16px mono number over 14px tracked caps eyebrow) reading as two competing
+   eyebrows — now the number belongs to the mark, and the eyebrow stands alone. */
+.thresholdSign {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-end: var(--space-4);
+}
+
+.thresholdMark {
+  flex: none;
+  color: var(--text-faint);
+}
+
+.thresholdText {
+  min-inline-size: 0;
+}
+
+.thresholdLine {
+  color: var(--text-faint);
+  margin: 0;
+}
+
+.thresholdEyebrow {
+  margin-block-end: var(--space-2);
+}
+
+.thresholdTitle {
+  margin: 0;
+}
+
+/* Cancels the paper margin so the GRIDDED ground reaches the trim, exactly as the
+   paragraph rule below does for the RULED one. The two grounds live on different
+   elements — Console's grid covers the whole band, Ledger's ruling is painted per
+   paragraph so it can stay in phase — so each has to buy its own bleed. The two
+   cancels compound harmlessly: this one takes the body's painted box back out to
+   the full sheet, the paragraph's does the same inside it, and the text block
+   lands on the same spine either way. */
+.chapterBody {
+  position: relative; /* anchors .marginalia at 80em+ */
+  margin-inline: calc(-1 * var(--paper-margin));
+  padding-inline: var(--paper-margin);
+}
+
+/* `.prose > * + *` (globals.css) only reaches DIRECT children, and every
+   chapter's paragraphs sit one level deeper, inside this div — so the
+   between-block rhythm has to be restated at this level once. Margins still
+   collapse against a component's own explicit margin-block (Marginalia,
+   ArtifactSlot), so nothing here fights those; it only supplies the gap
+   between two plain paragraphs, which have none of their own.
+ *
+ * QUANTISED TO THE RULE PITCH rather than set from the spacing scale. --space-5
+ * is 20px against a 31.5px pitch, so consecutive paragraphs used to land at a
+ * different phase each time. The ruling is painted per paragraph now (globals.css
+ * §15) so the phase no longer depends on this — but a chapter whose block rhythm
+ * is a whole number of rules is the difference between prose that sits on ruled
+ * paper and prose that sits near it, and it costs one token to have both. */
+.chapterBody > * + * {
+  margin-block-start: var(--rule-pitch);
+}
+
+/* Each paragraph cancels the paper margin back out on the inline axis, so its
+   ruling runs to the trim the way ruled paper is actually printed while its text
+   stays on the spine. The negative margin and the padding are the same value, so
+   the text block does not move — only the painted box grows. */
+.chapterBody > p {
+  margin-inline: calc(-1 * var(--paper-margin));
+  padding-inline: var(--paper-margin);
+}
+
+/* ── Marginalia — the second voice ──
+   Below 80em: an inline callout, in reading order, exactly where it was
+   authored — the plan's own fallback ("collapses under the main column on
+   mobile, where it becomes inline asides"). At 80em+: pulled into the right
+   gutter, vertically at its own static position (only the inline axis is
+   overridden), so two notes in one chapter still land beside the lines they
+   annotate rather than stacking at the chapter's top. */
+.marginalia {
+  margin-block: var(--space-6);
+  padding-inline-start: var(--space-5);
+  border-inline-start: var(--bdw) solid var(--border-default);
+}
+
+.marginaliaLabel {
+  margin-block-end: var(--space-1);
+}
+
+.marginaliaBody {
+  font-family: var(--ff-display);
+  font-style: italic;
+}
+
+/* THE GUTTER HOLDS ONE NOTE, AND THE SELECTOR SAYS SO.
+ *
+ * The device positions each note absolutely at its own static position, which
+ * means an out-of-flow element with no height — so two notes cannot push each
+ * other apart. Chapter 006 shipped two and they printed at identical coordinates,
+ * one illegible stack of overlapping italic with the labels on top of each other.
+ * Separating them in the source is necessary but nowhere near sufficient: at this
+ * column width a ~90-word note runs about 600px tall, so two of them overlap
+ * unless roughly 600px of prose sits between, and no authoring rule that fragile
+ * is worth writing down.
+ *
+ * So the gutter treatment is conditional on there being exactly one note in the
+ * chapter. `:has(> aside ~ aside)` is true for any chapter with two or more, and
+ * those keep the inline callout form the base rule above already defines — in
+ * reading order, hairline-ruled, exactly where they were authored. One note gets
+ * the margin of a printed book; several get footnotes in the column. Both are
+ * real designs, and neither can overlap.
+ *
+ * The cap is 16rem rather than 10rem because 10 gave the column 136px, about
+ * eighteen characters a line, which was unreadable on its own before any note
+ * ever collided with another. 16rem puts it near thirty, and still leaves 48px
+ * of clear space to the viewport edge at 1440. */
+@media (min-width: 80em) {
+  .chapterBody:not(:has(> aside ~ aside)) > .marginalia {
+    --bleed: clamp(0px, calc((100vw - var(--gutter) * 2 - var(--measure-prose)) / 2), 16rem);
+    position: absolute;
+    inset-inline-start: 100%;
+    inset-block-start: auto;
+    inline-size: max(0px, calc(var(--bleed) - var(--space-6)));
+    margin-block: 0;
+    margin-inline-start: var(--space-6);
+    padding-inline-start: var(--space-4);
+  }
+}
+
+/* ── The inline reconciliation ──
+   The rail's two figures, stated in the prose for every reader the rail does not
+   reach. Hidden at 80em+ for exactly the reason the rail is hidden below it: one
+   instrument, not two copies of it. See Reconciliation.tsx for why the chapter
+   that needed this is the one chapter whose prose named no figure at all. */
+.reconciliation {
+  margin-block: var(--rule-pitch);
+  padding-block-end: var(--space-4);
+}
+
+@media (min-width: 80em) {
+  .reconciliation {
+    display: none;
+  }
+}
+
+.reconciliationRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.reconciliationRow + .reconciliationRow {
+  margin-block-start: var(--space-2);
+}
+
+.reconciliationLabel {
+  margin: 0;
+}
+
+.reconciliationValue {
+  margin: 0;
+}
+
+/* ── The artifact placeholder ──
+   `[data-void]` (globals.css §15) already supplies the dashed edge — the same
+   shape the page uses for "billable and nobody has invoiced it yet" — so this
+   file only adds the box's internal layout. */
+.artifactSlot {
+  padding: var(--space-8) var(--space-5);
+  margin-block: var(--space-8);
+  text-align: center;
+}
+
+.artifactCode {
+  color: var(--text-faint);
+  margin-block-end: var(--space-2);
+}
+
+.artifactName {
+  color: var(--text-secondary);
+  margin-block-end: var(--space-1);
+}
+
+.artifactDesc {
+  max-inline-size: 32rem;
+  margin-inline: auto;
+}
+
+/* ── The register toggle ──
+   A three-position segmented control. `data-active` carries the same signal
+   `[data-sig="settled"]` would (this control IS in a register, always
+   Console — see ChapterRail), so it composes with the existing ink rather
+   than adding a fourth colour for "selected". */
+.toggle {
+  display: inline-flex;
+  border: var(--bd-subtle);
+  border-radius: var(--bdrs-sm);
+  padding: 2px;
+  gap: 2px;
+}
+
+.toggleOption {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--bdrs-xs);
+  cursor: pointer;
+  transition: color var(--dur-instant) var(--ease-out), background-color var(--dur-instant) var(--ease-out);
+}
+
+.toggleOption:hover {
+  color: var(--text-primary);
+}
+
+.toggleOption[data-active] {
+  background: var(--bg-hover);
+  color: var(--accent);
+}
+
+/* ── The rail ──
+   The reconciliation rail (§5.4 item 4) and the chapter nav §5.2 introduces
+   the toggle inside both live here, as one sticky instrument. Hidden below
+   80em on purpose: the register toggle still reaches every reader (it is
+   also rendered inline in chapter 002), and the mark nav / running totals are
+   a desktop enhancement rather than information found nowhere else on the
+   page — every figure the rail states is also stated in running prose at the
+   chapter that earns it. */
+.rail {
+  display: none;
+}
+
+@media (min-width: 80em) {
+  .rail {
+    /* Distance from the viewport edge to the `.entry` grid's centred prose
+       track (§5 layout primitives: three columns, `1fr min(--maw-prose,100%)
+       1fr` — the gutter cancels out of the middle column's own left edge). */
+    --track-left: calc((100vw - var(--maw-prose)) / 2);
+    --bleed: clamp(0px, calc(var(--track-left) - var(--gutter)), 10rem);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    /* `fixed`, not `sticky` — this sits inside `.prose` flow as the first
+       chapter's preceding sibling, and a sticky element still reserves its
+       own height in that flow (it only detaches for positioning, not for
+       layout), which pushed every chapter down by the rail's own height.
+       `fixed` removes it from flow entirely, which a viewport-pinned
+       instrument panel wants anyway. */
+    position: fixed;
+    inset-block-start: calc(var(--header-h) + var(--space-6));
+    inset-inline-start: calc(var(--track-left) - var(--bleed));
+    inline-size: max(0px, calc(var(--bleed) - var(--space-6)));
+    max-block-size: calc(100dvh - var(--header-h) - var(--space-12));
+    overflow-y: auto;
+    scrollbar-width: thin;
+    /* space-3, not space-4. The rail is 136px wide at every viewport that gets it
+       (the bleed clamps at 10rem long before the track stops growing), and the
+       figures need every pixel of that — see .railFigures. */
+    padding: var(--space-3);
+    border-radius: var(--bdrs-md);
+    background: var(--bg-raised);
+  }
+}
+
+.railToggle {
+  flex-direction: column;
+  align-self: stretch;
+}
+.railToggle .toggleOption {
+  text-align: center;
+}
+
+.railMarks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* THE LINE NUMBER IS THE PRIMARY CUE, the mark is secondary — which is what the
+   marks branch already concluded and the rail then failed to honour. The rail
+   rendered nine 24px marks and no text at all, and 24px is exactly the size at
+   which the two dense marks stop resolving (001 is 77 ticks, 006 is two words),
+   so the nav was nine near-identical smudges with the accessible name buried in
+   an SVG <title>. The number leads, the mark confirms. */
+.railMarkLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1);
+  border-radius: var(--bdrs-xs);
+  color: var(--text-faint);
+  transition: color var(--dur-instant) var(--ease-out);
+}
+
+.railMarkLine {
+  flex: none;
+}
+
+.railMarkIcon {
+  flex: none;
+  margin-inline-start: auto;
+}
+.railMarkLink:hover {
+  color: var(--text-secondary);
+}
+.railMarkLink[data-active] {
+  color: var(--accent);
+  background: var(--bg-hover);
+}
+
+/* LABEL OVER VALUE, not label beside value.
+ *
+ * This is the bug that mattered most on the whole page. Side by side, the label
+ * column plus a settled figure needs 192px of content width and the rail has 104
+ * — so both figures rendered 72px outside the rail's own box and were clipped by
+ * its overflow. At chapter 008, where the two numbers diverge and the prose says
+ * "Watch it now," the reader saw `₹18` against `₹17`. The one moment the essay
+ * asks to be looked at was the one moment it could not be read.
+ *
+ * Stacked, a pair needs 94px against the 112px the rail now has, so the figure
+ * arrives whole at every viewport that shows the rail. The label sitting directly
+ * over its own figure is also how a statement prints a total. */
+.railFigures {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  padding-block-start: var(--space-4);
+  border-block-start: var(--bd-subtle);
+}
+
+.railFigureLabel {
+  margin: 0;
+}
+
+.railFigureValue {
+  margin: 0;
+}
+
+.railFigureValue:not(:last-child) {
+  margin-block-end: var(--space-3);
+}

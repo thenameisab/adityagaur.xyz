@@ -939,8 +939,12 @@ export default function Styleguide() {
                   <div className="stack stack--s">
                     <p className="type-eyebrow-3 text-muted">.theme-{name}</p>
 
-                    {/* The ruled ground carries prose; the money band does not. */}
-                    <div data-ruled>
+                    {/* Each register's own ground, from one piece of markup: the
+                        ruling is Ledger-scoped and paints per paragraph, the grid is
+                        Console-scoped and paints the band, so whichever card this is
+                        shows its own material and neither shows the other's. The
+                        money band below then punches clean ground through both. */}
+                    <div data-ruled data-gridded>
                       <p className="type-body-1 text-primary">
                         Prose sits on the ruling, so the rules read as paper rather
                         than as decoration.

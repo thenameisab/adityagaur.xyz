@@ -208,6 +208,7 @@ const REGISTRY: BrandEntry[] = [
   { name: "Tailwind", domain: "tailwindcss.com", aliases: ["tailwind css", "tailwindcss"] },
   { name: "Vite", domain: "vite.dev" },
   { name: "Node.js", domain: "nodejs.org", aliases: ["nodejs", "node"] },
+  { name: "PostgreSQL", domain: "postgresql.org", aliases: ["postgres"] },
   { name: "Python", domain: "python.org" },
   { name: "Chart.js", domain: "chartjs.org", aliases: ["chartjs"] },
   { name: "Cloudflare", domain: "cloudflare.com" },
