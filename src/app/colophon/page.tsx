@@ -15,12 +15,19 @@ export default function Colophon() {
         <div className="prose">
           <h2>Type</h2>
           <p>
-            EB Garamond for display, Geist for everything else, Geist Mono for
+            Instrument Serif for display, Geist for everything else, Geist Mono for
             dates and code. Three families, self-hosted, loaded as variable fonts
-            where the family offers one. EB Garamond is here for its discretionary
-            ligatures — the ct and st joins, the Th — and they are switched on
-            everywhere the face renders. It carries a full weight axis, but every
-            heading stays at regular: a display serif should never be bolded.
+            where the family offers one. Instrument Serif ships a single weight,
+            which suits it — a display serif should never be bolded.
+          </p>
+          <p>
+            That single weight leaves a heading one way to stress a word, since
+            bolding is impossible and the accent colour is spoken for. So the face
+            loads its italic too, and headings use it on{" "}
+            <em>one</em> word — the word carrying the argument, not the whole line.
+            Tracking relaxes under the italic run, because the roman roles are set
+            tight enough that a slanted glyph would otherwise collide with the
+            upright following it.
           </p>
 
           <h2>Colour</h2>
@@ -78,8 +85,8 @@ export default function Colophon() {
           </p>
           <p>
             The icons — nine of them — are a hand-maintained SVG sprite rather than
-            a library. The two arrows are filled glyphs drawn to match the display
-            serif&rsquo;s stem weight, so they read as typography rather than as UI.
+            a library. The two arrows are filled glyphs drawn to match Instrument
+            Serif&rsquo;s stem weight, so they read as typography rather than as UI.
           </p>
         </div>
       </div>

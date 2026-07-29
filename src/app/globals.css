@@ -147,15 +147,9 @@ ol[class] { list-style: none; }
   /* Role-based scale. Named by ROLE, not heading level:
      display / headline / eyebrow / body / ui / caption. */
 
-  /* Sized so EB Garamond's discretionary ligatures actually read. Below ~45px
-     the ct and st joins move a glyph pair by under a pixel: technically on,
-     invisible in practice, which wastes the one reason this face was chosen.
-     They carry from roughly 55px up. Headline roles are deliberately NOT
-     raised — they label cards and list rows, where a 40px heading would
-     outshout the thing it names, so they stay utility type without joins. */
-  --fz-display-1: clamp(3rem, 1.4rem + 6.75vw, 7.5rem);
-  --fz-display-2: clamp(2.5rem, 1.625rem + 3.75vw, 5rem);
-  --fz-display-3: clamp(2rem, 1.375rem + 2.625vw, 3.75rem);
+  --fz-display-1: clamp(2.75rem, 1.4rem + 6.75vw, 6.5rem);
+  --fz-display-2: clamp(2.25rem, 1.5rem + 3.75vw, 4.25rem);
+  --fz-display-3: clamp(1.875rem, 1.45rem + 2.125vw, 3rem);
 
   --fz-headline-1: clamp(1.75rem, 1.42rem + 1.65vw, 2.5rem);
   --fz-headline-2: clamp(1.5rem, 1.32rem + 0.9vw, 1.9375rem);
@@ -691,12 +685,6 @@ body {
   font-size: var(--fz-body-2);
   line-height: var(--lh-normal);
   font-weight: var(--fw-regular);
-  /* Inherited everywhere, but only EB Garamond carries a dlig table, so in
-     practice this turns on the Th/ct/st/ck joins wherever the display face
-     renders and is a no-op in the sans and mono. Declared once here rather
-     than on each type role that sets --ff-display: the feature belongs to
-     the face, not the role. */
-  font-variant-ligatures: discretionary-ligatures;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -841,6 +829,30 @@ hr {
 }
 .type-headline-1 { font-size: var(--fz-headline-1); line-height: var(--lh-snug); }
 .type-headline-2 { font-size: var(--fz-headline-2); line-height: var(--lh-fine); }
+
+/* The display serif's one emphasis device.
+   Instrument Serif ships a 400 roman and a 400 italic and nothing else, so a
+   heading cannot be bolded, coloured (the accent is reserved), or resized to
+   stress a word. It can be italicised — one or two words inside an otherwise
+   roman line, where that word carries the argument. "The app has *no* AI in
+   it" earns it; italicising the whole heading does not, and reads as a
+   different heading rather than an emphasised one.
+   Two corrections make it optical rather than mechanical: the roman roles run
+   on negative tracking, and an italic set that tight collides with the roman
+   glyph following it, so the tracking relaxes to normal for the italic run and
+   a hair of space is added back after the slant. Both are sub-pixel at body
+   size and clearly visible at 104px, which is the size that matters. */
+.type-display-1 em,
+.type-display-2 em,
+.type-display-3 em,
+.type-headline-1 em,
+.type-headline-2 em,
+.prose h2 em {
+  font-style: italic;
+  font-weight: inherit; /* never synthesise a bold italic */
+  letter-spacing: var(--lts-normal);
+  margin-inline-end: 0.06em;
+}
 
 .type-headline-3,
 .type-headline-4 {
