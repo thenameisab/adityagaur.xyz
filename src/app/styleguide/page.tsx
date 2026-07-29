@@ -677,11 +677,42 @@ export default function Styleguide() {
         </div>
       </Section>
 
+      {/* ── The italic device ────────────────────────────────────── */}
+      <Section
+        id="emphasis"
+        title="Emphasis in a one-weight face"
+        note="Instrument Serif ships a 400 roman and a 400 italic. A heading therefore cannot be bolded, and the accent colour is reserved — so the italic is the only way to stress a word. Use it on one word, the one carrying the argument. Tracking relaxes under the italic run because the roman roles are set tight enough that a slanted glyph would otherwise collide with the upright after it."
+      >
+        <div className="stack stack--m">
+          <div className={styles.typeRow}>
+            <p className="type-caption-1 text-faint">earns it — one word</p>
+            <p className="type-display-3 text-primary">
+              The app has <em>no</em> AI in it
+            </p>
+          </div>
+          <div className={styles.typeRow}>
+            <p className="type-caption-1 text-faint">earns it — a short phrase</p>
+            <p className="type-display-3 text-primary">
+              The audit came first, and it was brutal <em>on purpose</em>
+            </p>
+          </div>
+          <div className={styles.typeRow}>
+            <p className="type-caption-1 text-faint">
+              doesn&rsquo;t — a whole line in italic reads as a different heading,
+              not an emphasised one
+            </p>
+            <p className="type-display-3 text-primary">
+              <em>Where the model is allowed to be wrong</em>
+            </p>
+          </div>
+        </div>
+      </Section>
+
       {/* ── Sans comparison (Q2) ─────────────────────────────────── */}
       <Section
         id="sans"
         title="Sans candidates"
-        note="§15 Q2 — Geist vs Inter Tight, both against EB Garamond. Pick one; the loser and its font payload get deleted."
+        note="§15 Q2 — Geist vs Inter Tight, both against Instrument Serif. Pick one; the loser and its font payload get deleted."
       >
         <div className={styles.themeRow}>
           {[
@@ -802,7 +833,7 @@ export default function Styleguide() {
       <Section
         id="icons"
         title="Icons"
-        note="Nine, hand-maintained. The two arrows are filled glyphs drawn to Instrument Serif's stems (re-check against EB Garamond); the rest are 24×24 stroked. All currentColor, all em-sized."
+        note="Nine, hand-maintained. The two arrows are filled glyphs drawn to Instrument Serif; the rest are 24×24 stroked. All currentColor, all em-sized."
       >
         <div className={styles.iconGrid}>
           {ICONS.map((name) => (

@@ -1,25 +1,25 @@
-import { Geist, Geist_Mono, Inter_Tight } from "next/font/google";
-import localFont from "next/font/local";
+import { Geist, Geist_Mono, Instrument_Serif, Inter_Tight } from "next/font/google";
 
-// Display serif. Renders in the hero, so it preloads. EB Garamond is a
-// variable font (wght 400–800), but the type roles all pin --fw-regular —
-// a display serif should never be bolded. It's here for its discretionary
-// ligatures (Th, ct, st, ck…), enabled globally in globals.css; only this
-// face has a dlig table, so the rule can't leak into the sans or mono.
+// Display serif. Renders in the hero, so it preloads. Instrument Serif ships
+// only a 400 roman and a 400 italic — a constraint, not a problem: a display
+// serif should never be bolded.
 //
-// Self-hosted from a hand-subsetted file, NOT next/font/google: Google's
-// CDN strips the dlig lookups from its latin subset, so the ligatures the
-// face was chosen for never arrive. ./fonts/EBGaramond-latin.woff2 is the
-// upstream variable TTF (google/fonts@main, OFL — licence alongside) run
-// through fonttools with the same latin unicode range plus
-// --layout-features+=dlig. Re-subset from upstream to update; verify with
-// a GSUB dump that dlig survived before shipping.
-export const display = localFont({
-  src: "./fonts/EBGaramond-latin.woff2",
-  weight: "400 800",
+// BOTH styles load, and the italic is not decoration. It is the one emphasis
+// device the display roles have: a single word set in italic inside an
+// otherwise roman heading, used where that word carries the argument. See
+// the `em` rule in globals.css §6, which is the whole implementation.
+//
+// This replaced a short-lived EB Garamond experiment (PRs #13, #14) that
+// existed only for that face's discretionary ligatures. They never showed in
+// the app, so the reason for the swap evaporated and the face came back.
+// Don't reintroduce `font-variant-ligatures: discretionary-ligatures` — this
+// family has no dlig table, so it would be a no-op that reads as intent.
+export const display = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
   display: "swap",
   preload: true,
-  adjustFontFallback: "Times New Roman",
   variable: "--font-display",
 });
 

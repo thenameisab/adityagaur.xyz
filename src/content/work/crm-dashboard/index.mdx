@@ -97,7 +97,7 @@ The single-file model had one real weakness: the file was the database. Every re
 
 The frontend didn't change in the split: the same vanilla-JS app now boots from six fetches instead of an inlined literal — and the page went from 3.9 MB to 110 KB. The refresh schedule tells its own small story about docs versus reality: the documentation says hourly, a later doc says seven times a day, and the workflow actually runs three times a day, timed to Indian office hours. Each number was true when written. The code is the only one that's true now.
 
-## Success was defined, not measured
+## Success was defined, not *measured*
 
 The written success criterion is one sentence: *leadership doesn't open Zoho anymore for routine pipeline questions — the number on the dashboard is the number they cite in the room.* I can't tell you whether that happened, and the repo is honest about why: there's no instrumentation, no view counts, no alert if the dashboard goes stale. The architecture review flagged observability as absent, and it still is. The dashboard that audits the pipeline's honesty cannot yet audit its own usage, which is the kind of sentence that belongs on the page rather than in a drawer.
 
