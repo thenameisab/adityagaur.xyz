@@ -315,7 +315,7 @@ ol[class] { list-style: none; }
   --header-h: 64px;
 
   /* The smallest comfortable touch target. Applied only under
-     `pointer: coarse` — see §11 — so desktop density is untouched. */
+     `pointer: coarse` — see §12 — so desktop density is untouched. */
   --tap-min: 44px;
 
   --z-base: 0;
