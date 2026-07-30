@@ -522,7 +522,7 @@ ol[class] { list-style: none; }
   --slip-y: 1.6px;
 }
 
-.drums-blue-red {           /* policyos */
+.drums-blue-red {           /* policy-prototype */
   --drum-a: var(--riso-blue);
   --drum-b: var(--riso-bright-red);
   --overprint: #002648;
@@ -531,7 +531,7 @@ ol[class] { list-style: none; }
   --slip-y: 2.8px;
 }
 
-.drums-pink-blue {          /* hypersync-rework */
+.drums-pink-blue {          /* sync-console-rework */
   --drum-a: var(--riso-fluoro-pink);
   --drum-b: var(--riso-blue);
   --overprint: #002284;

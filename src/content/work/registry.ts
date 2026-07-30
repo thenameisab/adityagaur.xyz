@@ -15,8 +15,8 @@ import * as billingPlatform from "./billing-platform/index.mdx";
 import * as outreachSequencer from "./outreach-sequencer/index.mdx";
 import * as wealthlens from "./wealthlens/index.mdx";
 import * as internalWiki from "./internal-wiki/index.mdx";
-import * as hypersyncRework from "./hypersync-rework/index.mdx";
-import * as policyos from "./policyos/index.mdx";
+import * as syncConsoleRework from "./sync-console-rework/index.mdx";
+import * as policyPrototype from "./policy-prototype/index.mdx";
 import * as mgmtDash from "./mgmt-dash/index.mdx";
 import * as crmDashboard from "./crm-dashboard/index.mdx";
 
@@ -26,8 +26,8 @@ const modules: Record<string, EntryModule> = {
   "outreach-sequencer": outreachSequencer as EntryModule,
   wealthlens: wealthlens as EntryModule,
   "internal-wiki": internalWiki as EntryModule,
-  "hypersync-rework": hypersyncRework as EntryModule,
-  policyos: policyos as EntryModule,
+  "sync-console-rework": syncConsoleRework as EntryModule,
+  "policy-prototype": policyPrototype as EntryModule,
   "mgmt-dash": mgmtDash as EntryModule,
   "crm-dashboard": crmDashboard as EntryModule,
 };
