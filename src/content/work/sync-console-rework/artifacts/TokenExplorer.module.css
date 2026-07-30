@@ -135,7 +135,7 @@
 }
 
 /* ── Right: the rendered slice ──
-   Colors here come from the HyperSync token values via inline style, not the
+   Colors here come from the v2 token values via inline style, not the
    site's tokens — the panel is a specimen of the other product's system. */
 
 .preview {

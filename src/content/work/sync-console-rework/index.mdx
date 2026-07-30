@@ -2,8 +2,8 @@ import TokenExplorer from "./artifacts/TokenExplorer";
 import TourEmbed from "./artifacts/TourEmbed";
 
 export const meta = {
-  slug: "hypersync-rework",
-  title: "HyperSync: reworking a 3.1/10 frontend",
+  slug: "sync-console-rework",
+  title: "Reworking a 3.1/10 frontend",
   kicker: "Frontend rework",
   summary:
     "A v1-to-v2 rework where the reasoning was written down before the pixels moved, and where the migration stalled one phase short, for a reason worth reading.",
@@ -33,7 +33,7 @@ The numbers underneath the scores are what made the review actionable rather tha
 
 ## The thesis: cold chrome, proud numbers
 
-The v1 design system had a real point of view, a serif/sans/mono trio almost no competitor has, applied in the wrong room. Editorial pacing and warm lavender-tinted neutrals read as consumer software, and HyperSync is an operator console: people watching sync runs, tailing failures, living in it eight hours a day. The v2 document states the split in one line: *the chrome goes cold, the data reads proudly numeric, and the serif becomes a signature you meet at deliberate beats* — invoices, reports, marketing. Never the dashboard at 3 AM.
+The v1 design system had a real point of view, a serif/sans/mono trio almost no competitor has, applied in the wrong room. Editorial pacing and warm lavender-tinted neutrals read as consumer software, and this product is an operator console: people watching sync runs, tailing failures, living in it eight hours a day. The v2 document states the split in one line: *the chrome goes cold, the data reads proudly numeric, and the serif becomes a signature you meet at deliberate beats* — invoices, reports, marketing. Never the dashboard at 3 AM.
 
 Everything else in the spec falls out of that sentence. Dark mode becomes the default, because ops lives in dark. Table rows drop from 44px to 32px, because density is respect for the operator's screen. Hover effects that move layout are banned outright. And the accent mint is confined to live-status pulses, never a fill, with the stated reason that this one rule is what prevents the candy-store look.
 

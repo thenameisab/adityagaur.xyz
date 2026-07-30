@@ -6,7 +6,7 @@ import styles from "./TourEmbed.module.css";
 /**
  * The real product tour, embedded.
  *
- * `/hypersync-tour/index.html` is the shipped artifact — a 938-line single
+ * `/product-tour/index.html` is the shipped artifact — a 938-line single
  * file with one style block, one script block, and 35 inline SVGs. The only
  * edits made for this embed are neutralising two outbound marketing links.
  *
@@ -22,8 +22,8 @@ export default function TourEmbed() {
       {open ? (
         <iframe
           className={styles.frame}
-          src="/hypersync-tour/index.html"
-          title="HyperSync product tour — interactive walkthrough of six mocked screens"
+          src="/product-tour/index.html"
+          title="Product tour — interactive walkthrough of six mocked screens"
           sandbox="allow-scripts"
           loading="lazy"
         />

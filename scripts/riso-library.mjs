@@ -142,7 +142,7 @@ const slip = (slug) => {
   return [((h >>> 0) & 0xf) / 5, ((h >>> 8) & 0xf) / 5];
 };
 for (const slug of [
-  "loam", "integration-islands", "policyos", "hypersync-rework",
+  "loam", "integration-islands", "policy-prototype", "sync-console-rework",
   "wealthlens", "crm-dashboard", "mgmt-dash", "internal-wiki",
   "company-brain", "outreach-sequencer",
 ]) {
