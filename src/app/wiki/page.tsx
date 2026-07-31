@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import RoutePlate from "@/components/RoutePlate";
 import Card from "@/components/Card";
 import Hero from "@/components/Hero";
 import { wikiCategories, entriesByCategory } from "@/lib/wiki";
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function WikiIndex() {
   return (
-    <>
+    <RoutePlate drums="blue-teal">
       <Hero
         variant="page"
         eyebrow="Personal wiki"
@@ -38,6 +39,6 @@ export default function WikiIndex() {
           );
         })}
       </div>
-    </>
+    </RoutePlate>
   );
 }

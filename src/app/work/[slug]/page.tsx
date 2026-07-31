@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import RoutePlate from "@/components/RoutePlate";
+import { pairingForPage } from "@/lib/plates";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BrandMark } from "@/components/Brand";
@@ -100,66 +102,68 @@ export default async function WorkEntryPage({
   ];
 
   return (
-    <article className="entry inner-section">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]),
-        }}
-      />
+    <RoutePlate drums={pairingForPage(slug)}>
+      <article className="entry inner-section">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]),
+          }}
+        />
 
-      <div className="entry-head">
-        <div className="stack stack--s">
-          <Link className={styles.back} href="/work/">
-            <Icon name="arrow-right" size="sm" className={styles.backArrow} />{" "}
-            Work
-          </Link>
-          <p className="type-eyebrow-3 text-muted">{entry.kicker}</p>
-          <h1 className="type-display-2 text-primary">{entry.title}</h1>
-          <p className={`${styles.lede} type-body-1 text-secondary`}>
-            {entry.summary}
-          </p>
+        <div className="entry-head">
+          <div className="stack stack--s">
+            <Link className={styles.back} href="/work/">
+              <Icon name="arrow-right" size="sm" className={styles.backArrow} />{" "}
+              Work
+            </Link>
+            <p className="type-eyebrow-3 text-muted">{entry.kicker}</p>
+            <h1 className="type-display-2 text-primary">{entry.title}</h1>
+            <p className={`${styles.lede} type-body-1 text-secondary`}>
+              {entry.summary}
+            </p>
+          </div>
+
+          <dl className={styles.meta}>
+            {meta.map((m) => (
+              <div key={m.key} className={m.wide ? styles.metaWide : undefined}>
+                <dt className={`${styles.metaKey} type-eyebrow-3`}>{m.key}</dt>
+                <dd className={`${styles.metaValue} type-body-3`}>{m.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          {/* Rendered only when there is a measured result. An entry with nothing
+            measured shows no outcome line rather than an adjective. */}
+          {entry.outcome ? (
+            <div className={styles.outcome}>
+              <span className={`${styles.outcomeKey} type-eyebrow-3`}>
+                Outcome
+              </span>
+              <p className="type-body-1 text-primary">{entry.outcome}</p>
+            </div>
+          ) : null}
         </div>
 
-        <dl className={styles.meta}>
-          {meta.map((m) => (
-            <div key={m.key} className={m.wide ? styles.metaWide : undefined}>
-              <dt className={`${styles.metaKey} type-eyebrow-3`}>{m.key}</dt>
-              <dd className={`${styles.metaValue} type-body-3`}>{m.value}</dd>
-            </div>
-          ))}
-        </dl>
-
-        {/* Rendered only when there is a measured result. An entry with nothing
-          measured shows no outcome line rather than an adjective. */}
-        {entry.outcome ? (
-          <div className={styles.outcome}>
-            <span className={`${styles.outcomeKey} type-eyebrow-3`}>
-              Outcome
-            </span>
-            <p className="type-body-1 text-primary">{entry.outcome}</p>
+        {sections.length > 1 ? (
+          <div className="entry-rail">
+            <Toc sections={sections} />
           </div>
         ) : null}
-      </div>
 
-      {sections.length > 1 ? (
-        <div className="entry-rail">
-          <Toc sections={sections} />
-        </div>
-      ) : null}
+        <div className="entry-body">
+          <div className={`${styles.body} prose`}>
+            <Content />
+          </div>
 
-      <div className="entry-body">
-        <div className={`${styles.body} prose`}>
-          <Content />
+          <div className={styles.footer}>
+            <Link className={styles.back} href="/work/">
+              <Icon name="arrow-right" size="sm" className={styles.backArrow} />{" "}
+              All work
+            </Link>
+          </div>
         </div>
-
-        <div className={styles.footer}>
-          <Link className={styles.back} href="/work/">
-            <Icon name="arrow-right" size="sm" className={styles.backArrow} />{" "}
-            All work
-          </Link>
-        </div>
-      </div>
-    </article>
+      </article>
+    </RoutePlate>
   );
 }

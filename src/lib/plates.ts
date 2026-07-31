@@ -2,9 +2,10 @@
  * The plate system, as data.
  *
  * globals.css owns the *rendering* of these values — the ink library on `:root`,
- * the ten `.drums-*` classes, and `.theme-plate`. This file owns the *facts about
- * them* that TypeScript needs: which drums a page loads, what to call them in an
- * ink credit, and what the overprint and slip work out to.
+ * the seventeen `.drums-*` classes (ten artifact plates and seven route plates),
+ * `.theme-plate`, and `.theme-vibrant`. This file owns the *facts about them*
+ * that TypeScript needs: which drums a page loads, what to call them in an ink
+ * credit, and what the overprint and slip work out to.
  *
  * The duplication of hex values between here and globals.css is the same
  * necessary duplication `src/lib/contrast.ts` already documents: CSS custom
@@ -40,12 +41,18 @@ export const INKS: Record<InkName, { hex: string; label: string }> = {
 /** Key ink, for type. Not pure black — the site has no pure black anywhere. */
 export const KEY = "#171514";
 
-export type StockName = "cream" | "kraft";
+export type StockName = "cream" | "kraft" | "grey";
 
-/** Two stocks: cream for Work, kraft for Writing. */
+/**
+ * Three stocks: cream for Work, kraft for Writing, newsprint grey for
+ * /styleguide. Grey ships with Vibrant Mode — see the stock comment in
+ * globals.css §2 for why it was held back until there was something to print on
+ * it, and why it ends up carrying one page rather than the two that were planned.
+ */
 export const STOCKS: Record<StockName, { hex: string; label: string }> = {
   cream: { hex: "#f4efe4", label: "cream" },
   kraft: { hex: "#eadfc8", label: "kraft" },
+  grey: { hex: "#e6e4dd", label: "newsprint" },
 };
 
 /** The key of a loaded pairing, which is also its CSS class minus the prefix. */
@@ -193,11 +200,188 @@ export const PAIRINGS: Record<DrumsKey, Pairing> = {
   },
 };
 
+/* ── The route plates ──────────────────────────────────────────────────────
+   Vibrant Mode's second run. Same mechanism, different thing being plated: the
+   ten above wrap a figure, these seven wrap a whole route.
+
+   They are a separate record rather than seven more entries in PAIRINGS because
+   the two are not interchangeable at the type level and should not be.
+   `<Plate drums={...}>` takes a DrumsKey, and a route plate is not a legal
+   argument to it — a route's colour belongs to the page, and an artifact that
+   borrowed it would print a figure that vanishes into its own ground.
+
+   Seven, because only seven routes are pages that need one. An ENTRY reuses its
+   own subject's pairing from PAIRINGS above, so /work/loam is printed in Loam's
+   inks and the page agrees with its own figures. A REDIRECT (/projects,
+   /essays, /journey, /contact) keeps the chrome plate, because it renders one
+   line and leaves. The wiki's twelve entries share the wiki index's plate: a
+   reference work is bound as one book.
+
+   Four text-safe pairings are therefore still on the shelf, and /styleguide
+   says so. Inventing a route to spend one, or a pairing to fill one, would both
+   be worse than an unspent drum. */
+
+export type RouteDrumsKey =
+  | "blue-orange"
+  | "teal-red"
+  | "green-orange"
+  | "blue-teal"
+  | "green-teal"
+  | "yellow-purple"
+  | "purple-red";
+
+export type RoutePairing = Omit<Pairing, "page"> & {
+  /** The route this plate prints, as it appears in the URL. */
+  route: string;
+  /** The slug the slip hashes. Home has no path segment, so it hashes "home". */
+  slug: string;
+  /** The pairing's loud pass — the drum that may be laid at full strength with
+      key ink on top of it. */
+  loud: InkName;
+  /** True when NEITHER drum clears AA with key ink, so the loud pass is
+      display-size only (24px+, where 3:1 is the bar). One route plate is in this
+      condition, which .drums-purple-teal already ships and documents. Carried as
+      data rather than a comment so /styleguide#vibrant prints the constraint and
+      scripts/verify-vibrant.ts can assert it. */
+  largeOnly?: true;
+};
+
+export const ROUTE_PAIRINGS: Record<RouteDrumsKey, RoutePairing> = {
+  "blue-orange": {
+    a: "blue",
+    b: "orange",
+    overprint: "#003323",
+    separation: 0.305,
+    slip: [2.8, 0.4],
+    route: "/",
+    slug: "home",
+    stock: "cream",
+    loud: "orange",
+    rationale:
+      "The house plate, and the highest separation left in the library. Also the site chrome, so the header and footer are printed in the front cover's inks.",
+  },
+  "teal-red": {
+    a: "teal",
+    b: "bright-red",
+    overprint: "#002934",
+    separation: 0.3,
+    slip: [0.0, 0.4],
+    route: "/work",
+    slug: "work",
+    stock: "cream",
+    loud: "bright-red",
+    rationale:
+      "The deepest overprint available at 13.40:1 — the index that carries the most type gets the strongest type colour.",
+  },
+  "green-orange": {
+    a: "green",
+    b: "orange",
+    overprint: "#004811",
+    separation: 0.301,
+    slip: [3.0, 0.2],
+    route: "/writing",
+    slug: "writing",
+    stock: "kraft",
+    loud: "orange",
+    rationale: "Kraft, because the stock follows the section and this is Writing.",
+  },
+  "blue-teal": {
+    a: "blue",
+    b: "teal",
+    overprint: "#003e67",
+    separation: 0.208,
+    slip: [0.2, 0.2],
+    route: "/wiki",
+    slug: "wiki",
+    stock: "cream",
+    loud: "teal",
+    largeOnly: true,
+    rationale: "One hue at two temperatures — a reference work, not an argument.",
+  },
+  "green-teal": {
+    a: "green",
+    b: "teal",
+    overprint: "#005732",
+    separation: 0.169,
+    slip: [2.8, 0.4],
+    route: "/about",
+    slug: "about",
+    stock: "cream",
+    loud: "green",
+    rationale: "The quietest pairing on the site, for the page that is just a person talking.",
+  },
+  "yellow-purple": {
+    a: "yellow",
+    b: "purple",
+    overprint: "#765300",
+    separation: 0.213,
+    slip: [2.2, 0.8],
+    route: "/colophon",
+    slug: "colophon",
+    stock: "cream",
+    loud: "yellow",
+    rationale:
+      "The loudest ink in the library (14.56:1 with key) on the page about how the site is made. Cream is forced rather than chosen: a yellow overprint is the lightest there is, and #765300 clears the floor on cream alone.",
+  },
+  "purple-red": {
+    a: "purple",
+    b: "bright-red",
+    overprint: "#701d3f",
+    separation: 0.197,
+    slip: [2.8, 1.4],
+    route: "/styleguide",
+    slug: "styleguide",
+    stock: "grey",
+    loud: "bright-red",
+    rationale:
+      "Newsprint, on the page that documents the stocks — and the library's only warm-dark overprint, so the page that publishes every ratio is not printed in the same cool navy as half the site.",
+  },
+};
+
+/**
+ * The class list that puts a route's plate on its wrapper.
+ *
+ * Emitted unconditionally, in both themes. The `.drums-*` class sets five
+ * custom properties that only `.theme-plate` reads, so under `.theme-dark` this
+ * is inert — which is what lets the plate ship in the static HTML and be correct
+ * in the first painted frame rather than after a client-side theme read. See
+ * globals.css §3.1.
+ */
+export function routePlate(drums: RouteDrumsKey | DrumsKey): string {
+  const p =
+    drums in ROUTE_PAIRINGS
+      ? ROUTE_PAIRINGS[drums as RouteDrumsKey]
+      : PAIRINGS[drums as DrumsKey];
+  return `drums-${drums}${p.stock === "cream" ? "" : ` stock-${p.stock}`}`;
+}
+
+/**
+ * The pairing an ENTRY page prints in — its own subject's, from PAIRINGS.
+ *
+ * Returns null for a slug with no pairing, and exactly one slug is in that
+ * position: `billing-platform`. That is not an oversight to be filled in later.
+ * The FinLog page is written in the two registers (globals.css §15), which are
+ * pinned in both themes because they are the page's argument about paper and
+ * screen rather than a lighting preference. Giving it a route plate would put a
+ * third colour system on the one page that already has two and means it.
+ */
+export function pairingForPage(slug: string): DrumsKey | null {
+  const hit = (Object.keys(PAIRINGS) as DrumsKey[]).find(
+    (k) => PAIRINGS[k].page === slug,
+  );
+  return hit ?? null;
+}
+
 /** "Fluorescent Pink + Teal on cream" — authentic to the medium, and it doubles
-    as the plate's legend. */
-export function inkCredit(drums: DrumsKey): string {
-  const p = PAIRINGS[drums];
+    as the plate's legend. Takes the pairing rather than a key so that artifact
+    and route plates, whose keys are deliberately different types, share one
+    implementation. */
+export function creditFor(p: Pick<Pairing, "a" | "b" | "stock">): string {
   return `${INKS[p.a].label} + ${INKS[p.b].label} on ${STOCKS[p.stock].label}`;
+}
+
+export function inkCredit(drums: DrumsKey): string {
+  return creditFor(PAIRINGS[drums]);
 }
 
 /**

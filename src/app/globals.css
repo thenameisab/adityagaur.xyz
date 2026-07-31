@@ -133,11 +133,28 @@ ol[class] { list-style: none; }
 
   --riso-key: #171514; /* type. Not #000 — the site has no pure black. */
 
-  /* Stocks. Two are assigned: cream for Work, kraft for Writing. Newsprint grey
-     (#e6e4dd) is measured and viable but stays out of the file rather than
-     shipping as a dead token. */
+  /* Stocks. Cream for Work, kraft for Writing, newsprint grey for /styleguide —
+     the page that documents the stocks, printed on the cheap stock a press
+     actually proofs on.
+
+     One page, and that is worth stating plainly rather than dressing up as a
+     category: the plan was "the meta pages", and the colophon was moved to cream
+     because scripts/verify-vibrant.ts rejected its overprint on newsprint (see
+     .drums-yellow-purple). Grey earns its place on the merits of the one page
+     that genuinely wants it, not on a rule with a single instance.
+
+     Grey was measured by scripts/riso-library.mjs from the start and previously
+     stayed out of the file rather than ship as a dead token. Vibrant Mode
+     (§3.1) loads it, so the comment that kept it out no longer applies.
+
+     It costs nothing to add, and that is measurable rather than hoped: key ink
+     is 15.87:1 on cream, 14.31:1 on grey, 13.77:1 on kraft. Grey sits BETWEEN
+     the two stocks the plate ramp was already measured against, so kraft
+     remains the worst case for every step of that ramp and no existing figure
+     in §3 moves. /styleguide#vibrant recomputes all three columns. */
   --stock-cream: #f4efe4;
   --stock-kraft: #eadfc8;
+  --stock-grey: #e6e4dd;
 
   /* ── The register palette ──────────────────────────
      FinLog's two registers (§15). Only .theme-ledger and .theme-console read
@@ -364,6 +381,8 @@ ol[class] { list-style: none; }
 .theme-sand,
 .theme-ember,
 .theme-plate,
+.theme-vibrant,
+.theme-vibrant [data-plate],
 .theme-ledger,
 .theme-console {
   background-color: var(--bg);
@@ -597,10 +616,143 @@ ol[class] { list-style: none; }
   --slip-y: 0.8px;
 }
 
-/* Writing takes the warmer stock. Work pages leave it alone and get cream. */
-.stock-kraft { --stock: var(--stock-kraft); }
+/* ── The second run: the route plates ───────────────────────────────────────
+   The ten pairings above are ARTIFACT plates — a figure tipped into a page. The
+   seven below are ROUTE plates, loaded by Vibrant Mode (§3.1) so that a page is
+   printed on its own sheet rather than only the figures inside it.
 
-.theme-plate {
+   They are the same mechanism and the same authoring rule: every value here
+   comes from `node scripts/riso-library.mjs`, and the overprint is a literal
+   because a multiply is not a mix. What makes them a separate block is only
+   what loads them — a `.drums-*` class here is put on a route wrapper by
+   src/lib/plates.ts, not on a <Plate> by an author. The slip is FNV-1a over the
+   ROUTE slug ("work", "about", …; the home plate hashes "home"), by the same
+   slipFor() the artifact plates use and which /styleguide re-derives.
+
+   Seven, not one per URL. Two rules decide which routes get a plate, and both
+   are about what a page IS rather than about spending the library:
+
+     1. An ENTRY is printed in its own subject's inks. /work/loam does not get an
+        eighth route plate — it loads .drums-teal-pink, the pairing PAIRINGS
+        already chose for Loam, so the page and the figures inside it are one
+        print job instead of two colour schemes arguing. Same for every
+        /writing entry.
+     2. A REDIRECT is not a page. /projects, /essays, /journey and /contact are
+        RedirectStubs: they render one line and leave. They keep the chrome
+        plate, because plating them would spend a pairing on something nobody
+        reads.
+
+   That leaves the home page, four indexes, and the two meta pages. The wiki's
+   twelve entries share the wiki index's plate rather than taking one each —
+   there aren't twelve pairings left, and a reference work is bound as one book
+   anyway.
+
+   The library therefore has four text-safe pairings still on the shelf, which
+   is the honest outcome and is left visible on /styleguide#vibrant. A pairing
+   invented to fill a route, or a route invented to use a pairing, would both be
+   worse than an unspent drum.
+
+   One of the four is on the shelf for a harder reason than "no route needed it",
+   and it is recorded here because it is the kind of thing that gets rediscovered
+   the expensive way. `yellow + teal` multiplies to #007700, which sets secondary
+   type at 4.33:1 on cream, 3.92 on newsprint and 3.80 on kraft — under the floor
+   on EVERY stock the site owns. It was assigned to /styleguide, and the check
+   rejected it there before it shipped. "Text-safe" in the library's own table
+   means the overprint clears AA on BARE cream (5.03); a plate also has to set
+   that colour on its own tints, which is a stricter test and the one that
+   matters. So the four spares are three that are merely unspent, and one that
+   cannot be a route plate at all.
+
+   One of the seven — blue+teal, on /wiki — has NO body-safe loud ink, the same
+   condition .drums-purple-teal already ships and documents. Its loud pass is
+   display-size only (24px+, where 3:1 is the bar). Safe by construction rather
+   than by discipline: --bg-loud falls back to a tint step, and it is flagged
+   `largeOnly` in plates.ts so /styleguide#vibrant prints the constraint and
+   scripts/verify-vibrant.ts asserts it, instead of it living in a comment. */
+
+.drums-blue-orange {        /* / — the house plate */
+  --drum-a: var(--riso-blue);
+  --drum-b: var(--riso-orange);
+  --overprint: #003323;
+  --ink-loud: var(--riso-orange); /* 6.45 with key */
+  --slip-x: 2.8px;
+  --slip-y: 0.4px;
+}
+
+.drums-teal-red {           /* /work */
+  --drum-a: var(--riso-teal);
+  --drum-b: var(--riso-bright-red);
+  --overprint: #002934;
+  --ink-loud: var(--riso-bright-red); /* 5.25 with key */
+  --slip-x: 0.0px;
+  --slip-y: 0.4px;
+}
+
+.drums-green-orange {       /* /writing */
+  --drum-a: var(--riso-green);
+  --drum-b: var(--riso-orange);
+  --overprint: #004811;
+  --ink-loud: var(--riso-orange); /* 6.45 with key */
+  --slip-x: 3.0px;
+  --slip-y: 0.2px;
+}
+
+
+
+.drums-blue-teal {          /* /wiki */
+  --drum-a: var(--riso-blue);
+  --drum-b: var(--riso-teal);
+  --overprint: #003e67;
+  /* No body-safe loud ink: teal 4.00, blue 3.85 with key. Display only. */
+  --ink-loud: var(--riso-teal); /* 4.00 with key — large text only */
+  --slip-x: 0.2px;
+  --slip-y: 0.2px;
+}
+
+
+.drums-green-teal {         /* /about */
+  --drum-a: var(--riso-green);
+  --drum-b: var(--riso-teal);
+  --overprint: #005732;
+  --ink-loud: var(--riso-green); /* 5.92 with key */
+  --slip-x: 2.8px;
+  --slip-y: 0.4px;
+}
+
+
+/* Cream, and the stock is load-bearing here rather than a preference. A yellow
+   overprint is the lightest the library produces: #765300 sets secondary type at
+   5.23:1 on cream, 4.77:1 on newsprint and 4.58:1 on kraft, so cream is the only
+   stock on which this pairing clears the site's 4.91 floor. It is loaded anyway,
+   because yellow is the loudest ink available (14.56:1 with key) and the
+   colophon is the right page to spend it on. scripts/verify-vibrant.ts holds the
+   constraint: move this plate to another stock and the check fails. */
+.drums-yellow-purple {      /* /colophon */
+  --drum-a: var(--riso-yellow);
+  --drum-b: var(--riso-purple);
+  --overprint: #765300;
+  --ink-loud: var(--riso-yellow); /* 14.56 with key — the loudest available */
+  --slip-x: 2.2px;
+  --slip-y: 0.8px;
+}
+
+.drums-purple-red {         /* /styleguide */
+  --drum-a: var(--riso-purple);
+  --drum-b: var(--riso-bright-red);
+  --overprint: #701d3f;
+  --ink-loud: var(--riso-bright-red); /* 5.25 with key */
+  --slip-x: 2.8px;
+  --slip-y: 1.4px;
+}
+
+/* Writing takes the warmer stock. Work pages leave it alone and get cream.
+   The meta pages — colophon and styleguide — take newsprint. */
+.stock-kraft { --stock: var(--stock-kraft); }
+.stock-grey { --stock: var(--stock-grey); }
+
+.theme-plate,
+.theme-vibrant,
+.theme-vibrant [data-plate] {
   /* Every surface and text mix is keyed to the RESOLVED stock, not to cream, so
      a kraft plate's raised and card surfaces are kraft-derived rather than
      quietly cream-derived. */
@@ -719,6 +871,255 @@ ol[class] { list-style: none; }
 
   color-scheme: light;
 }
+
+/* ── 3.1 Vibrant Mode ───────────────────────────────────────────────────────
+   The site's light mode, and it is not a light mode in the usual sense. The
+   usual sense would be a second neutral palette: the same page, lit
+   differently. This is the press turned on. Every route becomes a colour plate
+   with its own two drums and its own generated third colour, so switching mode
+   does not re-light the site — it prints it.
+
+   That is a design claim, but it is also the cheapest available option, which
+   is the reason to believe it. §3's contract says a theme class sets its own
+   background and colour and never depends on its parent, and no component may
+   reference a ramp token. .theme-plate is already a complete, fully measured
+   light theme built to that contract — ramp, borders, accent, tint ladder,
+   signal vocabulary, loud pass. Vibrant Mode adds no new token and no new
+   mechanism. It changes only WHAT LOADS a plate: a route wrapper, instead of a
+   <Plate> around a figure.
+
+   HOW IT SWITCHES, and why there is no conditional rendering anywhere. A
+   `.drums-*` class sets exactly five custom properties, and the only thing on
+   the site that reads any of them is the .theme-plate token block above. So a
+   drums class on a route wrapper is INERT under .theme-dark — it defines five
+   variables nobody reads. Every route therefore ships its plate class
+   unconditionally, in the static HTML, and Vibrant Mode activates it by
+   bringing the token block into scope via `.theme-vibrant [data-plate]`. The
+   toggle swaps one class on <body>. Nothing re-renders, nothing is duplicated
+   per theme, and the plate is correct in the very first painted frame.
+
+   WHAT DOES NOT MOVE. FinLog's .theme-ledger and .theme-console are pinned in
+   both modes. They are not a light theme and a dark theme; they are paper and
+   screen, and that distinction is the page's argument (§15) rather than a
+   preference. They already nest and set their own ground, so they survive this
+   without a line of code — which is the same property being relied on here. */
+
+.theme-vibrant {
+  /* The chrome takes the house plate — the same drums the home page loads. A
+     running head is printed with the job, not re-plated per signature, so the
+     header and footer hold one colour while the pages change beneath them.
+
+     This also resolves the seam recorded in src/lib/registers.ts: the header and
+     footer sit outside <main> and so cannot inherit a route's plate. Under
+     .theme-dark they stay dark against a Ledger; under Vibrant they stay the
+     house plate against a route plate. Same structure, stated once here. */
+  --drum-a: var(--riso-blue);
+  --drum-b: var(--riso-orange);
+  --overprint: #003323;
+  --ink-loud: var(--riso-orange);
+
+  /* Chrome does not slip. Misregistration is a property of a plate tipped into
+     a page; the running head is registered to the trim. */
+  --slip-x: 0px;
+  --slip-y: 0px;
+}
+
+/* ── The inked surfaces ──
+   The one place Vibrant Mode genuinely departs from .theme-plate, and the
+   reason it needs to.
+
+   .theme-plate builds its surfaces from KEY ink mixed into the stock:
+   --bg-card is 14% key on cream, which is a warm grey. That is right for a
+   plate, because a plate is a figure tipped into a page and a figure that
+   shouts competes with the prose around it. Across a whole site it is wrong,
+   and specifically it is wrong in a way that is easy to miss while authoring:
+   every ratio passes, every plate is technically two-ink, and the site still
+   reads as black type on cream with some coloured rules. The colour was all in
+   the marks and none of it in the surfaces.
+
+   So under Vibrant the three surface roles are re-pointed at the TINT LADDER,
+   which already exists, is already measured, and was built for exactly this —
+   "an ink at low coverage is a pastel, and a pastel is the one place this
+   system can be genuinely colourful without arguing with its own contrast law".
+   Every card, panel and hover state on the site is then made of the page's own
+   two inks rather than of grey.
+
+   The step choices are the ladder's law, not preference. Card and panel sit at
+   step 1, which is the only step licensed for --text-secondary and
+   --text-muted, and card summaries are muted type. Hover moves to step 2 of the
+   SAME drum — a value change rather than a hue change, because a hover
+   affordance that only shifts hue is invisible to a reader with a colour-vision
+   deficiency, and this site does not let colour be the only carrier. Step 2 is
+   key-only by the ladder, which would forbid the muted summary underneath a
+   hovered card, so the ramp is lifted with it: muted collapses into key for the
+   duration of the hover. scripts/verify-vibrant.ts checks all three surfaces
+   against all four text roles, on every plate and every stock, and that check is
+   what licenses this block rather than the reasoning above. */
+.theme-vibrant,
+.theme-vibrant [data-plate] {
+  /* The GROUND is inked, and this is the change that makes the mode what it
+     claims to be. Everything else in this block is a refinement of it.
+
+     The first three versions of this theme put the plate's colour in marks,
+     rules and small surfaces, and all three read as black type on cream. The
+     reason is structural rather than a matter of degree, and it is worth
+     writing down because it will be tempting to solve it again the same way:
+
+       · An overprint is a MULTIPLY of two inks, so it is always near-black.
+         --text-secondary is the overprint, which means the site's "coloured"
+         type is a colour nobody can see is coloured.
+       · Law 1 forbids a pure ink from setting small type — teal is 3.97:1 on
+         cream, so an eyebrow cannot be teal, ever.
+
+     Between them those two facts mean colour in this system cannot come from
+     TYPE. It can only come from AREA. And the largest area on any page is the
+     ground, which was the one surface still left as bare stock.
+
+     Step 1 of drum A, so the page is tinted with its first pass — /work is pale
+     teal, /writing pale green, /wiki pale blue, /colophon pale yellow — and the
+     step is the ladder's, not a choice: step 1 is the only one licensed for
+     secondary and muted type, and body copy sits directly on this. Drum A
+     rather than B because A is the pass the ladder measured most favourably for
+     --text-faint (5.07 on cream, 4.99 on kraft, against B's 4.79 on kraft),
+     and faint on the ground is the single most common small type on the site.
+
+     The other three surfaces then invert their usual relationship, and the
+     inversion is the correct one rather than a workaround. On a dark theme a
+     "raised" surface is lighter because light means nearer. On a printed sheet
+     nothing is nearer — but a card can be the part of the page that took NO
+     ink, and bare stock inside a tinted ground reads immediately as a separate
+     piece of paper. So --bg-card is the stock itself, which also gives it the
+     best ratios available anywhere in the theme: every text role is licensed on
+     bare stock by definition, since that is what the plate ramp was measured
+     against. --bg-raised takes drum B at step 1, so a panel differs from the
+     ground by HUE rather than by value — the two passes of the same print. */
+  --bg: var(--tint-a-1);
+  --bg-raised: var(--tint-b-1);
+  --bg-card: var(--stock-base);
+  --bg-hover: var(--tint-b-2);
+
+  /* The rules, inked for the same reason and with more effect than the
+     surfaces. --bd-subtle alone is used in about a hundred places in this
+     codebase: it is the site's structure — every card edge, list divider,
+     table rule and section break. Left as a key-ink mix it is a grey scaffold
+     holding up a colour plate, which is the single largest reason the first
+     version of this theme measured as two-ink and read as one.
+
+     Borders carry no type, so the tint ladder's text law does not apply to
+     them; the only rule any theme here owes is that --border-strong clears 3:1,
+     since that is the one that conveys state. Strong becomes the OVERPRINT
+     rather than key ink — still the darkest thing available on the sheet, still
+     8.35–11.54:1 across the seven plates, and now the plate's own generated
+     colour instead of black. */
+  --border-subtle: var(--tint-a-2);
+  --border-default: color-mix(in srgb, var(--drum-a) 55%, var(--stock-base));
+  --border-strong: var(--overprint);
+}
+
+/* The hover ramp, per the note above: on step 2 the ladder licenses KEY ONLY,
+   so every role below primary collapses to key for the duration of the hover.
+   Anything quiet inside a hovered surface stops being quiet rather than
+   stopping being legible.
+
+   --text-secondary is in this list and was not, in the first version of this
+   block: muted and faint were lifted, secondary was left as the overprint on
+   the reasoning that an overprint is dark by construction. It is, on stock —
+   but yellow + purple multiplies to #765300, and on its own drum B at step 2
+   that lands at 4.56:1, under the floor. The ladder already said "steps 2 and 3
+   take KEY ONLY" without qualification; the omission was mine, and the check
+   found it. */
+.theme-vibrant [data-plate] :is(a, button, [data-card]):hover {
+  --text-secondary: var(--riso-key);
+  --text-muted: var(--riso-key);
+  --text-faint: var(--riso-key);
+}
+
+/* The plate runs to the trim.
+   The header is `position: sticky`, so it occupies 64px of normal flow before
+   <main> begins. Under .theme-dark that is invisible — the header's band and the
+   page below it are the same near-black. Under Vibrant the chrome holds the
+   house plate and the page holds its own, so those 64px rendered as a pale blue
+   strip above every yellow, teal or green page: a seam, and one that read as a
+   bug rather than as a masthead.
+
+   The plate is pulled up by exactly the header's height and pads the distance
+   back, so it PAINTS behind the header while every element inside it stays
+   where it was. Layout is unchanged and the sheet is continuous, which is what
+   §3.1 claims two paragraphs above and was not previously true.
+
+   This also makes the header's own behaviour read correctly: it is transparent
+   by design (Header.tsx) so that content scrolls beneath it. Before this, what
+   sat beneath it at rest was the body; now it is the page's own ink, at rest
+   and while scrolling alike. */
+.theme-vibrant [data-plate] {
+  margin-block-start: calc(-1 * var(--header-h));
+  padding-block-start: var(--header-h);
+}
+
+/* The sheet. A plate is printed ON something, and under Vibrant the something
+   is the whole viewport rather than a bordered figure — so the halftone screen
+   that §3 gives each plate is laid across the page ground too.
+
+   Fixed attachment, deliberately: the screen belongs to the SHEET, so it must
+   not scroll with the type the way a background normally would. The cost is one
+   composited layer, which is the same trade the header comment in Header.tsx
+   declines for backdrop-filter — the difference is that this one paints once
+   and never on scroll, because the layer is the body's own background. */
+body.theme-vibrant,
+.theme-vibrant [data-plate] {
+  background-image: radial-gradient(
+    var(--screen-dot) 0.5px,
+    transparent 0.5px
+  );
+  background-size: 4px 4px;
+  background-attachment: fixed;
+}
+
+/* The band, re-resolved.
+   .theme-sand is used on the home and about pages as "the light interruption" —
+   a band that breaks a dark page. Under Vibrant the page is already light, so
+   sand would be an interruption that interrupts nothing: a warm neutral sitting
+   on a coloured sheet, reading as a flat patch rather than a deliberate change.
+
+   It becomes the page plate's own tinted band instead, so it stays an
+   interruption and stays in the plate's two inks. Specificity does the work
+   (0,2,0 over 0,1,0) and the drums resolve from the enclosing route wrapper, so
+   the band is teal-and-red on /work and blue-and-orange on / without either
+   page naming a colour.
+
+   Step 1 of the ladder, not step 2 or 3, and that is the ladder's own law
+   rather than taste: steps 2 and 3 take KEY type only, and this band carries a
+   lede and card summaries at --text-secondary and --text-muted. Step 1 is the
+   only step licensed for them (muted 5.79–6.84 across the stocks). The colour
+   that step 1 gives up is paid back by the loud rules below, which is also how
+   a press does it — saturation goes in the rules, not under the type. */
+.theme-vibrant .theme-sand {
+  --bg: var(--tint-b-1);
+  --bg-raised: var(--tint-b-2);
+  --bg-card: var(--stock-base);
+  --bg-hover: var(--tint-a-1);
+
+  --text-primary: var(--riso-key);
+  --text-secondary: var(--overprint);
+  --text-muted: color-mix(in srgb, var(--riso-key) 76%, var(--stock-base));
+  --text-faint: color-mix(in srgb, var(--riso-key) 76%, var(--stock-base));
+
+  --border-subtle: color-mix(in srgb, var(--riso-key) 22%, var(--stock-base));
+  --border-default: color-mix(in srgb, var(--riso-key) 40%, var(--stock-base));
+  --border-strong: var(--riso-key);
+
+  /* The saturated pass the ladder won't allow under type: full-strength loud
+     ink as a rule on both edges, so the band is unmistakably a second colour
+     without a single character sitting on it. */
+  border-block: calc(var(--bdw) * 3) solid var(--ink-loud);
+}
+
+/* --text-faint is raised to --text-muted's value on the band above rather than
+   kept as its own lighter step. On a tint the faint ratio is a per-plate
+   decision with a number attached (see the ladder note in §3), and it lands
+   under the site's 4.91 floor on drum B over kraft. One role collapsing into
+   another is the correct outcome there: the band keeps four text roles in
+   markup and three in ink, and no type on it is unmeasured. */
 
 /* ── The two registers ──────────────────────────────────────────────────────
    FinLog's page-scoped design language. Two themes rather than a new mechanism,

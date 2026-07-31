@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import RoutePlate from "@/components/RoutePlate";
+import { pairingForPage } from "@/lib/plates";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
@@ -87,55 +89,57 @@ export default async function WritingEntryPage({
   };
 
   return (
-    <>
-      <div className={styles.progress} aria-hidden="true" />
-      <article className="entry inner-section">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]),
-          }}
-        />
+    <RoutePlate drums={pairingForPage(slug)}>
+      <>
+        <div className={styles.progress} aria-hidden="true" />
+        <article className="entry inner-section">
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]),
+            }}
+          />
 
-        <div className="entry-head">
-          <div className="stack stack--s">
-            <Link className={styles.back} href="/writing/">
-              <Icon name="arrow-right" size="sm" className={styles.backArrow} />{" "}
-              Writing
-            </Link>
-            <p className="type-eyebrow-3 text-muted">{entry.kicker}</p>
-            <h1 className="type-display-2 text-primary">{entry.title}</h1>
-            <p className={`${styles.dek} type-headline-3 text-secondary`}>
-              {entry.dek}
+          <div className="entry-head">
+            <div className="stack stack--s">
+              <Link className={styles.back} href="/writing/">
+                <Icon name="arrow-right" size="sm" className={styles.backArrow} />{" "}
+                Writing
+              </Link>
+              <p className="type-eyebrow-3 text-muted">{entry.kicker}</p>
+              <h1 className="type-display-2 text-primary">{entry.title}</h1>
+              <p className={`${styles.dek} type-headline-3 text-secondary`}>
+                {entry.dek}
+              </p>
+            </div>
+
+            <p className={`${styles.dateline} type-body-4`}>
+              <span>{DATE.format(new Date(entry.published))}</span>
+              <span>{entry.readingMinutes} minute read</span>
+              <span>{person.name}</span>
             </p>
           </div>
 
-          <p className={`${styles.dateline} type-body-4`}>
-            <span>{DATE.format(new Date(entry.published))}</span>
-            <span>{entry.readingMinutes} minute read</span>
-            <span>{person.name}</span>
-          </p>
-        </div>
+          {sections.length > 1 ? (
+            <div className="entry-rail">
+              <Toc sections={sections} />
+            </div>
+          ) : null}
 
-        {sections.length > 1 ? (
-          <div className="entry-rail">
-            <Toc sections={sections} />
-          </div>
-        ) : null}
+          <div className="entry-body">
+            <div className={`${styles.body} prose`}>
+              <Content />
+            </div>
 
-        <div className="entry-body">
-          <div className={`${styles.body} prose`}>
-            <Content />
+            <div className={styles.footer}>
+              <Link className={styles.back} href="/writing/">
+                <Icon name="arrow-right" size="sm" className={styles.backArrow} />{" "}
+                All writing
+              </Link>
+            </div>
           </div>
-
-          <div className={styles.footer}>
-            <Link className={styles.back} href="/writing/">
-              <Icon name="arrow-right" size="sm" className={styles.backArrow} />{" "}
-              All writing
-            </Link>
-          </div>
-        </div>
-      </article>
-    </>
+        </article>
+      </>
+    </RoutePlate>
   );
 }

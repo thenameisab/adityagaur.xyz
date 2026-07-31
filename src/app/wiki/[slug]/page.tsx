@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import RoutePlate from "@/components/RoutePlate";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
@@ -71,55 +72,57 @@ export default async function WikiEntryPage({
   };
 
   return (
-    <article className="container container--prose inner-section">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]),
-        }}
-      />
+    <RoutePlate drums={"blue-teal"}>
+      <article className="container container--prose inner-section">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]),
+          }}
+        />
 
-      <div className="stack stack--s">
-        <Link className={styles.back} href="/wiki/">
-          <Icon name="arrow-right" size="sm" className={styles.backArrow} /> Wiki
-        </Link>
-        <p className="type-eyebrow-3 text-muted">{entry.kicker}</p>
-        <h1 className="type-display-2 text-primary">{entry.title}</h1>
-        <p className={`${styles.lede} type-body-1 text-secondary`}>{entry.summary}</p>
-      </div>
-
-      <div className={`${styles.body} prose`}>
-        {entry.sections.map((section, i) => (
-          <section key={i}>
-            {section.heading ? <h2>{section.heading}</h2> : null}
-            {section.body?.map((p, j) => (
-              <p key={j}>{p}</p>
-            ))}
-            {section.list ? (
-              <ul>
-                {section.list.map((item, j) => (
-                  <li key={j}>{item}</li>
-                ))}
-              </ul>
-            ) : null}
-          </section>
-        ))}
-      </div>
-
-      {related.length > 0 ? (
-        <div className={styles.related}>
-          <p className="type-eyebrow-3 text-muted">Related</p>
-          <ul className={`${styles.pills} cluster`}>
-            {related.map((r) => (
-              <li key={r.slug}>
-                <Link href={`/wiki/${r.slug}/`} className={`${styles.pill} type-body-3`}>
-                  {r.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        <div className="stack stack--s">
+          <Link className={styles.back} href="/wiki/">
+            <Icon name="arrow-right" size="sm" className={styles.backArrow} /> Wiki
+          </Link>
+          <p className="type-eyebrow-3 text-muted">{entry.kicker}</p>
+          <h1 className="type-display-2 text-primary">{entry.title}</h1>
+          <p className={`${styles.lede} type-body-1 text-secondary`}>{entry.summary}</p>
         </div>
-      ) : null}
-    </article>
+
+        <div className={`${styles.body} prose`}>
+          {entry.sections.map((section, i) => (
+            <section key={i}>
+              {section.heading ? <h2>{section.heading}</h2> : null}
+              {section.body?.map((p, j) => (
+                <p key={j}>{p}</p>
+              ))}
+              {section.list ? (
+                <ul>
+                  {section.list.map((item, j) => (
+                    <li key={j}>{item}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </section>
+          ))}
+        </div>
+
+        {related.length > 0 ? (
+          <div className={styles.related}>
+            <p className="type-eyebrow-3 text-muted">Related</p>
+            <ul className={`${styles.pills} cluster`}>
+              {related.map((r) => (
+                <li key={r.slug}>
+                  <Link href={`/wiki/${r.slug}/`} className={`${styles.pill} type-body-3`}>
+                    {r.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </article>
+    </RoutePlate>
   );
 }

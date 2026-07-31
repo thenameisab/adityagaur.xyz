@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import RoutePlate from "@/components/RoutePlate";
 import CopyEmail from "@/components/CopyEmail";
 import Hero from "@/components/Hero";
 import Icon from "@/components/Icon";
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
  */
 export default function About() {
   return (
-    <>
+    <RoutePlate drums="green-teal">
       <Hero
         variant="page"
         eyebrow="About"
@@ -73,6 +74,6 @@ export default function About() {
           </div>
         </div>
       </section>
-    </>
+    </RoutePlate>
   );
 }

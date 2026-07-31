@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import RoutePlate from "@/components/RoutePlate";
 import Hero from "@/components/Hero";
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function Colophon() {
   return (
-    <>
+    <RoutePlate drums="yellow-purple">
       <Hero variant="page" eyebrow="Colophon" headline="How this is built" />
       <div className="container inner-section">
         <div className="prose">
@@ -90,6 +91,6 @@ export default function Colophon() {
           </p>
         </div>
       </div>
-    </>
+    </RoutePlate>
   );
 }

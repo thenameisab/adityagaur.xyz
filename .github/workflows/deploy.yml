@@ -20,6 +20,13 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      # The measured checks, before the build rather than after it. Both are
+      # pure functions over committed values with no browser and no network, so
+      # they run in about a second and fail the deploy instead of shipping a
+      # plate whose type is under the contrast floor.
+      - run: npm run verify
+
       - run: npm run build
 
       - name: Deploy to Cloudflare Pages
