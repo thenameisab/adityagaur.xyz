@@ -1,4 +1,5 @@
 import Link from "next/link";
+import RoutePlate from "@/components/RoutePlate";
 import Hero from "@/components/Hero";
 import Icon from "@/components/Icon";
 import Card from "@/components/Card";
@@ -31,7 +32,7 @@ export default function Home() {
     .sort((a, b) => FEATURED_WIKI.indexOf(a.slug) - FEATURED_WIKI.indexOf(b.slug));
 
   return (
-    <>
+    <RoutePlate drums="blue-orange">
       <Hero
         headline={person.tagline}
         lede={person.summary}
@@ -69,6 +70,6 @@ export default function Home() {
           </p>
         </div>
       </section>
-    </>
+    </RoutePlate>
   );
 }

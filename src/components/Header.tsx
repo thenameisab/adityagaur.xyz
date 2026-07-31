@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { person } from "@/lib/site";
 import HeaderNav from "./HeaderNav";
+import ThemeToggle from "./ThemeToggle";
 import styles from "./Header.module.css";
 
 /**
@@ -21,7 +22,15 @@ export default function Header() {
         <Link href="/" className={styles.wordmark}>
           {person.name}
         </Link>
-        <HeaderNav />
+        {/* Grouped so `repel` still has exactly two children to push apart. The
+            toggle sits OUTSIDE HeaderNav rather than among the links: below the
+            900px breakpoint the nav collapses into a panel, and a control for
+            how the page looks should not be something you have to open a menu
+            to reach. */}
+        <div className={styles.controls}>
+          <HeaderNav />
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

@@ -65,6 +65,13 @@
   --repel-align: center;
 }
 
+/* Nav and theme toggle, as one end of the repel. */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 .wordmark {
   font-family: var(--ff-display);
   font-size: var(--fz-headline-4);

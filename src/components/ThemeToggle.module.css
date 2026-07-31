@@ -1,0 +1,87 @@
+/* The press switch. Sits in the header beside the nav, so it borrows the nav's
+   quiet weight and only comes forward on hover or focus. */
+
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  color: var(--text-muted);
+  border-radius: var(--bdrs-sm);
+  transition:
+    color var(--dur-instant) var(--ease-out),
+    background-color var(--dur-instant) var(--ease-out);
+}
+
+.root:hover { color: var(--text-primary); }
+
+/* 44×44 hit target without inflating the visible control — the same device
+   CopyEmail uses, for the same reason. */
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+  min-inline-size: var(--tap-min);
+  min-block-size: var(--tap-min);
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.label {
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  letter-spacing: var(--lts-wide);
+  text-transform: uppercase;
+  /* The two labels are different lengths ("Dark" / "Vibrant"), and a control
+     that changes width when pressed shoves the wordmark beside it. Reserve the
+     longer one. `ch` on the mono face is exact rather than approximate. */
+  min-inline-size: 7ch;
+  text-align: end;
+}
+
+.track {
+  position: relative;
+  inline-size: 2rem;
+  block-size: 1rem;
+  border: var(--bd-strong);
+  border-radius: var(--bdrs-full);
+  /* Empty in dark, inked in vibrant — the track itself is the second signal, so
+     state survives without reading the dot's position. */
+  background: transparent;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.dot {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 2px;
+  inline-size: 0.625rem;
+  block-size: 0.625rem;
+  border-radius: var(--bdrs-full);
+  background: var(--text-muted);
+  translate: 0 -50%;
+  transition:
+    inset-inline-start var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.root[aria-checked="true"] .track {
+  background: var(--bg-loud);
+  border-color: var(--border-strong);
+}
+
+.root[aria-checked="true"] .dot {
+  inset-inline-start: calc(100% - 0.625rem - 2px);
+  background: var(--text-on-loud);
+}
+
+/* §9's rule: motion is an enhancement, and the control is complete without it.
+   Under reduced-motion the dot and track change instantly rather than sliding,
+   which loses nothing — the position and the fill are the state, not the
+   travel between them. */
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .dot { transition: none; }
+}

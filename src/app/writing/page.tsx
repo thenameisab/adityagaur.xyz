@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import RoutePlate from "@/components/RoutePlate";
 import Link from "next/link";
 import Hero from "@/components/Hero";
 import Icon from "@/components/Icon";
@@ -23,7 +24,7 @@ export default function WritingIndex() {
   const entries = published(writingEntries);
 
   return (
-    <>
+    <RoutePlate drums="green-orange">
       <Hero
         variant="page"
         eyebrow="Writing"
@@ -54,6 +55,6 @@ export default function WritingIndex() {
           ))}
         </div>
       </div>
-    </>
+    </RoutePlate>
   );
 }
