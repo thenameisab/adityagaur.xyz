@@ -43,6 +43,15 @@ export default function PageFooter() {
             </a>
             <a
               className={`${styles.link} type-body-3`}
+              href="https://x.com/adltyagaur"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Icon name="twitter" size="sm" /> X
+              <Icon name="arrow-up-right" size="sm" />
+            </a>
+            <a
+              className={`${styles.link} type-body-3`}
               href="https://blog.adityagaur.xyz"
               rel="noopener noreferrer"
               target="_blank"

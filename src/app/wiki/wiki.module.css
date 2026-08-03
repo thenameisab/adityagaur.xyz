@@ -30,6 +30,14 @@
 /* Reuse the one signature arrow rather than adding a tenth icon for "left". */
 .backArrow { rotate: 180deg; }
 
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.mark { flex-shrink: 0; }
+
 .lede { max-inline-size: var(--measure-lede); }
 
 .body { margin-block-start: var(--space-10); }

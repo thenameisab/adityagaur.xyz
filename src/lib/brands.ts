@@ -201,6 +201,11 @@ const REGISTRY: BrandEntry[] = [
     note: "No Xcode-specific mark; apple.com would read as the wrong product.",
   },
 
+  // ── Named on the personal wiki (real employers/education) ──
+  { name: "Tartan", domain: "tartanhq.com" },
+  { name: "Mindflow", domain: "mindflow.io" },
+  { name: "ESSEC", domain: "essec.edu", aliases: ["essec business school"] },
+
   // ── Named in `meta.stack` ──
   { name: "Next.js", domain: "nextjs.org", aliases: ["nextjs", "next"] },
   { name: "React", domain: "react.dev" },

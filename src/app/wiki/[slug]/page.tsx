@@ -3,6 +3,7 @@ import RoutePlate from "@/components/RoutePlate";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
+import { BrandMark } from "@/components/Brand";
 import { wikiEntries, getEntry } from "@/lib/wiki";
 import { SITE_URL, person } from "@/lib/site";
 import styles from "../wiki.module.css";
@@ -86,7 +87,10 @@ export default async function WikiEntryPage({
             <Icon name="arrow-right" size="sm" className={styles.backArrow} /> Wiki
           </Link>
           <p className="type-eyebrow-3 text-muted">{entry.kicker}</p>
-          <h1 className="type-display-2 text-primary">{entry.title}</h1>
+          <h1 className={`${styles.title} type-display-2 text-primary`}>
+            {entry.brand ? <BrandMark name={entry.brand} size={32} className={styles.mark} /> : null}
+            {entry.title}
+          </h1>
           <p className={`${styles.lede} type-body-1 text-secondary`}>{entry.summary}</p>
         </div>
 

@@ -20,6 +20,8 @@ export type WikiEntry = {
   summary: string; // first-person one-liner (used in cards, meta description, JSON-LD)
   sections: WikiSection[];
   related?: string[];
+  /** Name in the brand registry (src/lib/brands.ts), for entries about a real employer/school. */
+  brand?: string;
 };
 
 export const wikiEntries: WikiEntry[] = [
@@ -66,6 +68,7 @@ export const wikiEntries: WikiEntry[] = [
       },
     ],
     related: ["chief-of-staff", "building-with-ai"],
+    brand: "Tartan",
   },
   {
     slug: "mindflow",
@@ -83,6 +86,7 @@ export const wikiEntries: WikiEntry[] = [
       },
     ],
     related: ["chief-of-staff", "essec"],
+    brand: "Mindflow",
   },
   {
     slug: "essec",
@@ -100,6 +104,7 @@ export const wikiEntries: WikiEntry[] = [
       },
     ],
     related: ["mindflow", "investing"],
+    brand: "ESSEC",
   },
   {
     slug: "building-with-ai",

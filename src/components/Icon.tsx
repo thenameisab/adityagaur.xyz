@@ -1,6 +1,6 @@
 import styles from "./Icon.module.css";
 
-// The complete permitted set. Adding a tenth requires justification (BUILD-BRIEF §6.9).
+// The complete permitted set (BUILD-BRIEF §6.9).
 export type IconName =
   | "arrow-right"
   | "arrow-up-right"
@@ -10,7 +10,8 @@ export type IconName =
   | "copy"
   | "check"
   | "mail"
-  | "linkedin";
+  | "linkedin"
+  | "twitter";
 
 type Props = {
   name: IconName;

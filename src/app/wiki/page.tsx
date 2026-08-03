@@ -31,7 +31,12 @@ export default function WikiIndex() {
               <div className={styles.grid} data-reveal-stagger>
                 {entries.map((entry, i) => (
                   <div key={entry.slug} style={{ ["--i" as string]: Math.min(i, 5) }}>
-                    <Card href={`/wiki/${entry.slug}/`} title={entry.title} summary={entry.summary} />
+                    <Card
+                      href={`/wiki/${entry.slug}/`}
+                      title={entry.title}
+                      summary={entry.summary}
+                      brand={entry.brand}
+                    />
                   </div>
                 ))}
               </div>
