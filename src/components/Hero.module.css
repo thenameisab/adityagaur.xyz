@@ -1,4 +1,5 @@
 .root {
+  position: relative;
   display: flex;
   /* Bottom-aligned, not centered. */
   align-items: flex-end;
@@ -8,7 +9,14 @@
    Spacing elsewhere never uses viewport units. */
 .home {
   min-block-size: min(88dvh, 900px);
+  /* Pulled under the transparent header so the atmosphere runs edge to edge —
+     under dark this cancels the body band above the section, under Vibrant it
+     cancels the plate wrapper's own header padding (globals.css §3.1). The
+     hero's top padding already reserves the header's height either way. */
+  margin-block-start: calc(-1 * var(--header-h));
   padding-block: calc(var(--header-h) + var(--space-fluid-md)) var(--space-fluid-lg);
+  /* Blades overshoot the section on purpose; nothing may bleed into the page. */
+  overflow: clip;
 }
 
 .page {
@@ -20,6 +28,250 @@
   inline-size: 100%;
 }
 
+.home .content {
+  position: relative;
+  z-index: var(--z-raised);
+}
+
 .home .content > h1 { max-inline-size: 16ch; }
 
 .lede { max-inline-size: var(--measure-lede); }
+
+/* ─────────────────────────────────────────────── The flute atmosphere ──
+   The home hero's one deliberate departure from the site's restraint. The
+   vocabulary is borrowed from Razorpay's RazorSense: diagonal blades cut at
+   the slash angle of their glyph, ice-white light over blue, glass where the
+   hero touches something interactive. Everything below is scoped to .home and
+   never leaks into page heroes or any other section.
+
+   Both themes share one geometry and re-ink it. Under dark the blades are
+   LIGHT — screen-blended so overlaps add up to glow. Under Vibrant the same
+   blades multiply into the sheet like a third ink pass, which is how a glass
+   design language and a riso print system stop arguing: light on ink, ink on
+   stock. */
+
+/* Dark: the hero owns a cool blue-black that dissolves into the site's warm
+   ink by the fold, so the next section needs no seam. */
+:global(.theme-dark) .home {
+  background:
+    radial-gradient(110rem 70rem at 80% -32%, rgb(70 122 255 / 15%), transparent 62%),
+    radial-gradient(64rem 44rem at 8% 112%, rgb(96 152 255 / 7%), transparent 62%),
+    linear-gradient(180deg, #0a0e19 0%, #0c0e14 55%, var(--ink-950) 100%);
+}
+
+/* Light type over the glow zone gets a cold halo instead of more weight. */
+:global(.theme-dark) .home h1 {
+  text-shadow: 0 0 72px rgb(126 176 255 / 28%);
+}
+
+/* Vibrant: RazorSense's own hero wash — ice white into soft blue — printed
+   over the house plate's cream and gone before the sheet resumes. */
+:global(.theme-vibrant) .home {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(248 252 255 / 90%) 0%,
+      rgb(220 245 248 / 55%) 32%,
+      rgb(178 214 255 / 42%) 62%,
+      rgb(178 214 255 / 0%) 100%
+    );
+}
+
+.flutes {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-base);
+  overflow: clip;
+  pointer-events: none;
+  /* Pointer parallax, written by HeroFlutes.tsx. Static without JS. */
+  --px: 0;
+  --py: 0;
+  /* The whole layer dissolves before the section's bottom edge — the blades
+     never touch the seam the background gradient is busy hiding. */
+  mask-image: linear-gradient(180deg, #000 70%, transparent 98%);
+
+  --flute-hi: rgb(238 246 255 / 88%);
+  --flute-mid: rgb(140 186 255 / 46%);
+  --flute-lo: rgb(64 118 230 / 10%);
+  --flute-sheen: rgb(255 255 255 / 85%);
+  --flute-blend: screen;
+  --orb-c: rgb(96 148 255 / 20%);
+  --orb-blend: screen;
+}
+
+:global(.theme-vibrant) .flutes {
+  --flute-hi: rgb(126 192 235 / 52%);
+  --flute-mid: rgb(0 120 191 / 30%);
+  --flute-lo: rgb(0 120 191 / 7%);
+  --flute-sheen: rgb(222 240 255 / 90%);
+  --flute-blend: multiply;
+  --orb-c: rgb(255 255 255 / 60%);
+  --orb-blend: normal;
+}
+
+/* One soft mass of light drifting behind the fan. */
+.orb {
+  position: absolute;
+  inline-size: clamp(24rem, 46vw, 44rem);
+  aspect-ratio: 1;
+  inset-block-start: -18%;
+  inset-inline-end: -6%;
+  border-radius: var(--bdrs-full);
+  background: radial-gradient(closest-side, var(--orb-c), transparent 72%);
+  mix-blend-mode: var(--orb-blend);
+  translate: calc(var(--px) * -18px) calc(var(--py) * -12px);
+}
+
+/* The blade. A tall pill rotated to the slash angle; its gradient runs along
+   its own axis, bright at the upper third, gone before either end. `rotate`
+   holds the angle, `translate` carries parallax, and keyframes own
+   `transform` — three channels, no clobbering. */
+.blade {
+  position: absolute;
+  inset-block: -22%;
+  border-radius: var(--bdrs-full);
+  rotate: -24deg;
+  background: linear-gradient(
+    180deg,
+    transparent 4%,
+    var(--flute-hi) 30%,
+    var(--flute-mid) 54%,
+    var(--flute-lo) 78%,
+    transparent 96%
+  );
+  mix-blend-mode: var(--flute-blend);
+  opacity: var(--o, 1);
+}
+
+/* The fan. Depth is legible three ways at once: blur, opacity, and parallax
+   amplitude all increase toward the viewer. */
+.b1 {
+  inset-inline-start: 36%;
+  inline-size: clamp(40px, 5vw, 72px);
+  filter: blur(26px);
+  --o: 0.38;
+  translate: calc(var(--px) * -8px) calc(var(--py) * -5px);
+}
+
+.b2 {
+  inset-inline-start: 54%;
+  inline-size: clamp(36px, 4.5vw, 64px);
+  filter: blur(13px);
+  --o: 0.6;
+  translate: calc(var(--px) * 12px) calc(var(--py) * 7px);
+}
+
+.b3 {
+  inset-inline-start: 63%;
+  inline-size: clamp(26px, 3.2vw, 46px);
+  filter: blur(3px);
+  --o: 0.95;
+  translate: calc(var(--px) * 24px) calc(var(--py) * 14px);
+}
+
+.b4 {
+  inset-inline-start: 74%;
+  inline-size: clamp(64px, 8vw, 120px);
+  filter: blur(38px);
+  --o: 0.35;
+  translate: calc(var(--px) * -14px) calc(var(--py) * -9px);
+}
+
+.b5 {
+  inset-inline-start: 86%;
+  inline-size: clamp(14px, 1.8vw, 24px);
+  filter: blur(7px);
+  --o: 0.55;
+  translate: calc(var(--px) * 18px) calc(var(--py) * 10px);
+}
+
+/* The live blade carries a sheen — a short run of light sweeping its length.
+   background-position only: paint, never layout. */
+.live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, transparent 42%, var(--flute-sheen) 50%, transparent 58%);
+  background-size: 100% 320%;
+  background-position: 50% 130%;
+  opacity: 0;
+}
+
+/* On phones the fan loses its two outermost blades and shifts toward center —
+   five blades at 380px is fog, not geometry. */
+@media (max-width: 640px) {
+  .b1 { inset-inline-start: 16%; }
+  .b2 { inset-inline-start: 42%; }
+  .b3 { inset-inline-start: 66%; }
+  .b4,
+  .b5 { display: none; }
+}
+
+/* ── Motion. Everything above renders complete and static; motion only adds
+   breath. Periods are coprime-ish (9/11/13/17/19s) so the fan never visibly
+   loops in phase. */
+@media (prefers-reduced-motion: no-preference) {
+  .flutes {
+    animation: flutes-in 1600ms var(--ease-out) both;
+  }
+
+  .b1 { animation: flute-breath 17s var(--ease-in-out) -3s infinite alternate; }
+  .b2 { animation: flute-breath 13s var(--ease-in-out) -7s infinite alternate; }
+  .b3 { animation: flute-breath 11s var(--ease-in-out) -2s infinite alternate; }
+  .b4 { animation: flute-breath 19s var(--ease-in-out) -11s infinite alternate; }
+  .b5 { animation: flute-breath 9s var(--ease-in-out) -5s infinite alternate; }
+
+  .orb { animation: orb-drift 23s var(--ease-in-out) -9s infinite alternate; }
+
+  /* The sweep travels along the blade's own axis — translateY inside a rotated
+     frame is axial, which is the trick. Long dead time between passes: a
+     glint, not a beacon. */
+  .live::after {
+    animation: flute-sheen 7s var(--ease-in-out) 2s infinite;
+  }
+
+  .word {
+    display: inline-block;
+    animation: word-in 900ms var(--ease-out) both;
+    animation-delay: calc(var(--stagger-step) + var(--wi, 0) * 70ms);
+  }
+}
+
+@keyframes flutes-in {
+  from { opacity: 0; }
+}
+
+@keyframes flute-breath {
+  from { transform: translateY(-1.2%); opacity: calc(var(--o, 1) * 0.72); }
+  to   { transform: translateY(1.2%); opacity: var(--o, 1); }
+}
+
+@keyframes flute-sheen {
+  0%   { opacity: 0; background-position: 50% 130%; }
+  12%  { opacity: 1; }
+  48%  { opacity: 1; }
+  60%  { opacity: 0; background-position: 50% -30%; }
+  100% { opacity: 0; background-position: 50% -30%; }
+}
+
+@keyframes orb-drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-4%, 6%) scale(1.12); }
+}
+
+/* Words rise out of a blur — RazorSense's "alive" register applied to type.
+   Base state (above, unwrapped) is plain inline text: reduced motion and
+   no-JS both read the headline whole. */
+@keyframes word-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

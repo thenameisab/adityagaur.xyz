@@ -1,20 +1,306 @@
+/* The hero's one link is the one glass object on the site — part of the flute
+   atmosphere (Hero.module.css), so it reads as cut from the same material the
+   blades are made of. Everywhere else links stay links; this one is standing
+   in front of moving light, and glass is the honest way to sit on top of that
+   without blocking it. */
 .heroLink,
 .moreLink {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   color: var(--text-primary);
-  text-decoration: underline;
-  text-decoration-color: var(--accent-dim);
-  text-decoration-thickness: var(--bdw);
-  text-underline-offset: 0.2em;
-  transition: text-decoration-color var(--dur-instant) var(--ease-out);
+  text-decoration: none;
+  border-radius: var(--bdrs-full);
+  border: var(--bdw) solid rgb(190 220 255 / 26%);
+  background: linear-gradient(120deg, rgb(190 220 255 / 12%), rgb(190 220 255 / 4%));
+  backdrop-filter: blur(10px) saturate(1.4);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
 }
 
-.heroLink { font-size: var(--fz-ui-1); }
-.moreLink { font-size: var(--fz-ui-2); }
+.heroLink {
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--fz-ui-1);
+}
+
+.moreLink {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--fz-ui-2);
+}
 
 .heroLink:hover,
-.moreLink:hover { text-decoration-color: var(--accent); }
+.moreLink:hover {
+  border-color: rgb(190 220 255 / 55%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 18%),
+    0 0 28px rgb(96 148 255 / 28%);
+}
 
-.cardGrid { --grid-min: 17rem; }
+.heroLink svg,
+.moreLink svg {
+  transition: translate var(--dur-fast) var(--ease-out);
+}
+
+.heroLink:hover svg,
+.moreLink:hover svg {
+  translate: 2px 0;
+}
+
+/* On the Vibrant sheet the same pills are glass over print: white body, the
+   house plate's blue drum for their edge. */
+:global(.theme-vibrant) .heroLink,
+:global(.theme-vibrant) .moreLink {
+  border-color: rgb(0 120 191 / 32%);
+  background: linear-gradient(120deg, rgb(255 255 255 / 55%), rgb(255 255 255 / 30%));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 60%);
+}
+
+:global(.theme-vibrant) .heroLink:hover,
+:global(.theme-vibrant) .moreLink:hover {
+  border-color: rgb(0 120 191 / 60%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 70%),
+    0 0 28px rgb(0 120 191 / 18%);
+}
+
+/* ─────────────────────────────────────────────── The map section ──
+   Continues the hero's world instead of switching to a sand sheet: an aurora
+   field breathing behind glass cards. Under dark the section re-inks its
+   accent from ember to ice blue so arrows, focus rings and ::selection match
+   the material; under Vibrant it stays on the plate's stock and the glass
+   frosts over the print. */
+.mapSection {
+  position: relative;
+  overflow: clip;
+}
+
+:global(.theme-dark) .mapSection {
+  /* A cool dip in the middle of the section, returning to the body's warm ink
+     at both edges so neither the hero above nor the footer below needs a
+     seam. */
+  background: linear-gradient(
+    180deg,
+    var(--ink-950) 0%,
+    #0c0e14 30%,
+    #0b0e16 70%,
+    var(--ink-950) 100%
+  );
+  /* Cooled to match the material — the site's warm ink ramp reads brown on
+     blue glass. Measured against the WORST case, which is a hovered card with
+     the spotlight pool at its centre (the brightest ground any text on this
+     section ever sits on): muted 6.26:1, and 8.81:1 on a resting card. The
+     first pass used #a8b0bf and came in at 4.94:1 — over the site's 4.91
+     floor by 0.03, i.e. the same "barely, on the smallest type" margin §3.1
+     already rejected once for the halftone screen. */
+  --text-secondary: #ccd3df;
+  --text-muted: #b4bccb;
+  --accent: #7db1ff;
+  --accent-hover: #a5cdff;
+  --accent-dim: rgb(125 177 255 / 30%);
+  --focus-ring: #7db1ff;
+}
+
+:global(.theme-vibrant) .mapSection {
+  --accent: var(--riso-blue);
+  --accent-hover: #3d9fd6;
+  --accent-dim: rgb(0 120 191 / 26%);
+  --focus-ring: var(--riso-blue);
+}
+
+.mapSection > :global(.container) {
+  position: relative;
+  z-index: var(--z-raised);
+}
+
+/* ── The aurora field. Three soft masses of light on slow, offset breaths —
+   the pulse is opacity and scale only, never layout. */
+.aurora {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-base);
+  pointer-events: none;
+  --aurora-blend: screen;
+  --aurora-a: rgb(70 122 255 / 15%);
+  --aurora-b: rgb(156 200 255 / 10%);
+  --aurora-c: rgb(43 63 143 / 18%);
+}
+
+:global(.theme-vibrant) .aurora {
+  --aurora-blend: multiply;
+  --aurora-a: rgb(178 214 255 / 55%);
+  --aurora-b: rgb(220 245 248 / 60%);
+  --aurora-c: rgb(0 120 191 / 10%);
+}
+
+.aurora > span {
+  position: absolute;
+  border-radius: var(--bdrs-full);
+  mix-blend-mode: var(--aurora-blend);
+  filter: blur(60px);
+}
+
+.aurora > span:nth-child(1) {
+  inline-size: clamp(28rem, 52vw, 52rem);
+  aspect-ratio: 1.4;
+  inset-block-start: -12%;
+  inset-inline-end: -10%;
+  background: radial-gradient(closest-side, var(--aurora-a), transparent 72%);
+}
+
+.aurora > span:nth-child(2) {
+  inline-size: clamp(22rem, 40vw, 40rem);
+  aspect-ratio: 1;
+  inset-block-end: -18%;
+  inset-inline-start: -8%;
+  background: radial-gradient(closest-side, var(--aurora-b), transparent 70%);
+}
+
+.aurora > span:nth-child(3) {
+  inline-size: clamp(20rem, 34vw, 34rem);
+  aspect-ratio: 1.2;
+  inset-block-start: 30%;
+  inset-inline-start: 38%;
+  background: radial-gradient(closest-side, var(--aurora-c), transparent 74%);
+}
+
+/* ── Glass cards. Styled from outside — Card.tsx doesn't know it is glass
+   here, which is what keeps every other page's cards untouched. The element
+   selector out-specifies Card's own class regardless of bundle order. */
+/* Same breakpoint and gap as the wiki index's own grid. (The old markup wore
+   a bare `grid` class that no stylesheet defines — the cards have always been
+   a single-column stack by accident. Glass panels want the 2-up.) */
+.cardGrid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 43.75em) {
+  .cardGrid { grid-template-columns: 1fr 1fr; }
+}
+
+.cardGrid article {
+  position: relative;
+  overflow: clip;
+  border: var(--bdw) solid rgb(190 220 255 / 16%);
+  border-radius: var(--bdrs-lg);
+  background: linear-gradient(135deg, rgb(190 220 255 / 8%), rgb(190 220 255 / 3%));
+  backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    translate var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+.cardGrid article:hover,
+.cardGrid article:focus-within {
+  border-color: rgb(190 220 255 / 42%);
+  background: linear-gradient(135deg, rgb(190 220 255 / 13%), rgb(190 220 255 / 5%));
+  translate: 0 -3px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 12%),
+    0 12px 40px rgb(5 10 30 / 40%),
+    0 0 24px rgb(96 148 255 / 14%);
+}
+
+/* The spotlight: a pool of light inside the glass that follows the cursor.
+   Coordinates come from Spotlight.tsx as --mx/--my; visibility is pure
+   :hover, so without JS (or on touch) it simply never appears. */
+.cardGrid article::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* 10%, not 14%: the pool lands under body copy, so its peak is a contrast
+     input rather than a free flourish. See the ratios above. */
+  background: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(160 200 255 / 10%),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.cardGrid article:hover::before {
+  opacity: 1;
+}
+
+:global(.theme-vibrant) .cardGrid article {
+  border-color: rgb(0 120 191 / 24%);
+  background: linear-gradient(135deg, rgb(255 255 255 / 55%), rgb(255 255 255 / 32%));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 60%);
+}
+
+:global(.theme-vibrant) .cardGrid article:hover,
+:global(.theme-vibrant) .cardGrid article:focus-within {
+  border-color: rgb(0 120 191 / 50%);
+  background: linear-gradient(135deg, rgb(255 255 255 / 70%), rgb(255 255 255 / 45%));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 70%),
+    0 12px 32px rgb(0 60 100 / 12%),
+    0 0 24px rgb(0 120 191 / 12%);
+}
+
+:global(.theme-vibrant) .cardGrid article::before {
+  background: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(0 120 191 / 10%),
+    transparent 65%
+  );
+}
+
+/* ── The eyebrow chip. "Start here" becomes a glass chip with a breathing
+   dot — RazorSense's living pulse, one word wide. Scoped to this section;
+   every other eyebrow on the site stays plain type. */
+.mapSection :global(.type-eyebrow-3) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  inline-size: fit-content;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--bdrs-full);
+  border: var(--bdw) solid rgb(190 220 255 / 22%);
+  background: linear-gradient(120deg, rgb(190 220 255 / 10%), rgb(190 220 255 / 3%));
+  backdrop-filter: blur(8px);
+}
+
+.mapSection :global(.type-eyebrow-3)::before {
+  content: "";
+  inline-size: 6px;
+  aspect-ratio: 1;
+  border-radius: var(--bdrs-full);
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+:global(.theme-vibrant) .mapSection :global(.type-eyebrow-3) {
+  border-color: rgb(0 120 191 / 30%);
+  background: linear-gradient(120deg, rgb(255 255 255 / 55%), rgb(255 255 255 / 30%));
+}
+
+/* ── Motion. Everything above is complete and static; the pulses only
+   breathe. Periods offset so the three masses never sync. */
+@media (prefers-reduced-motion: no-preference) {
+  .aurora > span:nth-child(1) { animation: aurora-pulse 13s var(--ease-in-out) -4s infinite alternate; }
+  .aurora > span:nth-child(2) { animation: aurora-pulse 17s var(--ease-in-out) -9s infinite alternate; }
+  .aurora > span:nth-child(3) { animation: aurora-pulse 21s var(--ease-in-out) -2s infinite alternate; }
+
+  .mapSection :global(.type-eyebrow-3)::before {
+    animation: pulse-dot 2400ms var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes aurora-pulse {
+  from { opacity: 0.55; transform: scale(0.96) translate(0, 0); }
+  to   { opacity: 1; transform: scale(1.12) translate(-2%, 3%); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--accent); }
+  50%      { opacity: 0.45; box-shadow: 0 0 2px var(--accent); }
+}
