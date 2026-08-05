@@ -11,7 +11,9 @@ export type IconName =
   | "check"
   | "mail"
   | "linkedin"
-  | "twitter";
+  | "twitter"
+  | "moon"
+  | "sun";
 
 type Props = {
   name: IconName;
