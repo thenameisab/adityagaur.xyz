@@ -54,14 +54,28 @@
    ink by the fold, so the next section needs no seam. */
 :global(.theme-dark) .home {
   background:
-    radial-gradient(110rem 70rem at 80% -32%, rgb(70 122 255 / 15%), transparent 62%),
-    radial-gradient(64rem 44rem at 8% 112%, rgb(96 152 255 / 7%), transparent 62%),
-    linear-gradient(180deg, #0a0e19 0%, #0c0e14 55%, var(--ink-950) 100%);
+    /* THE SEAM GUARD, and it has to be the topmost layer. The glows below are
+       centred outside the box, so `overflow: clip` cuts them mid-intensity and
+       the cut reads as a hard rule across the fold. This layer lands the last
+       fifth of the hero on the body's own ink no matter how bright the glow
+       under it is, which is what makes the handoff to the next section
+       invisible. Raising a glow's alpha without checking this line is how the
+       seam comes back. */
+    linear-gradient(180deg, transparent 76%, var(--ink-950) 100%),
+    radial-gradient(110rem 70rem at 80% -32%,
+      color-mix(in srgb, var(--azure-600) 34%, transparent), transparent 64%),
+    radial-gradient(64rem 44rem at 8% 112%,
+      color-mix(in srgb, var(--azure-500) 20%, transparent), transparent 64%),
+    linear-gradient(180deg,
+      var(--azure-900) 0%,
+      var(--azure-950) 48%,
+      color-mix(in srgb, var(--azure-950) 55%, var(--ink-950)) 78%,
+      var(--ink-950) 100%);
 }
 
 /* Light type over the glow zone gets a cold halo instead of more weight. */
 :global(.theme-dark) .home h1 {
-  text-shadow: 0 0 72px rgb(126 176 255 / 28%);
+  text-shadow: 0 0 72px color-mix(in srgb, var(--azure-400) 42%, transparent);
 }
 
 /* Vibrant: RazorSense's own hero wash — ice white into soft blue — printed
@@ -70,10 +84,11 @@
   background:
     linear-gradient(
       180deg,
-      rgb(248 252 255 / 90%) 0%,
-      rgb(220 245 248 / 55%) 32%,
-      rgb(178 214 255 / 42%) 62%,
-      rgb(178 214 255 / 0%) 100%
+      color-mix(in srgb, var(--ice-050) 92%, transparent) 0%,
+      color-mix(in srgb, var(--ice-200) 78%, transparent) 30%,
+      color-mix(in srgb, var(--azure-400) 52%, transparent) 60%,
+      color-mix(in srgb, var(--azure-400) 20%, transparent) 84%,
+      transparent 100%
     );
 }
 
@@ -86,26 +101,47 @@
   /* Pointer parallax, written by HeroFlutes.tsx. Static without JS. */
   --px: 0;
   --py: 0;
-  /* The whole layer dissolves before the section's bottom edge — the blades
-     never touch the seam the background gradient is busy hiding. */
-  mask-image: linear-gradient(180deg, #000 70%, transparent 98%);
+  /* TWO masks, intersected, and the second one is a legibility device rather
+     than a flourish.
 
-  --flute-hi: rgb(238 246 255 / 88%);
-  --flute-mid: rgb(140 186 255 / 46%);
-  --flute-lo: rgb(64 118 230 / 10%);
-  --flute-sheen: rgb(255 255 255 / 85%);
+     1. The vertical fade dissolves the layer before the section's bottom edge,
+        so blades never touch the seam the background gradient is hiding.
+     2. The diagonal fade empties the BOTTOM-LEFT, which is exactly where the
+        content lockup sits (this hero is bottom- and left-aligned). Blades run
+        top-left to bottom-right at -24deg, so without this they sweep straight
+        through the lede — harmless while they were pale, a real contrast
+        problem now that they are saturated. Worst case is narrow viewports,
+        where the fan shifts inward and the copy reflows taller: at 375px the
+        bright blade crossed the last two lines of the lede before this.
+
+     The blades stay vivid where nothing is set over them (upper area, right
+     third), which is where they were doing the work anyway. */
+  mask-image:
+    linear-gradient(180deg, #000 70%, transparent 98%),
+    linear-gradient(48deg, transparent 14%, #000 60%);
+  mask-composite: intersect;
+
+  /* A blade is ice at its bright end and saturated azure through its body —
+     the gradient is a hue journey, not just a fade, which is what keeps it
+     from reading as a grey streak. */
+  --flute-hi: color-mix(in srgb, var(--ice-050) 92%, transparent);
+  --flute-mid: color-mix(in srgb, var(--azure-500) 72%, transparent);
+  --flute-lo: color-mix(in srgb, var(--azure-600) 26%, transparent);
+  --flute-sheen: var(--ice-050);
   --flute-blend: screen;
-  --orb-c: rgb(96 148 255 / 20%);
+  --orb-c: color-mix(in srgb, var(--azure-500) 34%, transparent);
   --orb-blend: screen;
 }
 
 :global(.theme-vibrant) .flutes {
-  --flute-hi: rgb(126 192 235 / 52%);
-  --flute-mid: rgb(0 120 191 / 30%);
-  --flute-lo: rgb(0 120 191 / 7%);
-  --flute-sheen: rgb(222 240 255 / 90%);
+  /* Multiplying INTO the sheet, so these are the ink's own values at plate
+     coverage rather than lightened versions of them. */
+  --flute-hi: color-mix(in srgb, var(--azure-400) 62%, transparent);
+  --flute-mid: color-mix(in srgb, var(--riso-blue) 52%, transparent);
+  --flute-lo: color-mix(in srgb, var(--riso-blue) 16%, transparent);
+  --flute-sheen: color-mix(in srgb, var(--ice-050) 92%, transparent);
   --flute-blend: multiply;
-  --orb-c: rgb(255 255 255 / 60%);
+  --orb-c: color-mix(in srgb, var(--ice-050) 72%, transparent);
   --orb-blend: normal;
 }
 
