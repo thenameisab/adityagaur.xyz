@@ -29,16 +29,13 @@
   block-size: 100%;
 }
 
-.label {
-  font-family: var(--ff-mono);
-  font-size: var(--fz-body-4);
-  letter-spacing: var(--lts-wide);
-  text-transform: uppercase;
-  /* The two labels are different lengths ("Dark" / "Vibrant"), and a control
-     that changes width when pressed shoves the wordmark beside it. Reserve the
-     longer one. `ch` on the mono face is exact rather than approximate. */
-  min-inline-size: 7ch;
-  text-align: end;
+/* The face. This replaced a text label, and doing so retired a hack worth
+   noting: the two words were different lengths ("Dark" / "Vibrant"), so the
+   label had to reserve 7ch or the control changed width when pressed and shoved
+   the wordmark beside it. Two icons on one 24×24 grid are the same width by
+   construction, so the reservation is gone rather than converted. */
+.face {
+  flex: none;
 }
 
 .track {

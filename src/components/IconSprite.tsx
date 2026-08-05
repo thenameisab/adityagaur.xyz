@@ -12,7 +12,8 @@
  *   stroke), drawn to sit on the text baseline and to match Instrument Serif's
  *   stem weight at 1em. It is a glyph, not a UI control.
  *
- * Ten icons.
+ * Twelve icons. The last two — sun and moon — are a pair, added when the theme
+ * switch replaced its text label with a face; see the note above them.
  */
 
 // System B — the signature arrow.
@@ -101,6 +102,44 @@ export default function IconSprite() {
         >
           <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
           <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+        </symbol>
+
+        {/* The two theme faces. They exist as a PAIR and are only ever used by
+            ThemeToggle: the switch dropped its text label, so the difference
+            between these two silhouettes is now what carries the mode without
+            relying on colour (globals.css §3). Drawn to differ in outline and
+            not merely in detail — a filled disc with rays against a crescent —
+            because at 16px a subtle distinction is no distinction. */}
+        <symbol
+          id="icon-moon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+        </symbol>
+
+        <symbol
+          id="icon-sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="m4.93 19.07 1.41-1.41" />
+          <path d="m17.66 6.34 1.41-1.41" />
         </symbol>
 
         <symbol

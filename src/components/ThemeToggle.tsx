@@ -8,6 +8,7 @@ import {
   THEME_LABEL,
   type ThemeName,
 } from "@/lib/theme";
+import Icon from "./Icon";
 import styles from "./ThemeToggle.module.css";
 
 /**
@@ -33,9 +34,18 @@ import styles from "./ThemeToggle.module.css";
  * server rendered the default; getSnapshot reads the class that is actually on
  * the element. No effect, no hydration mismatch, no second render.
  *
- * The dot is aria-hidden and the label is real text. Colour is never the only
- * carrier of state on this site (globals.css §3), and a switch whose only tell
- * is which side a dot sits on would break that rule in the site chrome.
+ * WHAT CARRIES THE STATE, now that the text label is gone. Colour is never the
+ * only carrier on this site (globals.css §3), so removing "DARK" / "VIBRANT"
+ * had to leave more than a coloured dot behind. Three non-colour signals
+ * remain, and the first is new: the FACE CHANGES SHAPE — a crescent for dark,
+ * a rayed disc for vibrant — which is a silhouette difference, not a hue one,
+ * so it survives greyscale and colour-vision deficiency exactly as the words
+ * did. The dot's side and the track's fill are the other two.
+ *
+ * The accessible name is unaffected: it was always the aria-label, never the
+ * visible text, so a screen reader still hears "Vibrant, switch, on". The icon
+ * is decorative by construction (no `title`), because aria-checked is already
+ * saying what the shape is saying.
  */
 
 /** Theme changes originate here and nowhere else, so the store is one event on
@@ -96,9 +106,7 @@ export default function ThemeToggle() {
       aria-label={THEME_LABEL.vibrant}
       title={on ? "Switch to Dark" : "Switch to Vibrant"}
     >
-      <span className={styles.label} aria-hidden="true">
-        {THEME_LABEL[theme]}
-      </span>
+      <Icon name={on ? "sun" : "moon"} size="sm" className={styles.face} />
       <span className={styles.track} aria-hidden="true">
         <span className={styles.dot} />
       </span>

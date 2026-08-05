@@ -107,6 +107,28 @@ ol[class] { list-style: none; }
   --ember-950: #2e170d; /* ember-theme ground — a lighter ground can't reach 15:1
                            against the cream, since even pure white is 15.3:1 */
 
+  /* ── Ice and azure — the home page's atmosphere ─────
+     The ramp above says "deliberately not a tech blue", and this one IS a tech
+     blue. That is not an oversight and it does not repeal the ember rule: ember
+     remains the accent of the SITE, ~3 uses per page, and nothing here is
+     allowed outside the home page's hero and map section, where a borrowed
+     RazorSense atmosphere is the whole point. Two colour languages, one
+     boundary, stated so the next reader doesn't "unify" them.
+
+     Every value below carries real chroma. The first pass at this atmosphere
+     mixed its blues by hand at low alpha and came out navy-grey — the lesson
+     is that a saturated ink at a low coverage reads as GREY, not as a pale
+     version of itself, so these are saturated first and thinned second (via
+     color-mix at the point of use) rather than pre-diluted here. */
+  --ice-050: #f2f8ff;  /* the ice white: a cool near-white, never #fff */
+  --ice-200: #cfe4ff;
+  --ice-300: #a5c9ff;
+  --azure-400: #6ba6ff;
+  --azure-500: #3d8bff; /* the workhorse — glows, blades, aurora */
+  --azure-600: #1a6dff; /* the most saturated step; used sparingly and deep */
+  --azure-900: #0a1533; /* hero ground, blue-black with actual chroma */
+  --azure-950: #070f24; /* the deepest ground before the warm ink resumes */
+
   /* ── The ink library ───────────────────────────────
      Risograph drums, at their approximate coated values. This is the only place
      these appear as raw hex; `.theme-plate` below is the only thing that reads

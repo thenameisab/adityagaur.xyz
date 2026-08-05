@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import Icon from "@/components/Icon";
 import Card from "@/components/Card";
 import TextLockup from "@/components/TextLockup";
+import Spotlight from "@/components/Spotlight";
 import { person } from "@/lib/site";
 import { entriesByCategory } from "@/lib/wiki";
 import styles from "./home.module.css";
@@ -43,7 +44,15 @@ export default function Home() {
         }
       />
 
-      <section className="theme-sand">
+      {/* The map section continues the hero's atmosphere instead of switching
+          to a sand sheet — aurora field behind, glass cards in front. All of
+          it is home-scoped styling; Card and TextLockup are untouched. */}
+      <section className={styles.mapSection}>
+        <div className={styles.aurora} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
         <div className="container inner-section stack stack--l">
           <TextLockup
             eyebrow="Start here"
@@ -51,7 +60,7 @@ export default function Home() {
             lede="Part work, part everything else — written plainly and updated as things change."
             size="display-3"
           />
-          <div className={`${styles.cardGrid} grid`} data-reveal-stagger>
+          <Spotlight className={styles.cardGrid} data-reveal-stagger>
             {featured.map((entry, i) => (
               <div key={entry.slug} style={{ ["--i" as string]: i }}>
                 <Card
@@ -62,7 +71,7 @@ export default function Home() {
                 />
               </div>
             ))}
-          </div>
+          </Spotlight>
           <p>
             <Link href="/wiki/" className={styles.moreLink}>
               All wiki entries <Icon name="arrow-right" size="sm" />
