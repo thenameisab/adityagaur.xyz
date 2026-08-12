@@ -1,0 +1,200 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+/* ── The model bars ── */
+
+.model {
+  padding-block-end: var(--space-5);
+  border-block-end: var(--bd-subtle);
+}
+
+.modelTitle {
+  color: var(--text-secondary);
+  max-inline-size: 58ch;
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-block-start: var(--space-4);
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: minmax(9rem, 14rem) 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.barLabel {
+  color: var(--text-muted);
+}
+
+.barTrack {
+  display: block;
+  min-inline-size: 0;
+}
+
+.bar {
+  display: block;
+  block-size: 0.9rem;
+  min-inline-size: 2px;
+  border: var(--bdw) solid var(--border-strong);
+}
+
+/* Family inks: acquisition drum A, retention drum B, monetization the
+   overprint tint. Doubled by the section labels below — never colour alone. */
+.bar[data-family="acquisition"]  { background: var(--tint-a-3); }
+.bar[data-family="retention"]    { background: var(--tint-b-3); }
+.bar[data-family="monetization"] { background: var(--drum-a); }
+
+.barValue {
+  color: var(--text-secondary);
+  font-family: var(--ff-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ── Portfolio ── */
+
+.portfolioHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-block-start: var(--space-5);
+}
+
+.portfolioTitle {
+  color: var(--text-secondary);
+}
+
+.mineToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: var(--bdw) solid var(--border-default);
+  border-radius: var(--bdrs-none);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color var(--dur-instant) var(--ease-out);
+}
+
+.mineToggle:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.mineToggle[data-active] {
+  border-color: var(--border-strong);
+  background: var(--tint-b-2);
+  color: var(--text-primary);
+}
+
+.mineToggle:focus-visible {
+  outline: var(--focus-w) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.mineCount {
+  font-family: var(--ff-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+.family {
+  margin-block-start: var(--space-5);
+}
+
+.familyLabel {
+  color: var(--text-faint);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+  gap: var(--space-3);
+  margin-block-start: var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: var(--bdw) solid var(--border-default);
+  border-inline-start-width: 3px;
+  transition: opacity var(--dur-instant) var(--ease-out);
+}
+
+.card[data-family="acquisition"]  { border-inline-start-color: var(--tint-a-3); }
+.card[data-family="retention"]    { border-inline-start-color: var(--tint-b-3); }
+.card[data-family="monetization"] { border-inline-start-color: var(--drum-a); }
+.card[data-family="research"]     { border-inline-start-color: var(--border-default); }
+
+.card[data-cancelled] {
+  border-style: dashed;
+}
+
+.card[data-dim] {
+  opacity: 0.25;
+}
+
+.cardTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.cardName {
+  color: var(--text-primary);
+}
+
+.card[data-cancelled] .cardName {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* The attribution device: one word, in the reader-action ink. */
+.mine {
+  flex-shrink: 0;
+  padding: 0 var(--space-2);
+  border: var(--bdw) solid var(--sig-mine);
+  color: var(--text-primary);
+  font-family: var(--ff-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--lts-wide);
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  align-items: baseline;
+}
+
+.status {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.icps {
+  color: var(--text-faint);
+  font-family: var(--ff-mono);
+  letter-spacing: var(--lts-wide);
+}
+
+.rev {
+  color: var(--text-secondary);
+  font-family: var(--ff-mono);
+  font-variant-numeric: tabular-nums;
+}

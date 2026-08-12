@@ -1,0 +1,73 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.rank {
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  display: grid;
+  place-items: center;
+  border: var(--bdw) solid var(--border-strong);
+  color: var(--text-primary);
+  font-family: var(--ff-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.body {
+  min-inline-size: 0;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  margin-block-end: var(--space-1);
+}
+
+.label {
+  color: var(--text-primary);
+}
+
+.nums {
+  color: var(--text-muted);
+  font-family: var(--ff-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  display: block;
+}
+
+/* The top factor is the argument for the monetization lever, so the bars are
+   drum A — held fact, not reader action. */
+.bar {
+  display: block;
+  block-size: 0.9rem;
+  min-inline-size: 2px;
+  background: var(--tint-a-3);
+  border: var(--bdw) solid var(--border-strong);
+  border-inline-end: 3px solid var(--drum-a);
+}
+
+.icps {
+  display: block;
+  margin-block-start: var(--space-1);
+  color: var(--text-faint);
+}

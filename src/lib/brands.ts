@@ -206,6 +206,19 @@ const REGISTRY: BrandEntry[] = [
   { name: "Mindflow", domain: "mindflow.io" },
   { name: "ESSEC", domain: "essec.edu", aliases: ["essec business school"] },
 
+  // ── Named on the ElevenLabs-India case study ──
+  { name: "ElevenLabs", domain: "elevenlabs.io", aliases: ["11labs", "eleven labs"] },
+  {
+    name: "AWS Marketplace",
+    domain: "aws.amazon.com",
+    aliases: ["aws", "aws marketplace", "amazon web services"],
+  },
+  { name: "GrowthX", domain: "growthx.club" },
+  /* Stripe is already registered with the essays group above. */
+  { name: "Razorpay", domain: "razorpay.com" },
+  { name: "Paddle", domain: "paddle.com" },
+  { name: "Whimsical", domain: "whimsical.com" },
+
   // ── Named in `meta.stack` ──
   { name: "Next.js", domain: "nextjs.org", aliases: ["nextjs", "next"] },
   { name: "React", domain: "react.dev" },

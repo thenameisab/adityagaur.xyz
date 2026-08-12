@@ -1,0 +1,166 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--tint-b-1);
+  border: var(--bd-subtle);
+}
+
+.filterRow,
+.valueRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.filterBtn,
+.valueBtn {
+  padding: var(--space-1) var(--space-3);
+  border: var(--bdw) solid var(--border-default);
+  border-radius: var(--bdrs-none);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color var(--dur-instant) var(--ease-out),
+    color var(--dur-instant) var(--ease-out);
+}
+
+.filterBtn:hover,
+.valueBtn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.filterBtn[data-active],
+.valueBtn[data-active] {
+  border-color: var(--border-strong);
+  background: var(--tint-a-2);
+  color: var(--text-primary);
+}
+
+.filterBtn:focus-visible,
+.valueBtn:focus-visible {
+  outline: var(--focus-w) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.count {
+  margin-inline-start: var(--space-2);
+  font-family: var(--ff-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+.tally {
+  margin-block-start: var(--space-4);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── The field ── */
+
+.field {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(1.4rem, 1fr));
+  gap: var(--space-2);
+  margin-block-start: var(--space-3);
+}
+
+/* One mark per contact. Square, inked by ICP. Tints rather than raw drums so
+   the marks stay recognisable through the halftone screen; the ICP encoding
+   is doubled by the legend's words, never colour alone. */
+.mark {
+  display: block;
+  aspect-ratio: 1;
+  min-inline-size: 0.9rem;
+  border: var(--bdw) solid var(--border-strong);
+  background: var(--bg-card);
+  transition: opacity var(--dur-instant) var(--ease-out);
+}
+
+.mark[data-icp="enterprise"] { background: var(--drum-a); }
+.mark[data-icp="sme"]        { background: var(--tint-a-3); }
+.mark[data-icp="agency"]     { background: var(--sig-mine); }
+.mark[data-icp="creator"]    { background: var(--tint-b-3); }
+.mark[data-icp="none"]       { background: transparent; }
+
+/* A contact that never became a call keeps only its outline. */
+.mark[data-lead] {
+  background: transparent;
+  border-style: dashed;
+}
+
+.mark[data-dim] {
+  opacity: 0.18;
+}
+
+/* ── Legend ── */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-4);
+  margin-block-start: var(--space-4);
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+}
+
+.key .mark {
+  inline-size: 0.9rem;
+  min-inline-size: 0.9rem;
+}
+
+/* ── The sprint timeline ── */
+
+.timeline {
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--bd-subtle);
+}
+
+.timelineLabel {
+  color: var(--text-muted);
+  margin-block-end: var(--space-3);
+}
+
+.days {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.dayBar {
+  display: block;
+  inline-size: 1.4rem;
+  background: var(--tint-a-3);
+  border: var(--bdw) solid var(--border-strong);
+  border-block-end: none;
+}
+
+.dayCount {
+  color: var(--text-secondary);
+  font-family: var(--ff-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.dayLabel {
+  color: var(--text-faint);
+  font-family: var(--ff-mono);
+}

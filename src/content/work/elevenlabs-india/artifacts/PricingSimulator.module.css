@@ -1,0 +1,265 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+/* The reader's instrument panel — drum B tint, same contract as every plate. */
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: var(--space-5);
+  padding: var(--space-4);
+  background: var(--tint-b-1);
+  border: var(--bd-subtle);
+  --ramp-angle: to top;
+}
+
+.planSet {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-block-end: var(--space-2);
+  color: var(--text-muted);
+}
+
+.planRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Square chips. The selected chip fills with the loud ink — display-size rule
+   respected: the label inside stays ≥ the 3:1 mark bar because it sets the
+   OVERPRINT on the tint when idle and key ink on loud only for the price tag,
+   which is aria-hidden from the contrast question by being 24px-equivalent
+   weight — so instead the active fill uses tint-a-3 (measured text-safe)
+   rather than a raw ink. No key body copy ever sits on a pure drum here. */
+.planBtn {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border: var(--bdw) solid var(--border-default);
+  border-radius: var(--bdrs-none);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color var(--dur-instant) var(--ease-out);
+}
+
+.planBtn:hover {
+  border-color: var(--border-strong);
+}
+
+.planBtn[data-active] {
+  border-color: var(--border-strong);
+  background: var(--tint-a-2);
+  color: var(--text-primary);
+}
+
+.planBtn:focus-visible {
+  outline: var(--focus-w) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.planPrice {
+  font-family: var(--ff-mono);
+  font-size: var(--fz-body-4);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.field {
+  min-inline-size: 0;
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-block-end: var(--space-2);
+  color: var(--text-muted);
+}
+
+.value {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Native range, restyled — same reasoning as Compounding: keyboard and screen
+   reader support come free. */
+.range {
+  inline-size: 100%;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.range::-webkit-slider-runnable-track {
+  block-size: 2px;
+  background: var(--border-default);
+  border-radius: var(--bdrs-full);
+}
+
+.range::-moz-range-track {
+  block-size: 2px;
+  background: var(--border-default);
+  border-radius: var(--bdrs-full);
+}
+
+.range::-webkit-slider-thumb {
+  appearance: none;
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  margin-block-start: -0.4rem;
+  border: var(--bdw) solid var(--border-strong);
+  border-radius: var(--bdrs-none);
+  background: var(--bg-loud);
+}
+
+.range::-moz-range-thumb {
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  border: var(--bdw) solid var(--border-strong);
+  border-radius: var(--bdrs-none);
+  background: var(--bg-loud);
+}
+
+.range:focus-visible {
+  outline: var(--focus-w) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* ── Chart ── */
+
+.chartWrap {
+  margin-block-start: var(--space-5);
+}
+
+.chart {
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.grid {
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+}
+
+.axis {
+  stroke: var(--border-default);
+  stroke-width: 1;
+}
+
+/* Today's ladder in drum A — the held, stable state of the world. */
+.curveToday {
+  fill: none;
+  stroke: var(--drum-a);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* The proposal in drum B — the argued-for state. */
+.curveProposed {
+  fill: none;
+  stroke: var(--sig-mine);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+/* Where today's ladder stops selling. Dashed key ink: a fact, not a colour. */
+.stopLine {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.stopLabel {
+  fill: var(--text-muted);
+  font-family: var(--ff-mono);
+  font-size: 10px;
+}
+
+.markerLine {
+  stroke: var(--border-default);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+/* Square register marks, one per curve, in each curve's own ink. */
+.markerToday {
+  fill: var(--drum-a);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.markerProposed {
+  fill: var(--sig-mine);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.tick {
+  fill: var(--text-faint);
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.legendRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block-start: var(--space-2);
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+}
+
+.swatchToday,
+.swatchProposed {
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  border: var(--bdw) solid var(--border-strong);
+}
+
+.swatchToday {
+  background: var(--drum-a);
+}
+
+.swatchProposed {
+  background: var(--sig-mine);
+}
+
+/* ── Readout ── */
+
+.readout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+  gap: var(--space-5);
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--bd-subtle);
+  margin-block-end: 0;
+}
+
+.statValue {
+  display: block;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+.statLabel {
+  display: block;
+  margin-block-start: var(--space-1);
+  color: var(--text-muted);
+}

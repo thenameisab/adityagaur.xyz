@@ -1,0 +1,22 @@
+/* Block-level, full frame width, no rounding — the plate's trim is the frame.
+   width/height attributes reserve the box, so nothing reflows on load. */
+.shot {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+/* Two shots in one frame. The seam is the plate's own key ink — a printed
+   gutter, not a gap showing the page through. */
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--bdw);
+  background: var(--riso-key);
+}
+
+@media (max-width: 40em) {
+  .pair {
+    grid-template-columns: 1fr;
+  }
+}

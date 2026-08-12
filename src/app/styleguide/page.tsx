@@ -69,6 +69,7 @@ const PAIRING_ORDER: DrumsKey[] = [
   "blue-yellow",
   "purple-teal",
   "pink-green",
+  "blue-purple",
 ];
 
 /** Law 1, as a word. 4.5 is body text, 3 is marks and 24px+ type. */
@@ -440,11 +441,11 @@ export default function Styleguide() {
             {/* ── What is on the shelf ── */}
             <div className="stack stack--s">
               <h3 className="type-headline-4 text-primary">
-                Four pairings unspent — and one that cannot be spent
+                Three pairings unspent — and one that cannot be spent
               </h3>
               <p className="type-body-3 text-muted">
-                The library yields 22 usable pairs; the artifact plates take ten
-                and the route plates seven. Three of the remaining four are simply
+                The library yields 22 usable pairs; the artifact plates take eleven
+                and the route plates seven. Two of the remaining three are simply
                 unspent, and inventing a route to use one would be worse than
                 leaving it on the shelf. The fourth,{" "}
                 <strong className="text-secondary">yellow + teal</strong>, cannot
@@ -467,7 +468,7 @@ export default function Styleguide() {
         <Section
           id="plates"
           title="Plates"
-          note="The fourth theme. Sixteen artifacts read as a series of prints rather than one design repeated sixteen times, because each page loads its own two drums. Everything below is computed from src/lib/plates.ts with the site's own WCAG math — a swatch that does not match its stated hex is a drift between the tokens and this page."
+          note="The fourth theme. Twenty-eight artifacts read as a series of prints rather than one design repeated twenty-eight times, because each page loads its own two drums. Everything below is computed from src/lib/plates.ts with the site's own WCAG math — a swatch that does not match its stated hex is a drift between the tokens and this page."
         >
           <div className="stack stack--l">
             {/* ── Law 1 ── */}
@@ -822,15 +823,15 @@ export default function Styleguide() {
               </p>
             </div>
 
-            {/* ── The ten plates, live ── */}
+            {/* ── The eleven plates, live ── */}
             <div className="stack stack--s">
               <h3 className="type-headline-4 text-primary">
-                Ten pairings, four states each
+                Eleven pairings, four states each
               </h3>
               <p className="type-body-3 text-muted">
                 Rendered from the real CSS classes, so this is the regression test
                 for the semantic mapping rather than a picture of it. The state
-                vocabulary is fixed across all ten: a reader who learns one plate
+                vocabulary is fixed across all eleven: a reader who learns one plate
                 can read every plate. Colour is never the only carrier — each state
                 has a word and a shape as well as an ink, which is what makes the
                 system survive greyscale and colour-vision deficiency. Check that

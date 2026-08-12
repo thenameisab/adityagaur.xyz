@@ -1,0 +1,125 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+/* ── The module picker ── */
+
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding-block-end: var(--space-4);
+  border-block-end: var(--bd-subtle);
+}
+
+.pickBtn {
+  padding: var(--space-1) var(--space-3);
+  border: var(--bdw) solid var(--border-default);
+  border-radius: var(--bdrs-none);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color var(--dur-instant) var(--ease-out),
+    color var(--dur-instant) var(--ease-out);
+}
+
+.pickBtn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.pickBtn[data-active] {
+  border-color: var(--border-strong);
+  background: var(--tint-a-2);
+  color: var(--text-primary);
+}
+
+.pickBtn:focus-visible {
+  outline: var(--focus-w) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* ── The table ── */
+
+.table {
+  inline-size: 100%;
+  margin-block-start: var(--space-4);
+  border-collapse: collapse;
+}
+
+/* Screen-reader caption. Kept local: the site has no global utility for this,
+   and one rule is cheaper than a convention. */
+.tableCaption {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.table th[scope="col"] {
+  text-align: start;
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-faint);
+  font-weight: var(--fw-regular);
+  border-block-end: var(--bd-subtle);
+}
+
+.table td,
+.table th[scope="row"] {
+  padding: var(--space-2) var(--space-3);
+  border-block-end: var(--bd-subtle);
+}
+
+.planCell {
+  text-align: start;
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.numCell {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The overage rate, as number plus bar. The bar is drum A at a tint so the
+   rate curve reads at a glance; the number stays the record. */
+.rateCell {
+  inline-size: 40%;
+  min-inline-size: 10rem;
+}
+
+.rateWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.rateBar {
+  display: block;
+  block-size: 0.75rem;
+  min-inline-size: 2px;
+  background: var(--tint-a-3);
+  border-inline-end: 2px solid var(--drum-a);
+}
+
+.rateNum {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The refusal, stated in words. Colour never carries it alone. */
+.noSale {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.note {
+  margin-block-start: var(--space-4);
+  color: var(--text-muted);
+  max-inline-size: 58ch;
+}

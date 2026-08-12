@@ -103,7 +103,9 @@ export default async function WorkEntryPage({
 
   return (
     <RoutePlate drums={pairingForPage(slug)}>
-      <article className="entry inner-section">
+      {/* `data-wide` lifts the bleed ceiling Plate.module.css reads. Set from
+          validated meta, so the layout decision travels with the entry. */}
+      <article className="entry inner-section" data-wide={entry.wide || undefined}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
