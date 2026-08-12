@@ -1,0 +1,3026 @@
+[
+{
+"plan": "free",
+"chars": 0,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 1,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 703,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 999,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 1000,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 1001,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 5000,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 7003,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 19999,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 20000,
+"today": 0,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 20001,
+"today": null,
+"proposed": 0
+},
+{
+"plan": "free",
+"chars": 24999,
+"today": null,
+"proposed": 1000
+},
+{
+"plan": "free",
+"chars": 25000,
+"today": null,
+"proposed": 1000
+},
+{
+"plan": "free",
+"chars": 25001,
+"today": null,
+"proposed": 1000
+},
+{
+"plan": "free",
+"chars": 49999,
+"today": null,
+"proposed": 5750
+},
+{
+"plan": "free",
+"chars": 50000,
+"today": null,
+"proposed": 5750
+},
+{
+"plan": "free",
+"chars": 70003,
+"today": null,
+"proposed": 9351
+},
+{
+"plan": "free",
+"chars": 99999,
+"today": null,
+"proposed": 14750
+},
+{
+"plan": "free",
+"chars": 100000,
+"today": null,
+"proposed": 14750
+},
+{
+"plan": "free",
+"chars": 123457,
+"today": null,
+"proposed": 18738
+},
+{
+"plan": "free",
+"chars": 150000,
+"today": null,
+"proposed": 23250
+},
+{
+"plan": "free",
+"chars": 199999,
+"today": null,
+"proposed": 31750
+},
+{
+"plan": "free",
+"chars": 200000,
+"today": null,
+"proposed": 31750
+},
+{
+"plan": "free",
+"chars": 200001,
+"today": null,
+"proposed": 31750
+},
+{
+"plan": "free",
+"chars": 246914,
+"today": null,
+"proposed": 39725
+},
+{
+"plan": "free",
+"chars": 370371,
+"today": null,
+"proposed": 60713
+},
+{
+"plan": "free",
+"chars": 399999,
+"today": null,
+"proposed": 65750
+},
+{
+"plan": "free",
+"chars": 400000,
+"today": null,
+"proposed": 65750
+},
+{
+"plan": "free",
+"chars": 493828,
+"today": null,
+"proposed": 81701
+},
+{
+"plan": "free",
+"chars": 549999,
+"today": null,
+"proposed": 91250
+},
+{
+"plan": "free",
+"chars": 550000,
+"today": null,
+"proposed": 91250
+},
+{
+"plan": "free",
+"chars": 617285,
+"today": null,
+"proposed": 102688
+},
+{
+"plan": "free",
+"chars": 700003,
+"today": null,
+"proposed": 116751
+},
+{
+"plan": "free",
+"chars": 740742,
+"today": null,
+"proposed": 123676
+},
+{
+"plan": "free",
+"chars": 750000,
+"today": null,
+"proposed": 125250
+},
+{
+"plan": "free",
+"chars": 800001,
+"today": null,
+"proposed": 133750
+},
+{
+"plan": "free",
+"chars": 864199,
+"today": null,
+"proposed": 144664
+},
+{
+"plan": "free",
+"chars": 987656,
+"today": null,
+"proposed": 165652
+},
+{
+"plan": "free",
+"chars": 999999,
+"today": null,
+"proposed": 167750
+},
+{
+"plan": "free",
+"chars": 1000000,
+"today": null,
+"proposed": 167750
+},
+{
+"plan": "free",
+"chars": 1000001,
+"today": null,
+"proposed": 167750
+},
+{
+"plan": "free",
+"chars": 1111113,
+"today": null,
+"proposed": 186639
+},
+{
+"plan": "free",
+"chars": 1234570,
+"today": null,
+"proposed": 207627
+},
+{
+"plan": "free",
+"chars": 1358027,
+"today": null,
+"proposed": 228615
+},
+{
+"plan": "free",
+"chars": 1481484,
+"today": null,
+"proposed": 249602
+},
+{
+"plan": "free",
+"chars": 1604941,
+"today": null,
+"proposed": 270590
+},
+{
+"plan": "free",
+"chars": 1728398,
+"today": null,
+"proposed": 291578
+},
+{
+"plan": "free",
+"chars": 1851855,
+"today": null,
+"proposed": 312565
+},
+{
+"plan": "free",
+"chars": 1975312,
+"today": null,
+"proposed": 333553
+},
+{
+"plan": "free",
+"chars": 2098769,
+"today": null,
+"proposed": 354541
+},
+{
+"plan": "free",
+"chars": 2222226,
+"today": null,
+"proposed": 375528
+},
+{
+"plan": "free",
+"chars": 2345683,
+"today": null,
+"proposed": 396516
+},
+{
+"plan": "free",
+"chars": 2469140,
+"today": null,
+"proposed": 417504
+},
+{
+"plan": "free",
+"chars": 2592597,
+"today": null,
+"proposed": 438491
+},
+{
+"plan": "free",
+"chars": 2716054,
+"today": null,
+"proposed": 459479
+},
+{
+"plan": "free",
+"chars": 2839511,
+"today": null,
+"proposed": 480467
+},
+{
+"plan": "free",
+"chars": 2962968,
+"today": null,
+"proposed": 501455
+},
+{
+"plan": "free",
+"chars": 3086425,
+"today": null,
+"proposed": 522442
+},
+{
+"plan": "free",
+"chars": 3209882,
+"today": null,
+"proposed": 543430
+},
+{
+"plan": "free",
+"chars": 3333339,
+"today": null,
+"proposed": 564418
+},
+{
+"plan": "free",
+"chars": 3456796,
+"today": null,
+"proposed": 585405
+},
+{
+"plan": "free",
+"chars": 3580253,
+"today": null,
+"proposed": 606393
+},
+{
+"plan": "free",
+"chars": 3703710,
+"today": null,
+"proposed": 627381
+},
+{
+"plan": "free",
+"chars": 3827167,
+"today": null,
+"proposed": 648368
+},
+{
+"plan": "free",
+"chars": 3950624,
+"today": null,
+"proposed": 669356
+},
+{
+"plan": "free",
+"chars": 3999999,
+"today": null,
+"proposed": 677750
+},
+{
+"plan": "free",
+"chars": 4000000,
+"today": null,
+"proposed": 677750
+},
+{
+"plan": "free",
+"chars": 4000001,
+"today": null,
+"proposed": 677750
+},
+{
+"plan": "free",
+"chars": 4074081,
+"today": null,
+"proposed": 690344
+},
+{
+"plan": "free",
+"chars": 4197538,
+"today": null,
+"proposed": 711331
+},
+{
+"plan": "free",
+"chars": 4320995,
+"today": null,
+"proposed": 732319
+},
+{
+"plan": "free",
+"chars": 4444452,
+"today": null,
+"proposed": 753307
+},
+{
+"plan": "free",
+"chars": 4567909,
+"today": null,
+"proposed": 774295
+},
+{
+"plan": "free",
+"chars": 4691366,
+"today": null,
+"proposed": 795282
+},
+{
+"plan": "free",
+"chars": 4814823,
+"today": null,
+"proposed": 816270
+},
+{
+"plan": "free",
+"chars": 7000003,
+"today": null,
+"proposed": 1187751
+},
+{
+"plan": "free",
+"chars": 8999999,
+"today": null,
+"proposed": 1527750
+},
+{
+"plan": "free",
+"chars": 9000000,
+"today": null,
+"proposed": 1527750
+},
+{
+"plan": "free",
+"chars": 15000000,
+"today": null,
+"proposed": 2547750
+},
+{
+"plan": "free",
+"chars": 21999999,
+"today": null,
+"proposed": 3737750
+},
+{
+"plan": "free",
+"chars": 22000000,
+"today": null,
+"proposed": 3737750
+},
+{
+"plan": "free",
+"chars": 22000001,
+"today": null,
+"proposed": 3737750
+},
+{
+"plan": "free",
+"chars": 30000000,
+"today": null,
+"proposed": 5097750
+},
+{
+"plan": "free",
+"chars": 70000003,
+"today": null,
+"proposed": 11897751
+},
+{
+"plan": "starter",
+"chars": 0,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 703,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 999,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1000,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1001,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 5000,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 7003,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 19999,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 20000,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 20001,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 24999,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 25000,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 25001,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 49999,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 50000,
+"today": 5000,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 70003,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 99999,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 100000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 123457,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 150000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 199999,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 200000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 200001,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 246914,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 370371,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 399999,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 400000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 493828,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 549999,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 550000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 617285,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 700003,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 740742,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 750000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 800001,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 864199,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 987656,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 999999,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1000000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1000001,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1111113,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1234570,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1358027,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1481484,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1604941,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1728398,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1851855,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 1975312,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 2098769,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 2222226,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 2345683,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 2469140,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 2592597,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 2716054,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 2839511,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 2962968,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 3086425,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 3209882,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 3333339,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 3456796,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 3580253,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 3703710,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 3827167,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 3950624,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 3999999,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 4000000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 4000001,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 4074081,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 4197538,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 4320995,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 4444452,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 4567909,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 4691366,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 4814823,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 7000003,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 8999999,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 9000000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 15000000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 21999999,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 22000000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 22000001,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 30000000,
+"today": null,
+"proposed": null
+},
+{
+"plan": "starter",
+"chars": 70000003,
+"today": null,
+"proposed": null
+},
+{
+"plan": "creator",
+"chars": 0,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 1,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 703,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 999,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 1000,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 1001,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 5000,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 7003,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 19999,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 20000,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 20001,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 24999,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 25000,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 25001,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 49999,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 50000,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 70003,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 99999,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 100000,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 123457,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 150000,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 199999,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 200000,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 200001,
+"today": 22000,
+"proposed": 22000
+},
+{
+"plan": "creator",
+"chars": 246914,
+"today": 29037,
+"proposed": 29037
+},
+{
+"plan": "creator",
+"chars": 370371,
+"today": 47556,
+"proposed": 47556
+},
+{
+"plan": "creator",
+"chars": 399999,
+"today": 52000,
+"proposed": 52000
+},
+{
+"plan": "creator",
+"chars": 400000,
+"today": 52000,
+"proposed": 52000
+},
+{
+"plan": "creator",
+"chars": 493828,
+"today": 66074,
+"proposed": 65136
+},
+{
+"plan": "creator",
+"chars": 549999,
+"today": 74500,
+"proposed": 73000
+},
+{
+"plan": "creator",
+"chars": 550000,
+"today": 74500,
+"proposed": 73000
+},
+{
+"plan": "creator",
+"chars": 617285,
+"today": 84593,
+"proposed": 82420
+},
+{
+"plan": "creator",
+"chars": 700003,
+"today": 97000,
+"proposed": 94000
+},
+{
+"plan": "creator",
+"chars": 740742,
+"today": 103111,
+"proposed": 99704
+},
+{
+"plan": "creator",
+"chars": 750000,
+"today": 104500,
+"proposed": 101000
+},
+{
+"plan": "creator",
+"chars": 800001,
+"today": 112000,
+"proposed": 107500
+},
+{
+"plan": "creator",
+"chars": 864199,
+"today": 121630,
+"proposed": 115846
+},
+{
+"plan": "creator",
+"chars": 987656,
+"today": 140148,
+"proposed": 131895
+},
+{
+"plan": "creator",
+"chars": 999999,
+"today": 142000,
+"proposed": 133500
+},
+{
+"plan": "creator",
+"chars": 1000000,
+"today": 142000,
+"proposed": 133500
+},
+{
+"plan": "creator",
+"chars": 1000001,
+"today": 142000,
+"proposed": 133500
+},
+{
+"plan": "creator",
+"chars": 1111113,
+"today": 158667,
+"proposed": 146834
+},
+{
+"plan": "creator",
+"chars": 1234570,
+"today": 177186,
+"proposed": 161648
+},
+{
+"plan": "creator",
+"chars": 1358027,
+"today": 195704,
+"proposed": 176463
+},
+{
+"plan": "creator",
+"chars": 1481484,
+"today": 214223,
+"proposed": 191278
+},
+{
+"plan": "creator",
+"chars": 1604941,
+"today": 232741,
+"proposed": 206093
+},
+{
+"plan": "creator",
+"chars": 1728398,
+"today": 251260,
+"proposed": 220908
+},
+{
+"plan": "creator",
+"chars": 1851855,
+"today": 269778,
+"proposed": 235723
+},
+{
+"plan": "creator",
+"chars": 1975312,
+"today": 288297,
+"proposed": 250537
+},
+{
+"plan": "creator",
+"chars": 2098769,
+"today": 306815,
+"proposed": 265352
+},
+{
+"plan": "creator",
+"chars": 2222226,
+"today": 325334,
+"proposed": 280167
+},
+{
+"plan": "creator",
+"chars": 2345683,
+"today": 343852,
+"proposed": 294982
+},
+{
+"plan": "creator",
+"chars": 2469140,
+"today": 362371,
+"proposed": 309797
+},
+{
+"plan": "creator",
+"chars": 2592597,
+"today": 380890,
+"proposed": 324612
+},
+{
+"plan": "creator",
+"chars": 2716054,
+"today": 399408,
+"proposed": 339426
+},
+{
+"plan": "creator",
+"chars": 2839511,
+"today": 417927,
+"proposed": 354241
+},
+{
+"plan": "creator",
+"chars": 2962968,
+"today": 436445,
+"proposed": 369056
+},
+{
+"plan": "creator",
+"chars": 3086425,
+"today": 454964,
+"proposed": 383871
+},
+{
+"plan": "creator",
+"chars": 3209882,
+"today": 473482,
+"proposed": 398686
+},
+{
+"plan": "creator",
+"chars": 3333339,
+"today": 492001,
+"proposed": 413501
+},
+{
+"plan": "creator",
+"chars": 3456796,
+"today": 510519,
+"proposed": 428316
+},
+{
+"plan": "creator",
+"chars": 3580253,
+"today": 529038,
+"proposed": 443130
+},
+{
+"plan": "creator",
+"chars": 3703710,
+"today": 547556,
+"proposed": 457945
+},
+{
+"plan": "creator",
+"chars": 3827167,
+"today": 566075,
+"proposed": 472760
+},
+{
+"plan": "creator",
+"chars": 3950624,
+"today": 584594,
+"proposed": 487575
+},
+{
+"plan": "creator",
+"chars": 3999999,
+"today": 592000,
+"proposed": 493500
+},
+{
+"plan": "creator",
+"chars": 4000000,
+"today": 592000,
+"proposed": 493500
+},
+{
+"plan": "creator",
+"chars": 4000001,
+"today": 592000,
+"proposed": 493500
+},
+{
+"plan": "creator",
+"chars": 4074081,
+"today": 603112,
+"proposed": 502390
+},
+{
+"plan": "creator",
+"chars": 4197538,
+"today": 621631,
+"proposed": 517205
+},
+{
+"plan": "creator",
+"chars": 4320995,
+"today": 640149,
+"proposed": 532019
+},
+{
+"plan": "creator",
+"chars": 4444452,
+"today": 658668,
+"proposed": 546834
+},
+{
+"plan": "creator",
+"chars": 4567909,
+"today": 677186,
+"proposed": 561649
+},
+{
+"plan": "creator",
+"chars": 4691366,
+"today": 695705,
+"proposed": 576464
+},
+{
+"plan": "creator",
+"chars": 4814823,
+"today": 714223,
+"proposed": 591279
+},
+{
+"plan": "creator",
+"chars": 7000003,
+"today": 1042000,
+"proposed": 853500
+},
+{
+"plan": "creator",
+"chars": 8999999,
+"today": 1342000,
+"proposed": 1093500
+},
+{
+"plan": "creator",
+"chars": 9000000,
+"today": 1342000,
+"proposed": 1093500
+},
+{
+"plan": "creator",
+"chars": 15000000,
+"today": 2242000,
+"proposed": 1813500
+},
+{
+"plan": "creator",
+"chars": 21999999,
+"today": 3292000,
+"proposed": 2653500
+},
+{
+"plan": "creator",
+"chars": 22000000,
+"today": 3292000,
+"proposed": 2653500
+},
+{
+"plan": "creator",
+"chars": 22000001,
+"today": 3292000,
+"proposed": 2653500
+},
+{
+"plan": "creator",
+"chars": 30000000,
+"today": 4492000,
+"proposed": 3613500
+},
+{
+"plan": "creator",
+"chars": 70000003,
+"today": 10492000,
+"proposed": 8413500
+},
+{
+"plan": "pro",
+"chars": 0,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 703,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 999,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1001,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 5000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 7003,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 19999,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 20000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 20001,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 24999,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 25000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 25001,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 49999,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 50000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 70003,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 99999,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 100000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 123457,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 150000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 199999,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 200000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 200001,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 246914,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 370371,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 399999,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 400000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 493828,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 549999,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 550000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 617285,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 700003,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 740742,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 750000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 800001,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 864199,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 987656,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 999999,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1000000,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1000001,
+"today": 99000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1111113,
+"today": 112334,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1234570,
+"today": 127148,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1358027,
+"today": 141963,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1481484,
+"today": 156778,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1604941,
+"today": 171593,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1728398,
+"today": 186408,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1851855,
+"today": 201223,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 1975312,
+"today": 216037,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 2098769,
+"today": 230852,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 2222226,
+"today": 245667,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 2345683,
+"today": 260482,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 2469140,
+"today": 275297,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 2592597,
+"today": 290112,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 2716054,
+"today": 304926,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 2839511,
+"today": 319741,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 2962968,
+"today": 334556,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 3086425,
+"today": 349371,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 3209882,
+"today": 364186,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 3333339,
+"today": 379001,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 3456796,
+"today": 393816,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 3580253,
+"today": 408630,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 3703710,
+"today": 423445,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 3827167,
+"today": 438260,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 3950624,
+"today": 453075,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 3999999,
+"today": 459000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 4000000,
+"today": 459000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 4000001,
+"today": 459000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 4074081,
+"today": 467890,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 4197538,
+"today": 482705,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 4320995,
+"today": 497519,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 4444452,
+"today": 512334,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 4567909,
+"today": 527149,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 4691366,
+"today": 541964,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 4814823,
+"today": 556779,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 7000003,
+"today": 819000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 8999999,
+"today": 1059000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 9000000,
+"today": 1059000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 15000000,
+"today": 1779000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 21999999,
+"today": 2619000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 22000000,
+"today": 2619000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 22000001,
+"today": 2619000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 30000000,
+"today": 3579000,
+"proposed": null
+},
+{
+"plan": "pro",
+"chars": 70000003,
+"today": 8379000,
+"proposed": null
+},
+{
+"plan": "scale",
+"chars": 0,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 703,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1001,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 5000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 7003,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 19999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 20000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 20001,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 24999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 25000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 25001,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 49999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 50000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 70003,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 99999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 100000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 123457,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 150000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 199999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 200000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 200001,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 246914,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 370371,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 399999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 400000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 493828,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 549999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 550000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 617285,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 700003,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 740742,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 750000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 800001,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 864199,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 987656,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 999999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1000000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1000001,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1111113,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1234570,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1358027,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1481484,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1604941,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1728398,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1851855,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 1975312,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 2098769,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 2222226,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 2345683,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 2469140,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 2592597,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 2716054,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 2839511,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 2962968,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 3086425,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 3209882,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 3333339,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 3456796,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 3580253,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 3703710,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 3827167,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 3950624,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 3999999,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 4000000,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 4000001,
+"today": 330000,
+"proposed": 330000
+},
+{
+"plan": "scale",
+"chars": 4074081,
+"today": 336667,
+"proposed": 336667
+},
+{
+"plan": "scale",
+"chars": 4197538,
+"today": 347778,
+"proposed": 347778
+},
+{
+"plan": "scale",
+"chars": 4320995,
+"today": 358890,
+"proposed": 358890
+},
+{
+"plan": "scale",
+"chars": 4444452,
+"today": 370001,
+"proposed": 370001
+},
+{
+"plan": "scale",
+"chars": 4567909,
+"today": 381112,
+"proposed": 381112
+},
+{
+"plan": "scale",
+"chars": 4691366,
+"today": 392223,
+"proposed": 392223
+},
+{
+"plan": "scale",
+"chars": 4814823,
+"today": 403334,
+"proposed": 403334
+},
+{
+"plan": "scale",
+"chars": 7000003,
+"today": 600000,
+"proposed": 600000
+},
+{
+"plan": "scale",
+"chars": 8999999,
+"today": 780000,
+"proposed": 780000
+},
+{
+"plan": "scale",
+"chars": 9000000,
+"today": 780000,
+"proposed": 780000
+},
+{
+"plan": "scale",
+"chars": 15000000,
+"today": 1320000,
+"proposed": 1260000
+},
+{
+"plan": "scale",
+"chars": 21999999,
+"today": 1950000,
+"proposed": 1750000
+},
+{
+"plan": "scale",
+"chars": 22000000,
+"today": 1950000,
+"proposed": 1750000
+},
+{
+"plan": "scale",
+"chars": 22000001,
+"today": 1950000,
+"proposed": 1750000
+},
+{
+"plan": "scale",
+"chars": 30000000,
+"today": 2670000,
+"proposed": 2230000
+},
+{
+"plan": "scale",
+"chars": 70000003,
+"today": 6270000,
+"proposed": 4630000
+},
+{
+"plan": "business",
+"chars": 0,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 703,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1001,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 5000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 7003,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 19999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 20000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 20001,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 24999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 25000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 25001,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 49999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 50000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 70003,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 99999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 100000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 123457,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 150000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 199999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 200000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 200001,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 246914,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 370371,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 399999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 400000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 493828,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 549999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 550000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 617285,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 700003,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 740742,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 750000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 800001,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 864199,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 987656,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 999999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1000000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1000001,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1111113,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1234570,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1358027,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1481484,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1604941,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1728398,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1851855,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 1975312,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 2098769,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 2222226,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 2345683,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 2469140,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 2592597,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 2716054,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 2839511,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 2962968,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 3086425,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 3209882,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 3333339,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 3456796,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 3580253,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 3703710,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 3827167,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 3950624,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 3999999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 4000000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 4000001,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 4074081,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 4197538,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 4320995,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 4444452,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 4567909,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 4691366,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 4814823,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 7000003,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 8999999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 9000000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 15000000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 21999999,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 22000000,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 22000001,
+"today": 1320000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 30000000,
+"today": 1800000,
+"proposed": null
+},
+{
+"plan": "business",
+"chars": 70000003,
+"today": 4200000,
+"proposed": null
+}
+]

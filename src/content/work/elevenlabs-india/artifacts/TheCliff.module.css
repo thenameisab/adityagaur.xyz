@@ -1,0 +1,83 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.chart {
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.grid {
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+}
+
+.axis {
+  stroke: var(--border-default);
+  stroke-width: 1;
+}
+
+.tick {
+  fill: var(--text-faint);
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Today's ladder in drum A. */
+.today {
+  fill: none;
+  stroke: var(--drum-a);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* The wall is the argument, so it gets weight and drum A at full strength. */
+.wall {
+  stroke: var(--drum-a);
+  stroke-width: 3;
+}
+
+.wallLabel {
+  fill: var(--text-secondary);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+}
+
+/* The proposal in drum B. */
+.proposed {
+  fill: none;
+  stroke: var(--sig-mine);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.slopeLabel {
+  fill: var(--text-secondary);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  text-anchor: end;
+}
+
+/* ── The voices beside the shape ── */
+
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: var(--space-5);
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--bd-subtle);
+}
+
+.quote {
+  margin: 0;
+  padding-inline-start: var(--space-4);
+  border-inline-start: 2px solid var(--drum-b);
+  color: var(--text-secondary);
+}
+
+.who {
+  margin-block-start: var(--space-2);
+  color: var(--text-muted);
+}

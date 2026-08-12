@@ -1,0 +1,106 @@
+.root {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding-block-end: var(--space-4);
+  border-block-end: var(--bd-subtle);
+}
+
+.pickBtn {
+  padding: var(--space-1) var(--space-3);
+  border: var(--bdw) solid var(--border-default);
+  border-radius: var(--bdrs-none);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color var(--dur-instant) var(--ease-out),
+    color var(--dur-instant) var(--ease-out);
+}
+
+.pickBtn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.pickBtn[data-active] {
+  border-color: var(--border-strong);
+  background: var(--tint-a-2);
+  color: var(--text-primary);
+}
+
+.pickBtn:focus-visible {
+  outline: var(--focus-w) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  margin-block-start: var(--space-4);
+}
+
+.table {
+  inline-size: 100%;
+  min-inline-size: 44rem;
+  border-collapse: collapse;
+}
+
+.dimHead {
+  text-align: start;
+  vertical-align: bottom;
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-faint);
+  font-weight: var(--fw-regular);
+  border-block-end: var(--bd-subtle);
+  inline-size: 9.5rem;
+}
+
+.icpHead {
+  text-align: start;
+  vertical-align: bottom;
+  padding: var(--space-2) var(--space-3);
+  border-block-end: var(--bd-subtle);
+  /* Each ICP column carries a top rule in its own tint so the three customers
+     stay distinguishable while scrolling — doubled by the header words. */
+  border-block-start: 3px solid var(--tint-a-3);
+}
+
+.icpHead:nth-child(3) {
+  border-block-start-color: var(--sig-mine);
+}
+
+.icpHead:nth-child(4) {
+  border-block-start-color: var(--tint-b-3);
+}
+
+.icpLabel {
+  display: block;
+  color: var(--text-primary);
+}
+
+.icpExample {
+  display: block;
+  margin-block-start: var(--space-1);
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+.dimCell {
+  text-align: start;
+  vertical-align: top;
+  padding: var(--space-3);
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+  border-block-end: var(--bd-subtle);
+}
+
+.valueCell {
+  vertical-align: top;
+  padding: var(--space-3);
+  color: var(--text-secondary);
+  border-block-end: var(--bd-subtle);
+}

@@ -11,6 +11,7 @@
 import { buildWorkEntries, type EntryModule } from "@/lib/content";
 
 import * as loam from "./loam/index.mdx";
+import * as elevenlabsIndia from "./elevenlabs-india/index.mdx";
 import * as billingPlatform from "./billing-platform/index.mdx";
 import * as outreachSequencer from "./outreach-sequencer/index.mdx";
 import * as wealthlens from "./wealthlens/index.mdx";
@@ -22,6 +23,7 @@ import * as crmDashboard from "./crm-dashboard/index.mdx";
 
 const modules: Record<string, EntryModule> = {
   loam: loam as EntryModule,
+  "elevenlabs-india": elevenlabsIndia as EntryModule,
   "billing-platform": billingPlatform as EntryModule,
   "outreach-sequencer": outreachSequencer as EntryModule,
   wealthlens: wealthlens as EntryModule,

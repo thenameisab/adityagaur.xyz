@@ -9,7 +9,7 @@
       (100vw - var(--gutter) * 2 - var(--maw-prose)) / 2 -
         var(--rail-reserve, 0px)
     ),
-    8rem
+    var(--bleed-max, 8rem)
   );
 
   margin-inline: calc(var(--bleed) * -1);

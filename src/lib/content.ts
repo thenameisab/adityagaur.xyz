@@ -53,6 +53,16 @@ export type WorkMeta = BaseMeta & {
    * line. Never fill this with an adjective.
    */
   outcome?: string;
+  /**
+   * Opt into the wide artifact corridor. The prose measure never changes;
+   * what widens is the bleed ceiling Plate.module.css allows its figures —
+   * from 8rem to 20rem a side. For entries whose artifacts are genuinely
+   * data-wide (a 6×10 price matrix, a 69-mark research field), the default
+   * ceiling caps every figure at ~60% of a desktop viewport, which is the
+   * one kind of content that needs the width. Off by default: prose-led
+   * entries keep the tighter, calmer figure width.
+   */
+  wide?: boolean;
 };
 
 export type WritingMeta = BaseMeta & {
@@ -176,6 +186,9 @@ export function buildWorkEntries(
         `\`status\` must be one of ${ENTRY_STATUSES.map((x) => `"${x}"`).join(", ")}`,
       );
     }
+    if (m.wide !== undefined && typeof m.wide !== "boolean") {
+      fail(section, slug, "`wide` must be a boolean when present");
+    }
     return {
       ...meta,
       role: r.str("role"),
@@ -183,6 +196,7 @@ export function buildWorkEntries(
       stack: m.stack as string[],
       status: m.status as EntryStatus,
       outcome: r.optStr("outcome"),
+      wide: m.wide === true,
     };
   });
 }

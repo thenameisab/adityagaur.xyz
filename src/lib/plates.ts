@@ -66,7 +66,8 @@ export type DrumsKey =
   | "green-red"
   | "blue-yellow"
   | "purple-teal"
-  | "pink-green";
+  | "pink-green"
+  | "blue-purple";
 
 export type Pairing = {
   /** Drum A — the first pass. Carries "held, stable, verified". */
@@ -197,6 +198,20 @@ export const PAIRINGS: Record<DrumsKey, Pairing> = {
     page: "outreach-sequencer",
     stock: "cream",
     rationale: "The loudest pairing available, and the highest separation.",
+  },
+  "blue-purple": {
+    a: "blue",
+    b: "purple",
+    overprint: "#002b7d",
+    separation: 0.224,
+    slip: [2.0, 1.0],
+    page: "elevenlabs-india",
+    stock: "cream",
+    /* The strongest overprint that was still on the shelf (11.16:1 on cream),
+       for the entry with the most numbers on it. Like purple-teal, neither
+       drum clears AA with key ink — the loud pass is display-size only, which
+       .drums-blue-purple documents. */
+    rationale: "Two cool drums for a pricing argument — and 11.16:1 for its type.",
   },
 };
 

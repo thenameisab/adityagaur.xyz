@@ -638,6 +638,21 @@ ol[class] { list-style: none; }
   --slip-y: 0.8px;
 }
 
+.drums-blue-purple {        /* elevenlabs-india */
+  --drum-a: var(--riso-blue);
+  --drum-b: var(--riso-purple);
+  --overprint: #002b7d;
+  /* The second pairing with NO body-safe loud ink: blue reaches 3.85 with key
+     and purple 3.31 — the same condition .drums-purple-teal documents. The
+     loud pass is display-size only (24px+, where 3:1 is the bar), and the
+     page's artifacts keep key-ink body copy off loud fills. What the pairing
+     buys in exchange is the strongest overprint left on the shelf: #002b7d
+     sets type at 11.16:1 on cream. */
+  --ink-loud: var(--riso-blue); /* 3.85 with key — large text only */
+  --slip-x: 2.0px;
+  --slip-y: 1.0px;
+}
+
 /* ── The second run: the route plates ───────────────────────────────────────
    The ten pairings above are ARTIFACT plates — a figure tipped into a page. The
    seven below are ROUTE plates, loaded by Vibrant Mode (§3.1) so that a page is
@@ -1474,6 +1489,16 @@ hr {
     justify-self: start;
     inline-size: var(--rail-w);
   }
+}
+
+/* The wide corridor. An entry whose meta sets `wide: true` (validated in
+   src/lib/content.ts) lifts the ceiling on how far a plate may bleed past the
+   prose measure — Plate.module.css reads this through var(--bleed-max, 8rem).
+   The prose measure itself never moves; what changes is only how much room a
+   figure may take when the viewport has it to give. Reserved for entries whose
+   artifacts are data-wide by nature; the 8rem default is the house rhythm. */
+.entry[data-wide] {
+  --bleed-max: 20rem;
 }
 
 /* ──────────────────────────────────────── 6. Type role classes ── */

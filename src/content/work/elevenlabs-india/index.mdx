@@ -1,0 +1,340 @@
+import PricingSimulator from "./artifacts/PricingSimulator";
+import PriceMatrix from "./artifacts/PriceMatrix";
+import TheCliff from "./artifacts/TheCliff";
+import IcpComparator from "./artifacts/IcpComparator";
+import ResearchField from "./artifacts/ResearchField";
+import ChurnPareto from "./artifacts/ChurnPareto";
+import LeverMap from "./artifacts/LeverMap";
+import { Shot, Clip, Pair } from "./artifacts/Media";
+
+export const meta = {
+  slug: "elevenlabs-india",
+  title: "Pricing a voice for India",
+  kicker: "Growth strategy",
+  summary:
+    "A GrowthX capstone on ElevenLabs' India business: 69 user calls, a three-ICP framework, and a re-derived price ladder for a market where the first paid action should cost ₹100, not ₹2,500.",
+  role: "One of nine on the capstone squad — owned monetization and pricing, the AWS Marketplace lever, the ICP framework, and the user-research operation",
+  timeframe: "2025 — April to May",
+  stack: ["ElevenLabs", "Notion", "Google Sheets", "Whimsical"],
+  status: "research",
+  order: 1.5,
+  wide: true,
+};
+
+Every number on this page comes from a capstone project, and the page treats that
+honestly: the global figures about ElevenLabs are public and cited in the source;
+the India figures — the ₹30 crore baseline, the client counts, every projection —
+are the squad's own model, built from interviews and public benchmarks, because
+ElevenLabs has never published India revenue. Where a chart draws the model, its
+source line says so. Nothing here is a claim about the company's actual books,
+and no interviewee, teammate, or prospect is named anywhere on it.
+
+The assignment was blunt: take a real company, build the growth strategy its
+India business would need to triple in a year. Nine of us picked ElevenLabs —
+the voice-AI platform whose models were everywhere in 2025 — and spent six weeks
+on a question that got sharper the longer we looked at it: *why does a product
+this loved convert this badly in this market?*
+
+The answer the research kept returning was not awareness, and it was not
+quality. It was that the price ladder was built for a market with roughly ten
+times India's willingness to pay — and sixty-nine user calls said so in the
+same words, over and over.
+
+## Sixty-nine calls in eleven days
+
+The research came first and everything else stands on it. We sourced contacts
+from LinkedIn, Reddit, communities, paid ads, and our own networks, and ran a
+calling sprint through mid-April 2025 — 69 contacts, 55 completed calls, each
+one coded into a research database: ICP, segment, company size, seniority,
+whether they had actually used the product, and what they said about it.
+
+<Plate
+  drums="blue-purple"
+  n={1}
+  subject="The research field"
+  caption="Sixty-nine research contacts, one square each, coloured by segment. Slice the field by any dimension — the marks outside the slice recede rather than vanish, so the denominator stays countable. Below, the sprint's shape: completed calls per day, peaking at seventeen in one day."
+  source="The capstone's research database, anonymised at extraction — names, companies and roles never entered this site's repository."
+>
+  <ResearchField />
+</Plate>
+
+I owned the calling operation, and the discipline that made it usable later:
+every call left with the same fields filled. When the notes were coded, six
+churn themes accounted for nearly all of the negative signal — and the top of
+the list was not a product complaint.
+
+<Plate
+  drums="blue-purple"
+  n={2}
+  subject="Why users left"
+  caption="Six churn factors, by volume of supporting insights across the call notes. Pricing and its opacity beat every product complaint — including the Indian-accent gaps everyone assumed would top the list."
+  source="The squad's own coding of the call notes. One honesty note: the capstone's summary table and its six per-factor pages disagree on two of these counts — locales and reliability appear transposed — so treat those two bars as ±1 rank."
+>
+  <ChurnPareto />
+</Plate>
+
+Two quotes carried the whole finding. A startup co-founder, on why they left
+after their grant credits ran out: *"we had to operate within pricing ceilings
+in the Indian market."* An agency filmmaker who loved the product — *"I'm amazed
+and floored by ElevenLabs"* — and still rated the pricing jump as the thing
+that would eventually push them out. The product was winning the demo and
+losing the invoice.
+
+## Three customers, not one
+
+The calls also broke the market into three customers who share almost nothing
+but the product. I built the ICP framework: twenty dimensions per segment,
+from decision-maker to sales cycle to compliance exposure. It became the
+spine every lever hung off — each initiative in the capstone targets one or
+two of these columns, never vaguely "users."
+
+<Plate
+  drums="blue-purple"
+  n={3}
+  subject="The ICP framework"
+  caption="Three customers side by side across twenty dimensions. The economics group is the one to read first: a 6–8 month enterprise sales cycle against a creator's sub-month impulse purchase, and a $500K budget against $500, inside one product."
+  source="The capstone's ICP comparison table, reproduced dimension-for-dimension. The source's exemplar companies are replaced by their categories."
+>
+  <IcpComparator />
+</Plate>
+
+I also tore down the product's own onboarding, screen by screen, to see what a
+new Indian user actually meets in their first hour — the moment the research
+says decides whether a creator stays.
+
+<Plate
+  drums="blue-purple"
+  n={4}
+  subject="Onboarding teardown"
+  caption="One frame from the onboarding teardown: the first screen a new user meets. The annotations are the teardown's own."
+  source="The capstone's product-research workstream — my screenshots, ElevenLabs' interface."
+>
+  <Shot
+    src="/work/elevenlabs-india/teardown-theme.jpg"
+    alt="Annotated screenshot of ElevenLabs' first onboarding screen, a light-or-dark theme chooser, with teardown annotations pointing at the UI theme selection"
+    width={2000}
+    height={1474}
+  />
+</Plate>
+
+## What ElevenLabs actually charges
+
+Before proposing anything we documented the ladder as it stood. It is six
+plans by ten metered modules — text-to-speech, transcription, voice changing,
+dubbing in four variants, and so on — each module with its own unit, its own
+allowance, and its own overage rate per plan. The complexity is not an
+accident of documentation; it is the product's pricing surface, and a
+non-technical buyer meets all of it.
+
+<Plate
+  drums="blue-purple"
+  n={5}
+  subject="The ladder, complete"
+  caption="Every metered module across every plan, at the rates the capstone documented in May 2025. The bar beside each overage rate draws the volume discount; an em dash means the plan will not sell more at any price. Free and Starter stop dead — hold that thought."
+  source="The capstone's transcription of ElevenLabs' public pricing page, May 2025. Dated by design: the analysis is of this ladder, so the page keeps it."
+  scroll
+>
+  <PriceMatrix />
+</Plate>
+
+## The ₹2,500 cliff
+
+Here is the mechanic the churn data kept pointing at. A free user gets 20,000
+characters a month. The moment they need character 20,001, the only thing
+ElevenLabs will sell them is the Creator plan — $22, which the capstone's own
+tables price at ₹1,892, and which the users we called rounded to ₹2,500 with
+taxes and card friction. There is no ₹100 step, no metered overflow, nothing
+between "free" and "a month of discretionary income for a student creator."
+
+<Plate
+  drums="blue-purple"
+  n={6}
+  subject="The cliff"
+  caption="A free user's monthly cost against characters produced. Today's ladder runs flat at zero, then goes vertical: ₹1,892 or stop. The proposed meter replaces the wall with a slope that starts at ₹100. Three voices from the calls sit beside the shape they describe."
+  source="Today's curve from the documented ladder; the proposed slope from the capstone's metered rate card. Quotes verbatim from call notes, attributed by role only."
+>
+  <TheCliff />
+</Plate>
+
+The finding generalises up the ladder. Users on the $22 plan told us they
+would buy a *second* $22 subscription before touching the $99 one — the jumps
+are that wrong for this market. Every gap in the ladder is a place where
+money was offered and refused.
+
+## Re-deriving the ladder
+
+The monetization workstream — which I co-owned — rebuilt the ladder around a
+meter. The mechanism: when a plan's included characters run out, usage flows
+into priced bands that get cheaper as cumulative volume grows, and the first
+paid action drops from ₹2,500 to a ₹100 top-up. High-intent behaviour becomes
+visible (two top-ups in a month is a hand raised), and the upgrade nudge
+arrives when the meter says the user is already spending plan money anyway.
+
+<Plate
+  drums="blue-purple"
+  n={7}
+  subject="The metered journey"
+  caption="The proposal's own storyboard: a fictional eight-person agency moving from free, through ₹100–₹300 top-ups, to Creator in month three and Scale in month four — each step triggered by the meter's own signals rather than a sales call."
+  source="The capstone's journey diagram for the metered-pricing proposal. The persona is fictional and the source says so."
+>
+  <Shot
+    src="/work/elevenlabs-india/metered-journey.jpg"
+    alt="A four-month timeline diagram showing a user joining ElevenLabs, exhausting free credits, buying metered top-ups, upgrading to Creator, then to Scale, with spend at each stage"
+    width={2400}
+    height={1788}
+  />
+</Plate>
+
+The rate card under it is exact, so this page computes it rather than quoting
+it. Pick a plan and a volume; both ladders price it live.
+
+<Plate
+  drums="blue-purple"
+  n={8}
+  subject="Today against the meter"
+  caption="Both ladders priced through the same engine. On Free, today's curve stops at 20,000 characters — the chart names the refusal — while the meter slopes on. On Creator and Scale the two ladders converge at the plan's own volume band, which is the design: the meter undercuts nothing, it fills the gaps."
+  source="Rates from the capstone's rate card, read as marginal bands — the source doesn't spell the band semantics out, and this reading is the only one where a bill never jumps at a threshold. The engine is diffed against 504 independently computed cases on every deploy."
+>
+  <PricingSimulator />
+</Plate>
+
+The deepest part of the workstream never made it to a chart: the question of
+what legal entity should even collect these rupees. We priced four structures —
+an Indian subsidiary, a merchant of record, a direct gateway with permanent-
+establishment risk, and OIDAR-only — at the model's ₹90 crore target. The
+merchant of record costs about ₹4.5 crore a year in fees at that scale; the
+subsidiary about ₹1.8 crore in gateway fees plus fixed costs, at a 25–29%
+corporate tax rate instead of the 41–43% a permanent establishment would
+suffer. The recommendation: a merchant of record now, a subsidiary as the
+durable answer. It is the least glamorous page in the capstone and the one
+an operator would actually need first.
+
+## The rest of the board
+
+The capstone was much bigger than pricing, and the fair way to show that is
+all of it. Twenty-three initiatives and workstreams, three lever families,
+one research foundation — with the ones I owned marked, and three of them
+wearing a strike through their name.
+
+<Plate
+  drums="blue-purple"
+  n={9}
+  subject="The whole capstone"
+  caption="The growth model's revenue assignments, then every tracked initiative. The 'owned' ticks are this page's only attribution device — it was a nine-person squad, and the unmarked cards are teammates' work shown here as context. The dashed cards are the finding: three initiatives fully specced, then cancelled with no reason recorded anywhere in the workspace."
+  source="The capstone's levers database and growth model. Revenue figures are the model's own targets, not results."
+>
+  <LeverMap />
+</Plate>
+
+Two of the unmarked levers deserve their cameo. The flagship acquisition bet
+was a two-day industry summit priced at ₹1.7 crore gross; the retention bet
+was **Voice for Voice** — a campaign inviting creators to contribute regional-
+language audio in exchange for platform credits, feeding the training data
+that would fix the Indian-accent gap the churn analysis ranked so high. The
+campaign's cost model priced crowd-sourced audio at about ₹6,200 an hour
+against ₹1–10 lakh for licensed recordings.
+
+<Plate
+  drums="blue-purple"
+  n={10}
+  subject="Voice for Voice — the plan"
+  caption="The campaign's four phases, from its own GTM board: build the pipeline, launch with creators, analyse the feedback, then use the newly trained languages to resurrect churned accounts. A teammate's lever; shown as the capstone's context."
+  source="The campaign's GTM strategy graphic, cropped to the planning band."
+>
+  <Shot
+    src="/work/elevenlabs-india/v4v-gtm-phases.jpg"
+    alt="Voice for Voice go-to-market strategy: four phases — develop campaign page and creatives, announce and outreach, analyse creator feedback, resurrect churned users — drawn as a timeline"
+    width={2400}
+    height={924}
+  />
+</Plate>
+
+<Plate
+  drums="blue-purple"
+  n={11}
+  subject="The campaign, dressed"
+  caption="Campaign assets: a social creative and the contributor badge a Telugu speaker would earn — shareable by design, so every contribution advertises the program."
+  source="The capstone's asset library. AI-generated campaign creative; not ElevenLabs marketing."
+>
+  <Pair>
+    <Shot
+      src="/work/elevenlabs-india/v4v-creative.jpg"
+      alt="Voice for Voice campaign creative: a woman speaking into a microphone with coins rising out of it, captioned 'turn your language into rewards'"
+      width={1400}
+      height={1400}
+    />
+    <Shot
+      src="/work/elevenlabs-india/telugu-badge.jpg"
+      alt="A gold seal reading 'Voice for Voice — Telugu Language Champion'"
+      width={1000}
+      height={1000}
+    />
+  </Pair>
+</Plate>
+
+<Plate
+  drums="blue-purple"
+  n={12}
+  subject="The campaign ad"
+  caption="The 42-second campaign advertisement — voiced, fittingly, with ElevenLabs' own tools. Re-encoded from the original for the web; sound on."
+  source="The capstone's asset library. Stock footage assembled with AI tooling; the voiceover is a squad member's cloned voice."
+>
+  <Clip
+    src="/work/elevenlabs-india/v4v-ad.mp4"
+    poster="/work/elevenlabs-india/v4v-ad-poster.jpg"
+    width={1280}
+    height={720}
+    label="Voice for Voice campaign advertisement, 42 seconds"
+  />
+</Plate>
+
+My other acquisition lever was quieter than a summit: put ElevenLabs on the
+AWS Marketplace, where Indian enterprise budget already sits pre-committed.
+The unit economics in the model were the best of any lever — about ₹40 lakh
+of cost against ₹12.35 crore of modelled revenue, because the channel rides
+procurement that already exists instead of building it. The plan ran
+fifteen tasks from seller registration to co-marketing, with metered billing
+integration in the middle — the same meter as the pricing proposal, which is
+not a coincidence: one mechanism, two levers.
+
+<Stat
+  items={[
+    { value: "69", label: "research contacts; 55 completed calls" },
+    { value: "6×10", label: "plans × modules in the documented ladder" },
+    { value: "₹100", label: "the proposed first paid action, was ₹2,500" },
+    { value: "504", label: "golden cases verifying this page's pricing engine" },
+  ]}
+/>
+
+## What I'd do differently
+
+**Code the calls while they're warm.** Sixty-nine calls produced a
+qualitative goldmine, and the coding into countable themes happened weeks
+later, in one push, by tired people. The transposed churn counts this page
+flags — two factors whose numbers swapped somewhere between the sub-pages
+and the summary table — are exactly the kind of error that creeps in when
+analysis is batch work. Code each call the day it happens and the numbers
+stay attached to their evidence.
+
+**Write the cancellation memo.** Three initiatives were specced to the point
+of email drafts and revenue models, then abandoned with nothing but a
+`[Cancelled]` prefix. The plans survived; the *reasons* died with the
+decision. A three-line memo — what killed it, what would revive it — costs
+five minutes and turns a dead document into a reusable one. The absence of
+three such memos is the most instructive thing in the whole workspace.
+
+**Interrogate the retention assumption first.** The model's road from ₹30 to
+₹90 crore leans hardest on retention improving from 77% to 88%, and that
+single assumption has less evidence behind it than any other number in the
+model — it is a benchmark blend, not an observation. The pricing and channel
+work underneath it is real; the headline it rolls up to is only as good as
+that one row. If I rebuilt the model I would publish it as a sensitivity
+table with retention on the x-axis, so the reader watches the target move
+before deciding what to believe.
+
+**Ask the money question sooner.** The entity-structure analysis — subsidiary
+versus merchant of record, the 25% versus 43% tax cliff — arrived in the
+final week and quietly governs everything the pricing proposal can promise.
+It should have been week two. In any cross-border pricing project, *who is
+legally allowed to collect this money, and at what cost* is not a detail to
+tidy up at the end; it is the ceiling on every number above it.
