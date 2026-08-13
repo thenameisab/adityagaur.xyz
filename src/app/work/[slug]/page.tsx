@@ -7,15 +7,17 @@ import { BrandMark } from "@/components/Brand";
 import Icon from "@/components/Icon";
 import Toc from "@/components/Toc";
 import { workEntries } from "@/content/work/registry";
-import { findEntry, published } from "@/lib/content";
+import { findEntry, routable } from "@/lib/content";
 import { tocFor } from "@/lib/toc";
 import { SITE_URL, person } from "@/lib/site";
 import styles from "../work.module.css";
 
 export const dynamicParams = false;
 
+// `routable`, not `published`: a hidden entry keeps its page for anyone
+// holding the link — it just stops being listed or indexed.
 export function generateStaticParams() {
-  return published(workEntries).map((e) => ({ slug: e.slug }));
+  return routable(workEntries).map((e) => ({ slug: e.slug }));
 }
 
 export async function generateMetadata({
@@ -30,6 +32,10 @@ export async function generateMetadata({
     title: entry.title,
     description: entry.summary,
     alternates: { canonical: `/work/${entry.slug}/` },
+    // A hidden entry is reachable but unlisted; noindex is what keeps
+    // "unlisted" true once the URL has ever been shared.
+    robots:
+      entry.visibility === "hidden" ? { index: false, follow: false } : undefined,
     openGraph: {
       type: "article",
       title: `${entry.title} — ${person.name}`,
@@ -46,7 +52,7 @@ export default async function WorkEntryPage({
 }) {
   const { slug } = await params;
   const entry = findEntry(workEntries, slug);
-  if (!entry || entry.draft) notFound();
+  if (!entry || entry.visibility === "draft") notFound();
 
   const { Content } = entry;
   const sections = tocFor("work", entry.slug);

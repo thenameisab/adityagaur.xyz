@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify": "tsx scripts/verify-vibrant.ts && tsx scripts/verify-volume-pricing.ts && tsx scripts/verify-elevenlabs-pricing.ts"
+    "verify": "tsx scripts/verify-vibrant.ts && tsx scripts/verify-volume-pricing.ts && tsx scripts/verify-elevenlabs-pricing.ts",
+    "admin": "node scripts/admin.mjs"
   },
   "dependencies": {
     "next": "16.2.10",
