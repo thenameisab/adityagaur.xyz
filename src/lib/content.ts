@@ -27,6 +27,21 @@ export const ENTRY_STATUSES = [
 
 export type EntryStatus = (typeof ENTRY_STATUSES)[number];
 
+/**
+ * The three lifecycle states an entry can be in.
+ *
+ * - `live`    — built, listed on its index, in the sitemap. The default.
+ * - `hidden`  — built at its URL for anyone holding the link, but absent from
+ *               the index, the sitemap, and search engines (`noindex`). For
+ *               entries being retired gracefully or shared before launch.
+ * - `draft`   — not built at all. The route 404s.
+ *
+ * Managed by hand in each entry's `meta`, or via `npm run admin`.
+ */
+export const VISIBILITIES = ["live", "hidden", "draft"] as const;
+
+export type Visibility = (typeof VISIBILITIES)[number];
+
 type BaseMeta = {
   /** URL segment. Must match the containing folder name. */
   slug: string;
@@ -37,7 +52,9 @@ type BaseMeta = {
   summary: string;
   /** Ascending. Controls index order. */
   order: number;
-  /** Excluded from the index, the sitemap, and `llms.txt`. */
+  /** Lifecycle state. Defaults to "live"; see VISIBILITIES. */
+  visibility: Visibility;
+  /** @deprecated Legacy alias — `draft: true` reads as `visibility: "draft"`. */
   draft?: boolean;
 };
 
@@ -132,6 +149,26 @@ function base(
       `\`slug\` is ${JSON.stringify(m.slug)} but the folder is "${slug}" — they must match`,
     );
   }
+  if (
+    m.visibility !== undefined &&
+    !VISIBILITIES.includes(m.visibility as Visibility)
+  ) {
+    fail(
+      section,
+      slug,
+      `\`visibility\` must be one of ${VISIBILITIES.map((x) => `"${x}"`).join(", ")}`,
+    );
+  }
+  if (m.draft !== undefined && typeof m.draft !== "boolean") {
+    fail(section, slug, "`draft` must be a boolean when present");
+  }
+  if (m.draft === true && m.visibility !== undefined) {
+    fail(
+      section,
+      slug,
+      "`draft: true` and `visibility` are two answers to one question — keep only `visibility`",
+    );
+  }
   const r = reader(section, slug, m);
   return {
     m,
@@ -141,7 +178,8 @@ function base(
       kicker: r.str("kicker"),
       summary: r.str("summary"),
       order: r.num("order"),
-      draft: m.draft === true,
+      visibility:
+        m.draft === true ? "draft" : ((m.visibility as Visibility) ?? "live"),
     },
   };
 }
@@ -220,8 +258,22 @@ export function buildWritingEntries(
   });
 }
 
+/** Entries that appear on indexes, the sitemap, and llms.txt: `live` only. */
 export function published<M>(entries: Entry<M>[]): Entry<M>[] {
-  return entries.filter((e) => !(e as unknown as BaseMeta).draft);
+  return entries.filter(
+    (e) => (e as unknown as BaseMeta).visibility === "live",
+  );
+}
+
+/**
+ * Entries that get a page built at their URL: `live` and `hidden`.
+ * `hidden` pages exist for anyone holding the link but are unlisted and
+ * carry `noindex` — the difference between removed and retired.
+ */
+export function routable<M>(entries: Entry<M>[]): Entry<M>[] {
+  return entries.filter(
+    (e) => (e as unknown as BaseMeta).visibility !== "draft",
+  );
 }
 
 export function findEntry<M>(

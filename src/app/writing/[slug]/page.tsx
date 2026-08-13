@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
 import Toc from "@/components/Toc";
 import { writingEntries } from "@/content/writing/registry";
-import { findEntry, published } from "@/lib/content";
+import { findEntry, routable } from "@/lib/content";
 import { tocFor } from "@/lib/toc";
 import { SITE_URL, person } from "@/lib/site";
 import styles from "../writing.module.css";
@@ -14,7 +14,7 @@ import styles from "../writing.module.css";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return published(writingEntries).map((e) => ({ slug: e.slug }));
+  return routable(writingEntries).map((e) => ({ slug: e.slug }));
 }
 
 export async function generateMetadata({
@@ -29,6 +29,8 @@ export async function generateMetadata({
     title: entry.title,
     description: entry.summary,
     alternates: { canonical: `/writing/${entry.slug}/` },
+    robots:
+      entry.visibility === "hidden" ? { index: false, follow: false } : undefined,
     openGraph: {
       type: "article",
       title: `${entry.title} — ${person.name}`,
@@ -53,7 +55,7 @@ export default async function WritingEntryPage({
 }) {
   const { slug } = await params;
   const entry = findEntry(writingEntries, slug);
-  if (!entry || entry.draft) notFound();
+  if (!entry || entry.visibility === "draft") notFound();
 
   const { Content } = entry;
   const sections = tocFor("writing", entry.slug);

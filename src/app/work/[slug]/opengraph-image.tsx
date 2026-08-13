@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { workEntries } from "@/content/work/registry";
-import { findEntry, published } from "@/lib/content";
+import { findEntry, routable } from "@/lib/content";
 import { person } from "@/lib/site";
 
 /**
@@ -37,9 +37,10 @@ export const contentType = "image/png";
 
 // A static export has to know every path at build time, and an image route in a
 // dynamic segment needs its own copy of the params — it does not inherit the
-// page's. Same `published()` filter, so a draft never gets a card.
+// page's. `routable`, matching the page route: hidden entries keep their
+// card (the URL still gets shared), drafts never get one.
 export function generateStaticParams() {
-  return published(workEntries).map((e) => ({ slug: e.slug }));
+  return routable(workEntries).map((e) => ({ slug: e.slug }));
 }
 
 // Ledger tokens, resolved. globals.css states these as `color-mix()` against
