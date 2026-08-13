@@ -1,0 +1,36 @@
+name: CI
+
+# Cloudflare Pages deploys main via its own git integration, so this workflow
+# doesn't deploy anything. Its job is the gate in front of that deploy: the
+# `verify` check is required by branch protection on main, so nothing that
+# fails the contrast floor or the pricing golden files can merge — and only
+# what merges gets deployed.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # The measured checks first. Both are pure functions over committed
+      # values with no browser and no network, so they run in about a second
+      # and fail the merge instead of shipping a plate whose type is under
+      # the contrast floor.
+      - run: npm run verify
+
+      - run: npm run build
