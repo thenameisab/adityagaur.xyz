@@ -1,0 +1,115 @@
+{
+  "baseURL": "http://localhost:4802",
+  "outDir": "shots/policy",
+  "defaults": {
+    "width": 1500,
+    "height": 1000
+  },
+  "initScript": "try{localStorage.setItem('ada_tour_seen','1')}catch(e){}",
+  "shots": [
+    {
+      "name": "impact-simulator",
+      "path": "/index.html",
+      "clip": ".modal",
+      "actions": [
+        {
+          "eval": "App.login('NWD0144')"
+        },
+        {
+          "wait": 400
+        },
+        {
+          "eval": "App.simView.open('P-PL')"
+        },
+        {
+          "wait": 700
+        },
+        {
+          "eval": "document.querySelectorAll('#modalHost input')[0].value='720'"
+        },
+        {
+          "eval": "[...document.querySelectorAll('#modalHost .btn--primary')].find(b=>/Run simulation/.test(b.textContent)).click()"
+        },
+        {
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "policies-admin",
+      "path": "/index.html",
+      "height": 900,
+      "actions": [
+        {
+          "eval": "App.login('NWD0144')"
+        },
+        {
+          "wait": 400
+        },
+        {
+          "eval": "App.navigate('policies')"
+        },
+        {
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "policies-staff",
+      "path": "/index.html",
+      "height": 900,
+      "actions": [
+        {
+          "eval": "App.login('NWD0125')"
+        },
+        {
+          "wait": 400
+        },
+        {
+          "eval": "App.navigate('policies')"
+        },
+        {
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "ask-admin",
+      "path": "/index.html",
+      "height": 1000,
+      "actions": [
+        {
+          "eval": "App.login('NWD0144')"
+        },
+        {
+          "wait": 400
+        },
+        {
+          "eval": "App.chat.toggle(true); App.chat.ask('What are the personal loan eligibility criteria?')"
+        },
+        {
+          "wait": 2500
+        }
+      ]
+    },
+    {
+      "name": "ask-staff",
+      "path": "/index.html",
+      "height": 1000,
+      "actions": [
+        {
+          "eval": "App.login('NWD0125')"
+        },
+        {
+          "wait": 400
+        },
+        {
+          "eval": "App.chat.toggle(true); App.chat.ask('What are the personal loan eligibility criteria?')"
+        },
+        {
+          "wait": 2500
+        }
+      ]
+    }
+  ]
+}

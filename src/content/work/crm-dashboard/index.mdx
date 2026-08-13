@@ -11,6 +11,7 @@ export const meta = {
   stack: ["Python", "Vanilla JS", "Zoho CRM API", "Neon Postgres", "Cloudflare Pages"],
   status: "shipped",
   order: 11,
+  wide: true,
 };
 
 ## Three questions between meetings
@@ -20,6 +21,19 @@ Leadership needs pipeline answers between meetings: what's closing this quarter,
 The first version of the fix was almost aggressively primitive: a Python script pulls every deal and its full change history from the CRM, computes everything worth knowing, and bakes the result into a single self-contained HTML file, data inlined as a JSON literal, styles and script inlined beside it. No runtime backend, no database, no API call after load. Cloudflare Pages serves the file; Cloudflare Access decides who can see it, which bought an auth wall with zero auth code.
 
 For a pipeline of a few hundred deals read by a handful of people, that model is close to unbeatable: zero infrastructure, instant loads, trivially auditable output, and it survives an outage of everything except the CDN. The interesting parts of this project are the two places the model earned an upgrade — and the view that has nothing to do with reporting at all.
+
+<Figure
+  label="Figure 1"
+  caption="The pipeline view: seven headline numbers, then every stage as a card carrying its own count and value. The instruction under the section heading is the product's whole posture toward its own aggregates — click any card to see deals."
+  source="The repository's own offline build, which runs the shipped frontend against a local seeded database for a fictional company. Same views, same code paths, ~130 invented deals; no customer of ours appears on it."
+>
+  <Shot
+    src="/work/crm-dashboard/pipeline.jpg"
+    alt="The pipeline dashboard: KPI cards for active pipeline, win rate, past close date, new deals, deals in hold, won and lost; below them a stage snapshot grouping new, ongoing and closed deals into clickable cards"
+    width={2560}
+    height={1706}
+  />
+</Figure>
 
 <Stat
   items={[
@@ -37,7 +51,20 @@ Every pipeline dashboard reports the total. The number is only as honest as the 
 Founder Mode is a separate view that walks every deal's change timeline and runs seven detectors over it. The design premise is an inversion worth stating: in a late-stage deal, an amount that has *never been revised* is more suspicious than one that has. Somebody negotiating validates the number; a number nobody touched is a placeholder wearing a stage label.
 
 <Figure
-  label="Figure 1"
+  label="Figure 2"
+  caption="Founder Mode, opened with Shift+F. Seven detectors as a row of counters — two of them red — and then the receipts: every amount revision with the stage the deal was in when the number moved. The line under the heading says what the view is for: pipeline integrity signals, not visible to the team."
+  source="The repository's own offline build against invented deals. The detector thresholds, the stage-when-changed reconstruction and the roll-up are the production payload builder's."
+>
+  <Shot
+    src="/work/crm-dashboard/founder-mode.jpg"
+    alt="Founder Mode: counter cards for live ARR, unvalidated pipeline, amount revisions, total revised down, stage regressions, slippage deals and zombie deals, above a table of amount revisions showing original TCV, current TCV, percentage change and the stage the deal was in when the amount changed"
+    width={2560}
+    height={1536}
+  />
+</Figure>
+
+<Figure
+  label="Figure 3"
   caption="Five of the seven detectors, over a synthetic pipeline. Switch them on one at a time — with everything off, this is an ordinary pipeline view, and it looks fine."
   source="Detector logic follows the production payload builder: a ₹1 epsilon on amount changes, slippage from the second forward push, index-checked regressions. Deals are synthetic; amounts are indexed, not currency."
 >
@@ -50,6 +77,19 @@ Two per-deal detectors combine into a per-owner risk score with explicit weights
 
 ## Two clicks from any number to its deals
 
+<Figure
+  label="Figure 4"
+  caption="Click one, from the Demo Done card in Figure 1. The count is in the title, so the drill visibly reconciles against the number that opened it; the deal name is a link out to the CRM record, which is click two and the end of this dashboard's authority."
+  source="The repository's own offline build. Accounts, owners and notes are invented; the columns and the reconciliation are the shipped modal's."
+>
+  <Shot
+    src="/work/crm-dashboard/drilldown.jpg"
+    alt="A modal titled 'Demo Done · 16 deals' listing each deal with its account, owner, days in stage, total contract value and last note, with the longest-stalled deals at the top"
+    width={1800}
+    height={1338}
+  />
+</Figure>
+
 The stated rule: leadership must be able to drill from any aggregate into the underlying deals in two clicks. The implementation is deliberately dumb, which is why it's fast: at build time, every drillable number pre-materializes its deal list into a flat array, and every clickable surface stores one integer index into it. Click one: the number opens a modal listing exactly the deals it counts, with the count in the footer so the drill visibly reconciles. Click two: any deal links out to its CRM record, the source of truth, one more click deep, exactly at the boundary where the dashboard's authority should end.
 
 ## The v2 split, and what each stage refuses to do
@@ -57,7 +97,44 @@ The stated rule: leadership must be able to drill from any aggregate into the un
 The single-file model had one real weakness: the file was the database. Every refresh shipped 3.9 MB, history didn't exist, and one failing upstream API meant no new file at all. The v2 move was one sentence, *split fetch-and-store from serve, and put the auth wall in front*, and the shape of it is best described by what each stage declines to do.
 
 <Figure
-  label="Figure 2"
+  label="Figure 5"
+  caption="The v2 architecture. Read it as two paths that meet at the database: a write path that runs three times a day and is allowed to fail one source at a time, and a read path that runs on every page load and is not allowed to serve a failure. The database between them is the whole point of the split — before it, a bad fetch meant no page."
+  scroll
+>
+  <Arch
+    label="Architecture: a scheduled write path and a per-load read path, decoupled by a Postgres snapshot table, with an access wall in front of the read path"
+    columns={[
+      { label: "Sources", nodes: [
+        { id: "crm", label: "CRM", sub: "deals · timelines", kind: "muted" },
+        { id: "mkt", label: "Marketing APIs", sub: "leads · sessions", kind: "muted" },
+      ] },
+      { label: "Write · 3×/day", nodes: [
+        { id: "etl", label: "Python job", sub: "12 worker threads", kind: "accent" },
+      ] },
+      { label: "Store", nodes: [
+        { id: "db", label: "Postgres", sub: "one row per source", kind: "accent" },
+      ] },
+      { label: "Read · per load", nodes: [
+        { id: "api", label: "Read API", sub: "…where ok = true", kind: "stop" },
+      ] },
+      { label: "Client", nodes: [
+        { id: "page", label: "Static page", sub: "110 KB · 6 fetches" },
+        { id: "digest", label: "Chat digest", sub: "never states revenue", kind: "stop" },
+      ] },
+    ]}
+    edges={[
+      { from: "crm", to: "etl" },
+      { from: "mkt", to: "etl", label: "each isolated" },
+      { from: "etl", to: "db", label: "snapshot + ok" },
+      { from: "db", to: "api" },
+      { from: "api", to: "page" },
+      { from: "db", to: "digest", dashed: true },
+    ]}
+  />
+</Figure>
+
+<Figure
+  label="Figure 6"
   caption="The pipeline as shipped, stage by stage — each with its refusal, which is where the reliability actually lives."
 >
 <Stepper

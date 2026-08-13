@@ -1,0 +1,91 @@
+/* The diagram scales to the frame it is given; the viewBox does the rest. */
+.root {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  /* Below this the labels stop being legible, so let the frame scroll instead
+     of shrinking further — Plate and Figure both support `scroll`. */
+  min-inline-size: 640px;
+}
+
+/* ── Nodes ──
+   Square-cornered boxes on the page's own card surface. The 2px radius is the
+   site's institutional default, not a rounded-card idiom. */
+.box {
+  fill: var(--bg-card);
+  stroke: var(--border-default);
+  stroke-width: 1;
+}
+
+.label {
+  font-family: var(--ff-sans);
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  fill: var(--text-primary);
+}
+
+.sub {
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  fill: var(--text-secondary);
+}
+
+/* The load-bearing node. One per diagram, ideally. */
+.accent .box {
+  stroke: var(--text-primary);
+  stroke-width: 1.5;
+}
+
+/* Context: something the system talks to but does not own. */
+.muted .box {
+  fill: none;
+  stroke: var(--border-subtle);
+  stroke-dasharray: 3 3;
+}
+.muted .label {
+  fill: var(--text-secondary);
+}
+
+/* A refusal — the place a stage declines to do something. */
+.stop .box {
+  stroke: var(--ledger-red);
+}
+.stop .label {
+  fill: var(--ledger-red);
+}
+
+/* ── Edges ── */
+.edge {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 1.25;
+}
+
+.dashed {
+  stroke-dasharray: 4 4;
+}
+
+.colLabel,
+.edgeLabel {
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  fill: var(--text-secondary);
+}
+
+.edgeLabel {
+  text-transform: none;
+  letter-spacing: 0;
+  text-anchor: middle;
+  /* A halo in the plate's own ground, so a label that lands on its own edge
+     line still reads. `paint-order` puts the stroke behind the fill, which is
+     the only way to get an outline that doesn't thicken the glyphs. */
+  paint-order: stroke;
+  stroke: var(--bg-raised);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+/* The theme swap is inherited wholesale from the tokens above: nothing here
+   names a colour, so a mode change repaints the drawing with the page. */

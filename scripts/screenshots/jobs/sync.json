@@ -1,0 +1,43 @@
+{
+  "baseURL": "http://localhost:4806",
+  "outDir": "shots/sync",
+  "defaults": {
+    "width": 1600
+  },
+  "shots": [
+    {
+      "name": "dashboard",
+      "path": "/",
+      "height": 1000,
+      "settle": 2500
+    },
+    {
+      "name": "sync-runs",
+      "path": "/",
+      "height": 940,
+      "settle": 2500,
+      "actions": [
+        {
+          "click": "text=Sync runs"
+        },
+        {
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "primitives",
+      "path": "/",
+      "height": 1000,
+      "settle": 2500,
+      "actions": [
+        {
+          "click": "text=PRIMITIVES"
+        },
+        {
+          "wait": 1800
+        }
+      ]
+    }
+  ]
+}

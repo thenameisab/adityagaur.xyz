@@ -1,0 +1,31 @@
+{
+  "baseURL": "http://localhost:4805",
+  "outDir": "shots/wiki",
+  "defaults": {
+    "width": 1400,
+    "height": 900
+  },
+  "maxWidth": 1900,
+  "shots": [
+    {
+      "name": "search",
+      "path": "/offerings/identity-verification/",
+      "settle": 1200,
+      "clip": ".search-palette-modal",
+      "actions": [
+        {
+          "press": "Meta+k"
+        },
+        {
+          "wait": 700
+        },
+        {
+          "type": "verif"
+        },
+        {
+          "wait": 900
+        }
+      ]
+    }
+  ]
+}

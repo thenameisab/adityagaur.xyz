@@ -11,6 +11,7 @@ export const meta = {
   stack: ["Node.js", "Notion API", "Cloudflare Pages", "Pages Functions", "Vanilla JS"],
   status: "shipped",
   order: 7,
+  wide: true,
 };
 
 ## The reader is in a hurry
@@ -20,6 +21,19 @@ You have a specific question (what an acronym stands for, what an endpoint retur
 An internal wiki has exactly one job: get that person to that answer before their patience runs out. Everything else is decoration, and decoration that doesn't help, hurts.
 
 The design brief for this one was a single sentence: the wiki is gated to company email, which means every reader is already trusted, which means the design does not need to perform credibility for outsiders. That sentence eliminates most of what makes corporate tools look the way they do. No hero sections, no persuasion, no brand experience. A page here should read like a well-organized index prepared by someone competent, and a stub is allowed to look like a stub — a privilege no public site has.
+
+<Figure
+  label="Figure 1"
+  caption="A page, at the top of the reader's thirty seconds: breadcrumb, title, an edited date, and then the answer. No hero, no card grid, no call to action — there is nobody here to convert."
+  source="The shipped build, run against a synthetic workspace. The real corpus is 122 pages of internal material and cannot be published, so the collector was swapped for a fictional company's twenty-seven; everything after the collector — transform, render, template, nav, breadcrumb, search index — is the build script unchanged."
+>
+  <Shot
+    src="/work/internal-wiki/page.jpg"
+    alt="A wiki page for an identity-verification offering: a left nav tree with collapsed sections, a breadcrumb, a serif title, an updated date, prose, a mono-formatted endpoint, and a three-row field table"
+    width={2560}
+    height={1645}
+  />
+</Figure>
 
 <Stat
   items={[
@@ -37,7 +51,7 @@ We do, for writing. Notion is the editorial system: comments, drafts, simultaneo
 So the wiki is a compiler. A build script walks the workspace from a root page, converts each page to markdown and then to HTML, rewrites internal Notion links to wiki URLs, downloads every image, and emits a directory of static pages plus one search index. Cloudflare Pages serves the result; a cron rebuilds it daily so the published surface trails the editorial one by at most a day. Writers keep their tool. Readers get sub-second pages.
 
 <Figure
-  label="Figure 1"
+  label="Figure 2"
   caption="One page's trip through the build. Everything upstream of the render is source-specific; everything downstream doesn't care where the content came from."
 >
 <Stepper
@@ -80,7 +94,7 @@ So the wiki is a compiler. A build script walks the workspace from a root page, 
 The fastest way to specify this design was to name what it must not look like. Each rejection carries its reason, and the reasons, not the rejections, are the actual spec.
 
 <Figure
-  label="Figure 2"
+  label="Figure 3"
   caption="Five references, five refusals, and what each refusal bought."
 >
   <Switcher
@@ -120,7 +134,20 @@ The same discipline produced a short list of banned defaults: pure-grey neutrals
 ## Search that fits in one paragraph
 
 <Figure
-  label="Figure 3"
+  label="Figure 4"
+  caption="The palette, four keystrokes in. The exact-prefix title match wins the top slot; the two body matches below it are ranked by where in the body the hit lands. The whole index — every page in the corpus — was fetched once, on the first keystroke."
+  source="The shipped client, unchanged, against the synthetic corpus. One inconsistency the capture caught and I'm leaving in the sentence rather than the screenshot: the scrim behind this panel uses backdrop blur, which is on the design system's own banned-defaults list."
+>
+  <Shot
+    src="/work/internal-wiki/search-palette.jpg"
+    alt="The command palette with the query 'verif' typed: three results, the first a title match on 'Identity verification' with the matched characters highlighted, then two body matches, with keyboard hints for navigate, open and close along the bottom"
+    width={1900}
+    height={1017}
+  />
+</Figure>
+
+<Figure
+  label="Figure 5"
   caption="The production scoring ladder over a synthetic corpus. Watch the tier label — title beats prefix beats substring beats body."
   source="Scoring, tie-breaks, the ten-result cap and the two-character floor are the shipped code, unchanged. The corpus is synthetic — the real index carries internal content."
 >
@@ -134,6 +161,44 @@ No stemming, no fuzzy matching, no inverted index. At 122 pages, a linear scan o
 ## The auth model designed the content pipeline
 
 The access model is deliberately flat: a Google sign-in restricted to the company domain, a signed cookie, seven days. One tier. Any employee sees everything. The auth layer is three small serverless functions and cannot express "this page is for managers only" — and adding per-page tiers would mean a real authorization system, which is exactly the infrastructure this project exists to not have.
+
+<Figure
+  label="Figure 6"
+  caption="The pipeline, with the decision that shapes it marked. Because the serving layer can only answer yes or no to one question — is this a company address — the need-to-know decision has to happen at the far left, at crawl time. A page ruled out there never enters the pipeline, so it cannot surface in the nav, the cards, or the search index further down."
+  scroll
+>
+  <Arch
+    label="Architecture: a nightly build that walks a Notion workspace, excludes sensitive pages at crawl time, renders static HTML and a search index, and serves them behind a single-tier domain sign-in"
+    columns={[
+      { label: "Editorial", nodes: [
+        { id: "notion", label: "Notion workspace", sub: "writers work here", kind: "muted" },
+      ] },
+      { label: "Build · nightly", nodes: [
+        { id: "gate", label: "Crawl list", sub: "include / exclude", kind: "accent" },
+        { id: "compile", label: "Compiler", sub: "504 lines" },
+      ] },
+      { label: "Output", nodes: [
+        { id: "pages", label: "Static pages", sub: "122 directories" },
+        { id: "index", label: "search-index.json", sub: "26 KB, whole corpus" },
+      ] },
+      { label: "Edge", nodes: [
+        { id: "fn", label: "Pages Function", sub: "one tier, 7 days" },
+      ] },
+      { label: "Reader", nodes: [
+        { id: "read", label: "A page, sub-second", sub: "⌘K searches in memory" },
+      ] },
+    ]}
+    edges={[
+      { from: "notion", to: "gate", label: "decided here" },
+      { from: "gate", to: "compile" },
+      { from: "compile", to: "pages" },
+      { from: "compile", to: "index" },
+      { from: "pages", to: "fn" },
+      { from: "index", to: "fn" },
+      { from: "fn", to: "read", label: "company email" },
+    ]}
+  />
+</Figure>
 
 That limitation had to go somewhere, and it went upstream. If the serving layer can't do need-to-know, the *build* has to: sensitive pages are excluded from the crawl entirely, decided page by page in a sign-off document with three verdicts — include, exclude, or include-scrubbed. Excluded means never fetched. Not published-and-hidden, not access-controlled, not in the nav, and — the part that actually matters — not in the search index, which would otherwise leak 500 characters of every page it touched. A page the pipeline never saw cannot appear in any surface the pipeline builds.
 

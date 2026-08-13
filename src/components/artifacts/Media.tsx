@@ -1,13 +1,16 @@
 import styles from "./Media.module.css";
 
 /**
- * The raster media on this page, inside plate frames.
+ * Raster media — product screenshots, campaign creatives, video.
  *
- * This entry is the first on the site to carry photographs, campaign
- * creatives, and video — everything else here is drawn. The rule that keeps
- * that honest: raster media never floats in prose. It sits inside a Plate
- * like every other figure, captioned, sourced, and sized at authoring time
- * so the layout never shifts while an image loads.
+ * Everything else on this site is drawn. The rule that keeps raster honest:
+ * it never floats in prose. It sits inside a Plate or a Figure like every
+ * other artifact, captioned, sourced, and sized at authoring time so the
+ * layout never shifts while an image loads.
+ *
+ * Every product capture is taken from the real application running locally
+ * against synthetic data, never from a production instance — see
+ * `scripts/screenshots/README.md` for how the captures are produced.
  */
 
 export function Shot({

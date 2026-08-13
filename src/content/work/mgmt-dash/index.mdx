@@ -11,6 +11,7 @@ export const meta = {
   stack: ["Python", "React", "Vite", "Cloudflare Pages", "Jira API"],
   status: "shipped",
   order: 10,
+  wide: true,
 };
 
 ## Three rituals, five minutes each
@@ -18,6 +19,19 @@ export const meta = {
 The audience is under ten people, and they open the same views on the same cadence. Monday, the capacity question: who is working on what, and is anyone overloaded or idle? Sprint boundaries, the commitment question: what did each team sign up for, and what slipped? And on a rolling basis, the efficiency question: are we shipping on time, and where is time going?
 
 Each session is five to fifteen minutes on a laptop in office light. Not a wallboard, not a phone. That framing sets the bar for every design decision: the dashboard should read like a briefing a competent chief of staff prepared, not like a BI tool surfacing everything it knows. The landing view is literally that: a one-sentence organizational lede in large type, then per-product headline rows sorted worst-first, so the eye finds trouble in the first two seconds.
+
+<Figure
+  label="Figure 1"
+  caption="The landing view. The lede is a sentence, not a KPI grid, and the product that needs attention is the one with a ground under it — worst-first, so the first two seconds are spent on the only row that has a decision in it."
+  source="The dashboard running locally against a synthetic payload: fictional roster, renamed products, a Jira host on a reserved domain. Every number, sprint and status is the shipped ETL's own shape."
+>
+  <Shot
+    src="/work/mgmt-dash/briefing.jpg"
+    alt="The dashboard landing view: a large headline reading '2 of 3 on track. 1 needs attention.', a highlighted red row for the product that is behind commit, two on-track product rows, one with no data, and a summary table below"
+    width={2560}
+    height={1706}
+  />
+</Figure>
 
 <Stat
   items={[
@@ -37,7 +51,20 @@ The reasoning is Goodhart's law, written into a policy document with an owner an
 What makes M-17 worth a page is where it's enforced. Not in the UI. The product statement is one line: *M-17 is not a rule to remember, it's a constraint baked into the data layer.*
 
 <Figure
-  label="Figure 1"
+  label="Figure 2"
+  caption="The per-engineer view, signed in as an operator with the highest role the product has. Count what's here: done, active, blocked, bugs, throughput, load. Now look for cycle time or lead time. There is no column, because there is no field, because the function that would have computed it returns a breakdown by issue type and stops."
+  source="The dashboard running locally against a synthetic payload. Names are fictional; the columns, the sort and the load denominator are the shipped ones."
+>
+  <Shot
+    src="/work/mgmt-dash/engineers.jpg"
+    alt="The engineers table: eight rows of fictional names with columns for done, active, blocked, bugs, throughput per week and a relative load bar — and no cycle-time or lead-time column"
+    width={2560}
+    height={1416}
+  />
+</Figure>
+
+<Figure
+  label="Figure 3"
   caption="The same payload through two viewers. Flip it — and notice the one column that's empty for both."
   source="Synthetic names and numbers; the field structure and the whitelist behaviour are the shipped ones."
 >
@@ -47,7 +74,7 @@ What makes M-17 worth a page is where it's enforced. Not in the UI. The product 
 The enforcement is five layers deep, and the order matters:
 
 <Figure
-  label="Figure 2"
+  label="Figure 4"
   caption="Where M-17 lives. Each layer catches what the one above it can't."
 >
   <Switcher
@@ -93,6 +120,60 @@ The honest asymmetry: the *protection* half of M-17 held everywhere, but the *se
 ## Everything else is pipeline
 
 The rest of the system is deliberately boring, in the way that makes a two-person maintenance surface possible. One data source, Jira, at nine parallel queries per refresh. Pure-function metrics modules in Python, unit-tested, no framework. History lives as daily JSON snapshots committed to an orphan git branch: free, versioned, auditable, and enough to carry every trend metric without a database. The frontend is a static build on Cloudflare Pages behind Cloudflare Access, with a small edge worker doing the payload projection.
+
+<Figure
+  label="Figure 5"
+  caption="The whole system, and where M-17 sits in it. Follow the payload left to right: the metrics module never computes a per-engineer timing, the schema has no field to carry one, and the worker projects through a whitelist before anything reaches a browser. Three of the five enforcement layers are places on this line — which is the argument for drawing it at all."
+  scroll
+>
+  <Arch
+    label="Architecture: Jira through a Python ETL to a validated payload, stored as daily JSON snapshots on an orphan git branch, served as a static build behind an access wall, and projected per-role by an edge worker"
+    columns={[
+      { label: "Source", nodes: [
+        { id: "jira", label: "Jira", sub: "9 parallel queries", kind: "muted" },
+      ] },
+      { label: "Producer · 2×/day", nodes: [
+        { id: "etl", label: "Metrics modules", sub: "no byEngineer", kind: "stop" },
+      ] },
+      { label: "Contract", nodes: [
+        { id: "schema", label: "Payload schema", sub: "no field for it", kind: "stop" },
+      ] },
+      { label: "History", nodes: [
+        { id: "snap", label: "Daily JSON", sub: "orphan git branch", kind: "accent" },
+      ] },
+      { label: "Edge", nodes: [
+        { id: "wall", label: "Access wall", sub: "company sign-in" },
+        { id: "worker", label: "Worker projection", sub: "default-deny list", kind: "stop" },
+      ] },
+      { label: "Audience", nodes: [
+        { id: "lead", label: "Leadership view", sub: "aggregates" },
+        { id: "self", label: "Engineer view", sub: "own rows only", kind: "muted" },
+      ] },
+    ]}
+    edges={[
+      { from: "jira", to: "etl" },
+      { from: "etl", to: "schema", label: "validate" },
+      { from: "schema", to: "snap" },
+      { from: "snap", to: "wall" },
+      { from: "wall", to: "worker" },
+      { from: "worker", to: "lead" },
+      { from: "worker", to: "self", dashed: true },
+    ]}
+  />
+</Figure>
+
+<Figure
+  label="Figure 6"
+  caption="The sprint view, which is also the honest evidence for this page's own criticism: per-team cards answer 'is this sprint on track' well and 'who across all six products is overloaded on a Monday' not at all. The capacity ritual is served by scrolling, which is not being served."
+  source="The dashboard running locally against a synthetic payload. Sprint names, goals and counts are the seed's; the board types, overdue flag and future-sprint strip are the shipped view."
+>
+  <Shot
+    src="/work/mgmt-dash/sprints.jpg"
+    alt="The sprints view: a strip of three planned future sprints across projects, then per-board cards showing progress bars, in-progress and to-do counts, blocked badges and an overdue flag, each beside a collapsed issues panel"
+    width={2560}
+    height={1792}
+  />
+</Figure>
 
 Even the refresh cadence is an argument rather than a default. Twice a day, timed to when leadership actually looks: the early-morning run was dropped after observing nobody loads the dashboard before eleven. A pipeline that runs hourly for an audience that looks twice daily isn't rigour; it's rate-limit spend.
 

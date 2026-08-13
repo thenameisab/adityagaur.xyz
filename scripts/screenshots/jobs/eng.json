@@ -1,0 +1,28 @@
+{
+  "baseURL": "http://localhost:4803",
+  "outDir": "shots/eng-dash",
+  "defaults": {
+    "width": 1500
+  },
+  "initScript": "try{localStorage.setItem('dev-admin-email','aarav@northwind.example')}catch(e){}",
+  "shots": [
+    {
+      "name": "briefing",
+      "path": "/#overview",
+      "height": 1000,
+      "settle": 2000
+    },
+    {
+      "name": "engineers",
+      "path": "/#engineers",
+      "height": 830,
+      "settle": 2000
+    },
+    {
+      "name": "sprints",
+      "path": "/#sprints",
+      "height": 1050,
+      "settle": 2000
+    }
+  ]
+}
