@@ -1,0 +1,40 @@
+{
+  "baseURL": "http://localhost:4801",
+  "outDir": "shots/wealthlens",
+  "defaults": {
+    "width": 1440
+  },
+  "shots": [
+    {
+      "name": "wl-calculator",
+      "path": "/",
+      "height": 1000,
+      "colorScheme": "light"
+    },
+    {
+      "name": "wl-planner",
+      "path": "/goal-planner",
+      "height": 860,
+      "colorScheme": "light"
+    },
+    {
+      "name": "wl-compare-light",
+      "path": "/compare",
+      "height": 1250,
+      "colorScheme": "light"
+    },
+    {
+      "name": "wl-compare-dark",
+      "path": "/compare",
+      "height": 1250,
+      "colorScheme": "dark"
+    },
+    {
+      "name": "wl-portfolio",
+      "path": "/portfolio",
+      "height": 920,
+      "colorScheme": "dark"
+    }
+  ],
+  "initScript": "try{localStorage.setItem('theme', matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')}catch(e){}"
+}

@@ -1,0 +1,31 @@
+{
+  "baseURL": "http://localhost:4804",
+  "outDir": "shots/crm",
+  "defaults": {
+    "width": 1500,
+    "height": 1000
+  },
+  "maxWidth": 1800,
+  "shots": [
+    {
+      "name": "drilldown",
+      "path": "/",
+      "settle": 2200,
+      "clip": ".modal-box:visible",
+      "actions": [
+        {
+          "click": "text=Pipeline >> nth=0"
+        },
+        {
+          "wait": 1500
+        },
+        {
+          "click": ".stage-card.clickable >> nth=1"
+        },
+        {
+          "wait": 2000
+        }
+      ]
+    }
+  ]
+}

@@ -11,6 +11,7 @@ export const meta = {
   stack: ["Next.js 16", "React 19", "Zustand", "Chart.js", "Tailwind v4"],
   status: "prototype",
   order: 6,
+  wide: true,
 };
 
 ## One question, five instruments
@@ -18,6 +19,19 @@ export const meta = {
 Every personal-finance app in India answers the same question: *I want ₹1 crore in fifteen years — what do I put away each month?* The answer is one formula. The product is everything around the formula: which assumptions the user is allowed to touch, which are hidden, and how honestly the output admits it's a projection rather than a promise.
 
 WealthLens is my version of that product, built as a craft piece on entirely synthetic data. Four routes: a returns calculator across five asset classes, a compare view that puts them on equal ground, a goal planner, and a portfolio view. No backend, no account, and no network calls at all. Everything computes in the browser from what you typed.
+
+<Figure
+  label="Figure 1"
+  caption="The returns calculator — route one of four. Every number on it is computed in the browser from the panel on the right; nothing is fetched, and there is nothing to fetch."
+  source="A capture of the app running locally. WealthLens has no backend and no seed data — the figures are whatever the inputs produce, which is why this screen can be published as-is."
+>
+  <Shot
+    src="/work/wealthlens/calculator.jpg"
+    alt="The WealthLens returns calculator: a wealth-projection line chart for a ₹10,000 monthly SIP over ten years at 12% CAGR, with velocity, inflation and time-value insight cards, a milestones row, and a parameters panel on the right"
+    width={2560}
+    height={1777}
+  />
+</Figure>
 
 <Stat
   items={[
@@ -28,6 +42,37 @@ WealthLens is my version of that product, built as a craft piece on entirely syn
   ]}
 />
 
+<Figure
+  label="Figure 2"
+  caption="The whole architecture, which is the point. Nothing crosses the tab boundary: no request, no account, no stored assumption. The empty node on the right is not an omission — a tool whose entire job is arithmetic over numbers you typed has nothing to send anywhere, and saying so is cheaper than a privacy policy."
+  scroll
+>
+  <Arch
+    label="Architecture: inputs, pure calculation functions and rendered output all inside one browser tab, with no backend, no persistence and no analytics"
+    columns={[
+      { label: "Input", nodes: [
+        { id: "input", label: "Inputs", sub: "amount · years · rate" },
+      ] },
+      { label: "Compute", nodes: [
+        { id: "calc", label: "calculations.ts", sub: "pure functions", kind: "accent" },
+      ] },
+      { label: "Output", nodes: [
+        { id: "chart", label: "Chart + KPIs", sub: "Chart.js canvas" },
+        { id: "insight", label: "Framings", sub: "inflation · waiting" },
+      ] },
+      { label: "Off the tab", nodes: [
+        { id: "net", label: "Network", sub: "no calls at all", kind: "muted" },
+        { id: "store", label: "Persistence", sub: "nothing survives reload", kind: "muted" },
+      ] },
+    ]}
+    edges={[
+      { from: "input", to: "calc" },
+      { from: "calc", to: "chart" },
+      { from: "calc", to: "insight" },
+    ]}
+  />
+</Figure>
+
 ## The formula, and the two numbers around it
 
 The goal planner inverts the standard SIP future-value identity: given the target, the rate and the horizon, solve for the monthly payment. Contributions are treated as an annuity due (paid at the start of each month, so each one compounds one extra period), and the target is grossed *up* by compound inflation before the inversion, because ₹1 crore in fifteen years is not ₹1 crore.
@@ -35,7 +80,20 @@ The goal planner inverts the standard SIP future-value identity: given the targe
 That inversion produces one number, and one number is not a decision aid. The two framings next to it are what make the page useful: what inflation alone adds to the monthly figure, and what waiting two years costs. The second one is the formula run again at `years − 2` and differenced: trivial arithmetic, and the most persuasive number on the screen, because it converts an abstraction about compounding into a monthly rupee amount you either pay now or pay later.
 
 <Figure
-  label="Figure 1"
+  label="Figure 3"
+  caption="The goal planner as it actually ships: one inverted formula, three strategies, and the two framings — inflation penalty, cost of waiting — carrying the argument. Read the ₹81,779 at the top as a single confident number, because that is exactly what the next figure is about."
+  source="A capture of the app running locally, at its own default inputs: ₹1 crore, ten years, 6% inflation, Balanced."
+>
+  <Shot
+    src="/work/wealthlens/goal-planner.jpg"
+    alt="The WealthLens goal planner: a total SIP needed figure of ₹81,779 a month, three portfolio-strategy cards for conservative, balanced and aggressive, an inflation-penalty card and a cost-of-waiting card, with target corpus, time horizon and inflation controls on the right"
+    width={2560}
+    height={1529}
+  />
+</Figure>
+
+<Figure
+  label="Figure 4"
   caption="The goal planner, ported — with the volatility band the shipped app promised but never wired up. Toggle it and watch the honest chart replace the confident one."
   source="The SIP inversion, inflation grossing, strategy rates and both cost framings are carried over from the app's calculations.ts unchanged. The band runs the same projection at ±4 points around the assumed rate, which is what the app's own spec asked for. All data is synthetic."
 >
@@ -58,11 +116,45 @@ The single line isn't wrong as arithmetic. It's wrong as communication — false
 Comparing investments is only meaningful when everything else is held fixed: the same amount, the same duration, the same contribution mode. The compare view has exactly one set of those controls, shared across all five asset classes, so a user physically cannot compare a ₹10,000 SIP in one instrument against a lumpsum in another and mistake the result for a finding.
 </Note>
 
+<Figure
+  label="Figure 5"
+  caption="The compare view. Count the controls: one amount, one horizon, one SIP switch, top left — and then five assets that get no controls of their own at all. The scarcity is the feature."
+  source="A capture of the app running locally at ₹10,000 a month over ten years. Rates are the per-instrument assumptions the app ships with; the corpus figures are computed from them."
+>
+  <Shot
+    src="/work/wealthlens/compare.jpg"
+    alt="The WealthLens equal-ground compare view: a single simulation panel with one monthly SIP value and one time horizon, a table of five asset classes with their CAGR and corpus, a speed-to-one-crore row, and a twenty-year projection chart with five lines"
+    width={2560}
+    height={2222}
+  />
+</Figure>
+
 The compare view puts mutual funds, fixed deposits, PPF, direct equity and gold on one chart. The design decision is what the user *can't* do: there is no per-asset amount, no per-asset duration. One investment, one horizon, one SIP-or-lumpsum switch, five outcomes. Each asset keeps only its own rate assumptions: an FD gets its senior-citizen bump, a mutual fund loses its expense ratio, ETF gold loses its fee. Those genuinely differ per instrument, and flattening them would swap one dishonesty for another.
 
 One inconsistency I'd fix before calling this shipped: the home-page calculator applies capital-gains tax to its results and the compare view doesn't, so the same inputs produce different corpus figures on two pages. Both numbers are defensible alone. Adjacent, they're a bug in the product's epistemology, not in the math.
 
 ## Theming as a correctness problem
+
+<Figure
+  label="Figure 6"
+  caption="The same route on both grounds. The primary green is not the same green: it gains lightness and chroma against near-black so it reads as confident rather than murky, and the donut's five categories are each retuned to hold their separation on the darker ground."
+  source="Two captures of the same app at identical inputs, one per theme. The only difference between them is the resolved color scheme."
+>
+  <Pair>
+    <Shot
+      src="/work/wealthlens/portfolio-light.jpg"
+      alt="The WealthLens portfolio view on the light theme: a projected net worth figure, a five-segment donut chart of the allocation, and a balances panel"
+      width={2560}
+      height={1635}
+    />
+    <Shot
+      src="/work/wealthlens/portfolio-dark.jpg"
+      alt="The same portfolio view on the dark theme, with the green, purple, blue and amber category colors retuned for the darker ground"
+      width={2560}
+      height={1635}
+    />
+  </Pair>
+</Figure>
 
 Every color in the stylesheet is OKLCH, and the dark theme is not the light theme inverted. The primary green keeps its hue and gains lightness and chroma when the ground goes dark, because the same green that reads as confident on warm ivory reads as murky on near-black. The gain, loss and neutral tokens (the three colors a finance UI lives or dies on) each get the same per-theme retune. That's the correctness argument: a theme isn't a palette swap, it's the same set of perceptual relationships re-established on a different ground.
 

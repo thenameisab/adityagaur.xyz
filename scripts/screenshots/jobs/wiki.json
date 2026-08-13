@@ -1,0 +1,36 @@
+{
+  "baseURL": "http://localhost:4805",
+  "outDir": "shots/wiki",
+  "defaults": {
+    "width": 1400
+  },
+  "shots": [
+    {
+      "name": "page",
+      "path": "/offerings/identity-verification/",
+      "height": 900,
+      "settle": 1200
+    },
+    {
+      "name": "search",
+      "path": "/offerings/identity-verification/",
+      "height": 900,
+      "settle": 1200,
+      "clip": ".cmdk, .palette, [role=dialog], .search-modal, .cmd-palette",
+      "actions": [
+        {
+          "press": "Meta+k"
+        },
+        {
+          "wait": 700
+        },
+        {
+          "type": "verif"
+        },
+        {
+          "wait": 900
+        }
+      ]
+    }
+  ]
+}

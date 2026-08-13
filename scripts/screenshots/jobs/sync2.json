@@ -1,0 +1,23 @@
+{
+  "baseURL": "http://localhost:4806",
+  "outDir": "shots/sync",
+  "defaults": {
+    "width": 1180
+  },
+  "shots": [
+    {
+      "name": "primitives",
+      "path": "/",
+      "height": 1020,
+      "settle": 2500,
+      "actions": [
+        {
+          "click": "text=PRIMITIVES"
+        },
+        {
+          "wait": 1800
+        }
+      ]
+    }
+  ]
+}

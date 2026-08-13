@@ -1,0 +1,50 @@
+{
+  "baseURL": "http://localhost:4802",
+  "outDir": "shots/policy",
+  "defaults": {
+    "width": 1500,
+    "height": 780
+  },
+  "initScript": "try{localStorage.setItem('ada_tour_seen','1')}catch(e){}",
+  "maxWidth": 1100,
+  "shots": [
+    {
+      "name": "ask-admin",
+      "path": "/index.html",
+      "clip": "#chatPanel",
+      "actions": [
+        {
+          "eval": "App.login('NWD0144')"
+        },
+        {
+          "wait": 400
+        },
+        {
+          "eval": "App.chat.toggle(true); App.chat.ask('What are the personal loan eligibility criteria?')"
+        },
+        {
+          "wait": 2500
+        }
+      ]
+    },
+    {
+      "name": "ask-staff",
+      "path": "/index.html",
+      "clip": "#chatPanel",
+      "actions": [
+        {
+          "eval": "App.login('NWD0125')"
+        },
+        {
+          "wait": 400
+        },
+        {
+          "eval": "App.chat.toggle(true); App.chat.ask('What are the personal loan eligibility criteria?')"
+        },
+        {
+          "wait": 2500
+        }
+      ]
+    }
+  ]
+}

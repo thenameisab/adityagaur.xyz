@@ -11,6 +11,7 @@ export const meta = {
   stack: ["Vanilla JS", "Zero dependencies", "6 LLM providers", "Static hosting"],
   status: "prototype",
   order: 9,
+  wide: true,
 };
 
 ## Same question, different person, different answer
@@ -18,6 +19,27 @@ export const meta = {
 A staff member asks the assistant for the personal-loan policy and gets it. They ask what a colleague earns and get *not permitted*. An admin asks the same two questions and gets two answers. That's the entire product in one interaction, and it's the moat to validate against the horizontal players, because a general-purpose company assistant that can't do this can't be sold to a bank.
 
 The product is a policy-management platform for banks; the prototype's job was to prove the permission-faithful version of it was worth building. It had one month, one constraint that shaped everything (it had to *run*, live, at a URL a prospect could click), and a decision budget spent almost entirely on a single question: what is the model allowed to be wrong about?
+
+<Figure
+  label="Figure 1"
+  caption="One question, two personas, two answers. The refusal on the right is not the model declining — the policy text was never in its context window, and the chip underneath names the scope it fell outside of."
+  source="The prototype running locally against a regenerated org: fictional company, fictional staff, addresses on a reserved domain. The access rules, the refusal copy and the citation chips are the prototype's own, unedited."
+>
+  <Pair>
+    <Shot
+      src="/work/policy-prototype/assistant-admin.jpg"
+      alt="The assistant answering an administrator's question about personal loan eligibility with a table of criteria — minimum CIBIL score, age band, max FOIR, ticket size — and a citation chip reading 'Personal Loan Credit Policy · p.2'"
+      width={1100}
+      height={1950}
+    />
+    <Shot
+      src="/work/policy-prototype/assistant-staff.jpg"
+      alt="The same question asked by a staff user, answered with 'You don't have access to the Personal Loan Credit Policy', the scope it is restricted to, and a red chip reading 'Personal Loan Credit Policy · no access'"
+      width={1100}
+      height={1950}
+    />
+  </Pair>
+</Figure>
 
 <Stat
   items={[
@@ -36,12 +58,63 @@ What that bought was the thing the month actually needed: the PRD links to the p
 
 In place of a test framework there's a 258-line headless harness that stubs a minimal DOM, loads every view, and renders each one for every persona — the cross-product that matters for a product whose thesis is "the answer changes by persona."
 
+<Figure
+  label="Figure 2"
+  caption="One of the fifteen views, rendered by a function that returns a string. Nine policies here because the viewer is an administrator; the same route returns four rows for the staff user in Figure 1."
+  source="The prototype running locally. Policy names, categories and version numbers are the prototype's own seed; every owner and every identity is regenerated."
+>
+  <Shot
+    src="/work/policy-prototype/policy-library.jpg"
+    alt="The policy library view: a searchable table of nine active policies across lending, compliance and HR categories, each with an owner avatar, version and last-updated date"
+    width={2560}
+    height={1536}
+  />
+</Figure>
+
 ## Where the model is *allowed* to be wrong
 
 The prototype connects to eleven models across six providers, bring-your-own-key, none preselected. And nowhere in the codebase is there a confidence score, an output validator, or a retry-on-malformed. That absence is the design.
 
 <Figure
-  label="Figure 1"
+  label="Figure 3"
+  caption="Where the gate is. The filter runs before the prompt, not after the answer — so the model's context contains only what this persona may read, and a hallucination has nothing out-of-scope to hallucinate from. Note the second path: every number the bank would act on is routed around the model entirely."
+  scroll
+>
+  <Arch
+    label="Architecture: a signed-in persona whose permissions filter the policy set before the prompt is assembled, with quantitative answers routed through a deterministic simulator instead of the model"
+    columns={[
+      { label: "Who is asking", nodes: [
+        { id: "who", label: "Signed-in persona", sub: "role · team · id" },
+      ] },
+      { label: "Before the prompt", nodes: [
+        { id: "filter", label: "Permission filter", sub: "policies you may see", kind: "accent" },
+        { id: "sim", label: "Simulator", sub: "plain arithmetic", kind: "accent" },
+      ] },
+      { label: "The soft surface", nodes: [
+        { id: "ctx", label: "Context", sub: "in-scope text only" },
+      ] },
+      { label: "Model · BYO key", nodes: [
+        { id: "llm", label: "Any of 11 models", sub: "wording only", kind: "muted" },
+      ] },
+      { label: "What comes back", nodes: [
+        { id: "ans", label: "Prose + citations", sub: "anchor → page" },
+        { id: "num", label: "Numbers", sub: "never model-authored", kind: "stop" },
+        { id: "req", label: "Change request", sub: "maker–checker", kind: "stop" },
+      ] },
+    ]}
+    edges={[
+      { from: "who", to: "filter" },
+      { from: "filter", to: "ctx", label: "scoped" },
+      { from: "ctx", to: "llm" },
+      { from: "llm", to: "ans" },
+      { from: "sim", to: "num" },
+      { from: "num", to: "req", dashed: true },
+    ]}
+  />
+</Figure>
+
+<Figure
+  label="Figure 4"
   caption="Three hard walls, one soft surface. The gate is architectural, not statistical."
 >
   <Switcher
@@ -92,8 +165,21 @@ The header comment in that file says exactly what it is (*no real PDFs in the pr
 The most sellable idea in the prototype is small: before a bank changes a credit-policy threshold, show them who flips. The simulator re-runs a policy's eligibility rules over a fixed 220-applicant test cohort with ground-truth default labels, under both the live and the proposed parameters, and reports the delta on the book.
 
 <Figure
-  label="Figure 2"
-  caption="The personal-loan policy's real baseline thresholds. Tighten the CIBIL floor and watch approval fall, projected NPA fall, and the flip count climb."
+  label="Figure 5"
+  caption="The simulator as it ships, with the CIBIL floor moved from 700 to 720: approval down 4.1 points, projected NPA down 2.6, nine applicants reclassified. Note the button in the bottom right — it is there because nine people moved. At 700, the same panel renders without it."
+  source="The prototype running locally. The eligibility engine, the metrics and the 220-applicant test cohort are the prototype's own; the cohort carries no PII by construction."
+>
+  <Shot
+    src="/work/policy-prototype/impact-simulator.jpg"
+    alt="The impact simulator modal: proposed threshold inputs for CIBIL score, age band and FOIR; result cards showing approval rate 32.7% to 28.6%, projected NPA 4.2% to 1.6%, and nine applicants reclassified; an approvals-by-CIBIL-band chart; and a 'Propose change to Approvals' button"
+    width={2560}
+    height={2964}
+  />
+</Figure>
+
+<Figure
+  label="Figure 6"
+  caption="The same engine, ported — so you can move the floor yourself. Tighten the CIBIL cutoff and watch approval fall, projected NPA fall, and the flip count climb."
   source="Same eligibility engine and metrics as the prototype's sim.js. The 220-applicant cohort is regenerated synthetically with the same distribution shape and deterministic labels — none of the original rows. Projections model the test cohort, not a live book."
 >
   <ImpactSim />
@@ -103,17 +189,19 @@ The design detail I'd defend hardest is the propose button's existence condition
 
 Scope was cut to fit the month, on purpose: five shared knobs across the four credit policies, not fully custom per-policy variables. The other five policies get an explainer instead of a broken form. The roadmap's phrase for this was *build it cleanly, separate from the half-baked old test bed*, a small sentence that is most of what I believe about prototypes.
 
-## What the prototype changed, and what this page can't show
+## What the prototype changed, and what it took to show it
 
 Three reversals are traceable from document to code, which is the prototype-as-spec workflow paying for itself. A two-edition packaging model was defined, then retired to a single version with connectors parked behind no-op stubs. A standalone people directory was built, then explicitly disowned in the docs and merged into an access-centric view. And compensation answers — the flagship demo of permission-faithful retrieval — were removed entirely, one line: visible to no one. The docs still use salary as the example; the code overruled them. When a document and a running program disagree, the program is the one telling the truth.
 
 One gap runs the other way, and it's the sharpest lesson here. The audit log was a phase-one, top-priority feature (*audit is also the compliance sell*) and it was never built in the app. Then a later standalone demo made an append-only audit ledger its most prominent surface. The demo prototyped the missing feature the product never got, which says something uncomfortable about demos: they get built for what the audience in the room needs to see, not for what the roadmap says comes first.
 
-And what this page can't show: the prototype itself. Its seed data is not synthetic — it carries a real org chart, real email addresses, and internal material through to the deployment docs. Embedding it would publish all of that. The simulator above is the porting compromise: the same engine, a regenerated cohort, and a page that states the substitution instead of hiding it.
+And what it cost to put the prototype on this page at all: its seed data was never synthetic. It carried a live org chart, real work addresses, real internal product names, and named prospects, straight through to the deployment docs — so for a long time the honest thing to publish was a description of the prototype rather than the prototype.
+
+What runs behind every screenshot above is the real program with a new cast. An aliasing pass regenerates the whole directory before the app boots: sixty-five identities replaced, employee ids kept intact so the policy owners, approval levels and Jira assignees still resolve to the same *people-shaped* rows, addresses moved to a reserved domain, product names aliased the way this page's prose already aliases them, and a check that fails the run if a single real name survives into a file the browser loads. The code is untouched. Only the cast is fictional, and this paragraph is here because a reader deserves to know which is which.
 
 ## What I'd do differently
 
-**Seed data deserves the same discipline as code.** Using the real directory made every demo instantly legible internally, and it welded the prototype shut for any external use — this page included. A generator producing a fictional org with stable ids would have cost an afternoon and made the artifact publishable forever.
+**Seed data deserves the same discipline as code.** Using the real directory made every demo instantly legible internally, and it welded the prototype shut for any external use. The fix was exactly what it should have been on day one — a generator producing a fictional org with stable ids — and it cost an afternoon, which is the whole point: an afternoon spent at the start would have bought a publishable artifact for free, and instead it got spent a year later, under a deadline, to make one page's figures possible.
 
 **The abstain path deserved a gate, not a prompt.** The deny behaviour (*say the user is not permitted, never guess*) rides on a prompt instruction. The context filtering makes real leaks structurally impossible, but the polite refusal itself is unverified model behaviour. One post-check, that an answer must be a refusal whenever the context said "none in scope", would have converted the last soft wall into a hard one.
 

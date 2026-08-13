@@ -13,6 +13,7 @@ export const meta = {
   status: "prototype",
   order: 8,
   visibility: "hidden",
+  wide: true,
 };
 
 ## The audit came first, and it was brutal *on purpose*
@@ -40,6 +41,32 @@ Everything else in the spec falls out of that sentence. Dark mode becomes the de
 
 <Figure
   label="Figure 1"
+  caption="The v2 dashboard: chrome in near-black and grey, every number set in mono, and colour spent only where it carries state — a run lane, a health chip, an incident band. The right rail's headline when nothing is wrong is a sentence, not a green tick."
+  source="The single-file standalone build of v2, run locally. Corporate names and every figure on it are invented; the product's own name is aliased here the way it is in this page's prose. The layout, tokens and components are the shipped ones."
+>
+  <Shot
+    src="/work/sync-console-rework/v2-dashboard.jpg"
+    alt="A dark operator dashboard: a left nav grouped into observe, build and govern; an active-incident band; four metric cards with sparklines for records synced, success rate, failed runs and P95 latency; a seven-lane run timeline; connection health cards; and a right-hand inspector rail"
+    width={2560}
+    height={1600}
+  />
+</Figure>
+
+<Figure
+  label="Figure 2"
+  caption="Thirty-two-pixel rows, and what they buy: sixteen runs visible without scrolling, each carrying a corporate, a trigger, a run id, a duration, a records bar and a status. At forty-four the same screen holds eleven."
+  source="The same standalone build. Run ids, corporates and durations are invented; the row height, the filter chips and the status vocabulary are the v2 spec's."
+>
+  <Shot
+    src="/work/sync-console-rework/v2-sync-runs.jpg"
+    alt="A dense table of sync runs with filter chips for all, failed today, long running and running; columns for corporate and connection, run id, started, duration, records and status; and coloured status pills for running, success, warning and failed"
+    width={2560}
+    height={1504}
+  />
+</Figure>
+
+<Figure
+  label="Figure 3"
   caption="The v2 token system, at its real values. Pick a token to see the three-hop chain that carries it into a component; flip the mode and watch one attribute swap repaint the specimen."
   source="Every hex is from the shipped tokens.css and the v2 spec, unedited. The preview panel is a specimen rendered from those values — deliberately not this site's palette."
 >
@@ -53,7 +80,20 @@ The mechanism matters more than the palette. Each token is declared as a space-s
 A rework of a live product has one governing rule, and the plan states it as a prohibition: **foundations, then shell, then screens, never the other way.** A v2 shell wrapping v1 screens is the migration path. A v2 screen inside the v1 shell is forbidden, because it forces both styling systems to load at once.
 
 <Figure
-  label="Figure 2"
+  label="Figure 4"
+  caption="The kitchen sink — the route the plan makes the merge gate for every later pull request. Twenty-five primitives, every variant, both modes, on one page: if a change breaks something here, it breaks it before a screen ever sees it."
+  source="The standalone build, which mounts this route with no login gate. Cropped to the top of the sheet; the full page runs on through inputs, tables, tabs, drawers and empty states."
+>
+  <Shot
+    src="/work/sync-console-rework/v2-primitives.jpg"
+    alt="A component specimen sheet on a dark ground, sectioned into buttons, icon buttons, status chips, badges and trends, keyboard keys, avatars and inputs, with primitives / shell and light / dark toggles in the top right"
+    width={2360}
+    height={2040}
+  />
+</Figure>
+
+<Figure
+  label="Figure 5"
   caption="Eleven phases. Ten landed. The gap between phase 6's plan and its audit is the honest center of this page."
 >
 <Stepper
@@ -97,6 +137,39 @@ A rework of a live product has one governing rule, and the plan states it as a p
 
 Every phase that landed is logged in a 3,800-line changelog, each entry in the same five-part shape — old state, what changed, verified in browser, current state, why. That log is how I can tell you precisely where the project stands rather than roughly.
 
+<Figure
+  label="Figure 6"
+  caption="What a flag actually buys, and what it costs. Every route passes through a gate that picks one of two implementations at runtime, which is why any screen could ship or roll back on its own. It is also why both branches are still in the bundle: a gate with its flag defaulted false is not a migration, it is a second frontend you are shipping to production every day."
+  scroll
+>
+  <Arch
+    label="Architecture: each route passes through a page gate that selects the v2 screen or its v1 fallback by feature flag, with both implementations and both component libraries present in the shipped bundle"
+    columns={[
+      { label: "Request", nodes: [
+        { id: "route", label: "Route", sub: "one of 45 screens" },
+      ] },
+      { label: "The gate", nodes: [
+        { id: "gate", label: "PageGate", sub: "23 flags, all false", kind: "accent" },
+      ] },
+      { label: "Two implementations", nodes: [
+        { id: "v2", label: "v2 screen", sub: "tokens · primitives" },
+        { id: "v1", label: "v1 screen", sub: "the fallback", kind: "muted" },
+      ] },
+      { label: "Still in the bundle", nodes: [
+        { id: "new", label: "v2 system", sub: "25 primitives" },
+        { id: "old", label: "Legacy deps", sub: "273 import sites", kind: "stop" },
+      ] },
+    ]}
+    edges={[
+      { from: "route", to: "gate" },
+      { from: "gate", to: "v2", label: "flag on", dashed: true },
+      { from: "gate", to: "v1", label: "default" },
+      { from: "v2", to: "new" },
+      { from: "v1", to: "old" },
+    ]}
+  />
+</Figure>
+
 ## So: did v2 ship?
 
 No, and the evidence is unambiguous, which is rarer than shipping. Every one of the 23 feature flags still defaults to false. The bake phase has no changelog entries. The nine legacy dependencies are still in the manifest. The design system, the shell, and all 45 screens exist and pass their own review; not one has been default-on for a user.
@@ -104,7 +177,7 @@ No, and the evidence is unambiguous, which is rarer than shipping. Every one of 
 What the project produced instead of a release is a complete, honest migration state: a v2 that is real behind flags, a tracker that says exactly which nine surfaces still block deletion, and a candid audit entry explaining why the gap exists. The work after May pivoted to packaging (a single-file standalone build, and the product tour below), which is the shape of a project that moved from *ship it* to *show it*. This page is that showing, done with the numbers left in.
 
 <Figure
-  label="Figure 3"
+  label="Figure 7"
   caption="The real product tour — the shipped artifact, not a recreation. A spotlight walks six mocked screens; two mini-tours branch from the finish."
   source="One 938-line self-contained HTML file, embedded in a sandboxed frame. The only edits are two outbound marketing links removed. All company and people names inside are fictional."
 >

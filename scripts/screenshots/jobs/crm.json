@@ -1,0 +1,61 @@
+{
+  "baseURL": "http://localhost:4804",
+  "outDir": "shots/crm",
+  "defaults": {
+    "width": 1500
+  },
+  "shots": [
+    {
+      "name": "pipeline",
+      "path": "/",
+      "height": 1000,
+      "settle": 2200,
+      "actions": [
+        {
+          "click": "text=Pipeline >> nth=0"
+        },
+        {
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "founder-mode",
+      "path": "/",
+      "height": 900,
+      "settle": 2200,
+      "actions": [
+        {
+          "wait": 1800
+        },
+        {
+          "press": "Shift+F"
+        },
+        {
+          "wait": 2000
+        }
+      ]
+    },
+    {
+      "name": "drilldown",
+      "path": "/",
+      "height": 1000,
+      "settle": 2200,
+      "clip": ".modal, [role=dialog], .drill-modal",
+      "actions": [
+        {
+          "click": "text=Pipeline >> nth=0"
+        },
+        {
+          "wait": 1500
+        },
+        {
+          "click": "text=POC >> nth=0"
+        },
+        {
+          "wait": 1500
+        }
+      ]
+    }
+  ]
+}
